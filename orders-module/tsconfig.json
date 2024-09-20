@@ -1,0 +1,40 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "lib": ["dom", "dom.iterable", "esnext"],
+        "downlevelIteration": true,
+        "allowJs": true,
+        "checkJs": false,
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "noFallthroughCasesInSwitch": true,
+        "module": "esnext",
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "isolatedModules": false,
+        "noEmit": false,
+        "noImplicitAny": true,
+        "jsx": "react-jsx",
+        "baseUrl": "src",
+        "sourceMap": true,
+        "inlineSources": true,
+        "sourceRoot": "/",
+        "paths": {
+            "*": ["*"],
+            "Component/*": ["components/*"],
+            "Utils/*": ["utils/*"],
+            "Hooks/*": ["hooks/*"],
+            "API": ["api"],
+            "API/*": ["api/*"],
+            "Models/*": ["models/*"],
+            "Types/*": ["types/*"],
+            "Enums/*": ["enums/*"],
+            "Assets/*": ["assets/*"]
+        }
+    },
+    "include": ["src"],
+    "exclude": ["node_modules"]
+}
