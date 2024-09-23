@@ -6,8 +6,7 @@
 trigger:
 - main
 
-pool:
-  vmImage: ubuntu-latest
+pool: default
 
 variables:
   pnpm_config_cache: $(Pipeline.Workspace)/.pnpm-store
@@ -18,17 +17,11 @@ steps:
     versionSpec: '20.x'
   displayName: 'Install Node.js'
 
-- task: Cache@2
-  inputs:
-    key: 'pnpm | "$(Agent.OS)" | pnpm-lock.yaml'
-    path: $(pnpm_config_cache)
-  displayName: Cache pnpm
-
 - script: |
     corepack enable
     corepack prepare pnpm@latest-9 --activate
     pnpm config set store-dir $(pnpm_config_cache)
-  displayName: "Setup pnpm"
+  displayName: "Configure pnpm corepack"
 
 - script: |
     pnpm install
