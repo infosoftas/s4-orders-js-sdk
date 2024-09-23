@@ -24,11 +24,6 @@ steps:
   displayName: "Configure pnpm corepack"
 
 - script: |
-    pnpm install
-    pnpm run build
-  displayName: "pnpm install and build"
-
-- script: |
     pnpm install webpack webpack-cli --save-dev
     pnpm exec webpack
   displayName: 'PNPM Install and Run webpack'
