@@ -1,5 +1,6 @@
 import React, { FC, useState } from 'react';
 
+import { createOrder } from 'API/OrdersApi';
 import './mainForm.scss';
 
 type Props = {
@@ -8,11 +9,24 @@ type Props = {
 
 export const MainForm: FC<Props> = ({ companyName = '' }) => {
     const [isConfirmed, setIsConfirmed] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
     const [email, setEmail] = useState<string>('');
 
-    const handleSubmit = (event: React.FormEvent<HTMLElement>) => {
+    const handleSubmit = async (
+        event: React.FormEvent<HTMLElement>
+    ): Promise<void> => {
         event.preventDefault();
-        setIsConfirmed(true);
+        setLoading(true);
+        try {
+            const response = await createOrder();
+            if (response.data.terminalRedirectUrl) {
+                window.location.href = response.data.terminalRedirectUrl;
+            }
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -30,7 +44,7 @@ export const MainForm: FC<Props> = ({ companyName = '' }) => {
                     </div>
                     <button
                         type="submit"
-                        disabled={!email}
+                        disabled={!email || loading}
                         onClick={handleSubmit}
                     >
                         Next

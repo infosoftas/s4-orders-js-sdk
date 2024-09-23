@@ -19,7 +19,7 @@ type Fetcher<T> = {
 };
 
 function createHeader<T>(options: Fetcher<T>): Fetcher<T> {
-    const accessToken = localStorage.get('authTokenKey') || '';
+    const accessToken = localStorage.getItem('authTokenKey') || '';
 
     const headers = new Headers({
         accept: 'application/json',
