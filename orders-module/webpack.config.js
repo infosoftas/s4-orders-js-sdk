@@ -1,8 +1,15 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const Dotenv = require('dotenv-webpack');
+
+const envEnum = {
+    qa: 'qa',
+    dev: 'dev',
+    prod: 'production',
+};
 
 module.exports = (env) => {
-    const enableSourceMap = env.mode === 'development' ? true : false;
+    const enableSourceMap = env.mode === 'dev' ? true : false;
 
     return {
         mode: env.mode,
@@ -27,6 +34,12 @@ module.exports = (env) => {
         plugins: [
             new MiniCssExtractPlugin({
                 filename: 'css/style.css',
+            }),
+            new Dotenv({
+                path: `./.env.${
+                    env.mode === envEnum.prod ? 'prod' : env.mode || 'prod'
+                }`, // Path to .env file (this is the default)
+                safe: false, // load .env.example (defaults to "false" which does not use dotenv-safe)
             }),
         ],
         module: {
