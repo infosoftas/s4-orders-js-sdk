@@ -16,7 +16,22 @@ steps:
   displayName: 'Install Node.js'
 
 - script: |
-    npm install -g webpack webpack-cli --save-dev
     npm install
     npx webpack
   displayName: 'npm install, run webpack'
+
+- task: CopyFiles@2
+  inputs:
+    sourceFolder: '$(Build.SourcesDirectory)'
+    contents: |
+       src/*
+       public/*
+    targetFolder: '$(Build.ArtifactStagingDirectory)'
+  displayName: 'Copy project files'
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    artifactName: Order-SDK
+    targetPath: '$(Build.ArtifactStagingDirectory)'
+    publishLocation: 'pipeline'
+  displayName: 'Publish npm artifact'
