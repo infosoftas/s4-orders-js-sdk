@@ -8,4 +8,5 @@ export interface ApiResponseType<T> {
     timestamp: string;
     data: T;
     query: string;
+    url: string;
 }

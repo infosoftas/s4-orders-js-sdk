@@ -14,7 +14,7 @@ module.exports = (env) => {
     return {
         mode: env.mode,
         target: 'web',
-        entry: './src/app.tsx',
+        entry: './src/index.tsx',
         devtool: enableSourceMap ? 'inline-source-map' : false,
         experiments: {
             outputModule: true,

@@ -31,14 +31,28 @@
 
     <script type="module">
         import { orderComponent } from './script.js';
-
         const config = {
             companyName: 'MyCompany',
             domElementId: 'order',
+            templatePackageId: 'fefddfeb-e2de-4eaf-abfe-03297591a2d6',
+            subscriberId: '25b56197-91a5-4796-9288-6b35877f1f88',
+            tenantId: 'd5e00e27-0cdf-4753-b9a8-40e289d1bf5b',
+            organizationId: 'abf90cef-661f-4a85-940b-001eafb587e3',
+            showIframe: true,
+            redirectUrl: 'https://localhost:3000/',
+            strings: {
+                somethingWrongText: 'Error happened',
+                buttonText: 'Start',
+            }
         };
-        addEventListener('DOMContentLoaded', () => {
+
+        let timer = setInterval(() => {
+            let orderElement = document.getElementById('order');
+            if (!orderElement) return;
+            console.log('module init')
             orderComponent.init(config);
-        })
+            clearInterval(timer);
+        }, 300);
     </script>
     <!--
       This HTML file is a template.

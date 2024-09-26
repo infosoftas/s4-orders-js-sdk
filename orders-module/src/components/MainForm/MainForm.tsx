@@ -1,43 +1,58 @@
-import React, { FC, useState, useEffect } from 'react';
+import React, { FC, useState } from 'react';
 
-import useQueryParams from 'Hooks/useQueryParams';
-import { createOrder } from 'API/OrdersApi';
+import { orderStart } from 'API/OrdersApi';
+import Loader from 'Component/Loader/Loader';
+
 import './mainForm.scss';
 
 type Props = {
-    companyName: string;
+    callback: (url: string | null) => void;
+    buttonText?: string;
+    templatePackageId?: string;
+    subscriberId?: string;
+    tenantId?: string;
+    organizationId?: string;
+    redirectUrl?: string;
+    showIframe?: boolean;
 };
 
-export const MainForm: FC<Props> = ({ companyName = '' }) => {
-    const [isConfirmed, setIsConfirmed] = useState<boolean>(false);
-    const [isFailed, setIsFailed] = useState<boolean>(false);
+const MainForm: FC<Props> = ({
+    callback,
+    templatePackageId,
+    subscriberId,
+    tenantId,
+    organizationId,
+    showIframe,
+    redirectUrl,
+    buttonText = 'Start',
+}) => {
     const [loading, setLoading] = useState<boolean>(false);
-    const [email, setEmail] = useState<string>('');
-    const queryParams = useQueryParams();
-
-    useEffect(() => {
-        const status = queryParams.get('status');
-        if (status === 'complete') {
-            setIsConfirmed(true);
-        } else if (status === 'fail') {
-            setIsFailed(true);
-        }
-    }, [queryParams.get('status')]);
+    const [phone, setPhone] = useState<string>('');
 
     const handleSubmit = async (
         event: React.FormEvent<HTMLElement>
     ): Promise<void> => {
         event.preventDefault();
         setLoading(true);
-        setIsFailed(false);
-        setIsConfirmed(false);
         try {
-            const response = await createOrder();
-            if (response.data.terminalRedirectUrl) {
-                window.location.href = response.data.terminalRedirectUrl;
+            const response = await orderStart({
+                templatePackageId,
+                subscriberId,
+                tenantId,
+                organizationId,
+                phoneNumber: phone,
+                redirectUrl: showIframe
+                    ? window.location.toString()
+                    : redirectUrl || window.location.toString(),
+            });
+            if (response.url) {
+                callback(response.url);
+                return;
             }
+            callback(null);
         } catch (error) {
             console.error(error);
+            callback(null);
         } finally {
             setLoading(false);
         }
@@ -45,32 +60,23 @@ export const MainForm: FC<Props> = ({ companyName = '' }) => {
 
     return (
         <form className="sdkOrderForm" onSubmit={handleSubmit}>
-            <h2>Hi, {companyName}</h2>
-
-            {!isConfirmed && (
-                <>
-                    <div>
-                        <input
-                            name="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
-                    </div>
-                    <button
-                        type="submit"
-                        disabled={!email || loading}
-                        onClick={handleSubmit}
-                    >
-                        Next
-                    </button>
-                </>
-            )}
-            {isConfirmed && !isFailed && (
-                <h2>Congratulation, you type "{email}"!</h2>
-            )}
-            {!isConfirmed && isFailed && (
-                <h2 className="error">Wrong "{email}", try again!</h2>
-            )}
+            <div>
+                <input
+                    name="phoneNUmber"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                />
+            </div>
+            <button
+                type="submit"
+                disabled={loading}
+                className={`${loading ? 'loading' : ''}`}
+                onClick={handleSubmit}
+            >
+                {loading ? <Loader className="btn-loader" /> : buttonText}
+            </button>
         </form>
     );
 };
+
+export default MainForm;

@@ -1,0 +1,16 @@
+.sdk-order-container {
+    * {
+        box-sizing: border-box;
+    }
+
+    iframe {
+        max-width    : 550px;
+        border       : none;
+        background   : transparent;
+        border-radius: 8px;
+    }
+
+    .error {
+        color: #d9534f;
+    }
+}
