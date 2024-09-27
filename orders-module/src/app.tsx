@@ -15,9 +15,15 @@ const App: FC<ConfigType> = ({
     subscriberId,
     tenantId,
     organizationId,
+    paymentMethod,
+    generateSubscriberContact,
     redirectUrl,
     showIframe,
-    strings,
+    strings = {
+        successText: 'Order successful completed!',
+        failureText: 'Something went wrong!',
+        buttonText: 'Start',
+    },
 }) => {
     const [iframeSrc, setIframeSrc] = useState<string | null>(null);
     const [orderId, setOrderId] = useState<string | null>(null);
@@ -96,22 +102,22 @@ const App: FC<ConfigType> = ({
             {!iframeSrc && !orderId && !agreementId && (
                 <MainForm
                     callback={handleForm}
-                    buttonText={strings?.buttonText}
                     templatePackageId={templatePackageId}
                     subscriberId={subscriberId}
                     tenantId={tenantId}
                     organizationId={organizationId}
-                    redirectUrl={redirectUrl}
+                    redirectUrl={
+                        showIframe
+                            ? window.location.toString()
+                            : redirectUrl || window.location.toString()
+                    }
+                    buttonText={strings?.buttonText}
                 />
             )}
             {showIframe && <MainIframe iframeSrc={iframeSrc} />}
-            {isConfirmed && <p>Congratulation!</p>}
+            {isConfirmed && <p>{strings?.successText}</p>}
             {isFailed && (
-                <p className="error">
-                    {failedMsg ||
-                        strings?.somethingWrongText ||
-                        'Wrong, try again!'}
-                </p>
+                <p className="error">{failedMsg || strings?.failureText}</p>
             )}
         </div>
     );

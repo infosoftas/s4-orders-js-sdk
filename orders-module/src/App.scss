@@ -1,5 +1,14 @@
 .sdk-order-container {
-    * {
+    --input-border : #8b8a8b;
+    --input-focus-h: 245;
+    --input-focus-s: 100%;
+    --input-focus-l: 42%;
+
+    text-align: center;
+
+    *,
+    *::before,
+    *::after {
         box-sizing: border-box;
     }
 
@@ -12,5 +21,9 @@
 
     .error {
         color: #d9534f;
+    }
+
+    .caption {
+        font-size: 12px;
     }
 }

@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { ChangeEvent, FC, useState } from 'react';
 
 import { orderStart } from 'API/OrdersApi';
 import Loader from 'Component/Loader/Loader';
@@ -7,13 +7,12 @@ import './mainForm.scss';
 
 type Props = {
     callback: (url: string | null) => void;
+    templatePackageId: string;
+    subscriberId: string;
+    tenantId: string;
+    organizationId: string;
+    redirectUrl: string;
     buttonText?: string;
-    templatePackageId?: string;
-    subscriberId?: string;
-    tenantId?: string;
-    organizationId?: string;
-    redirectUrl?: string;
-    showIframe?: boolean;
 };
 
 const MainForm: FC<Props> = ({
@@ -22,17 +21,23 @@ const MainForm: FC<Props> = ({
     subscriberId,
     tenantId,
     organizationId,
-    showIframe,
     redirectUrl,
     buttonText = 'Start',
 }) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [phone, setPhone] = useState<string>('');
+    const [errorMsg, setErrorMsg] = useState<string>('');
 
     const handleSubmit = async (
         event: React.FormEvent<HTMLElement>
     ): Promise<void> => {
         event.preventDefault();
+
+        if (!isValidPhone(phone)) {
+            setErrorMsg('Please enter a valid phone number.');
+            return;
+        }
+
         setLoading(true);
         try {
             const response = await orderStart({
@@ -40,10 +45,8 @@ const MainForm: FC<Props> = ({
                 subscriberId,
                 tenantId,
                 organizationId,
+                redirectUrl,
                 phoneNumber: phone,
-                redirectUrl: showIframe
-                    ? window.location.toString()
-                    : redirectUrl || window.location.toString(),
             });
             if (response.url) {
                 callback(response.url);
@@ -58,14 +61,34 @@ const MainForm: FC<Props> = ({
         }
     };
 
+    const isValidPhone = (phoneNumber: string): boolean => {
+        if (!phoneNumber) {
+            return true;
+        }
+
+        const pattern = /^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\./0-9]{5,10}$/g;
+        const isValid = pattern.test(phoneNumber);
+
+        return isValid;
+    };
+
+    const handlePhoneNumberChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setErrorMsg('');
+        const phoneNumber = e.target.value.trim();
+        setPhone(phoneNumber);
+    };
+
     return (
         <form className="sdkOrderForm" onSubmit={handleSubmit}>
-            <div>
+            <div className="field-wrapper">
                 <input
+                    className="input-control"
+                    type="tel"
                     name="phoneNUmber"
                     value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
+                    onChange={handlePhoneNumberChange}
                 />
+                {errorMsg && <div className="error caption">{errorMsg}</div>}
             </div>
             <button
                 type="submit"

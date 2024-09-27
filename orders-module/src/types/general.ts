@@ -5,10 +5,13 @@ export type ConfigType = {
     subscriberId: string;
     tenantId: string;
     organizationId: string;
-    redirectUrl: string;
+    redirectUrl?: string;
+    paymentMethod?: string;
+    generateSubscriberContact?: string;
     showIframe?: boolean;
     strings?: {
-        somethingWrongText?: string;
+        successText?: string;
+        failureText?: string;
         buttonText?: string;
     };
 };
