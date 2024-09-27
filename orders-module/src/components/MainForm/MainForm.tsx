@@ -2,6 +2,7 @@ import React, { ChangeEvent, FC, useState } from 'react';
 
 import { orderStart } from 'API/OrdersApi';
 import Loader from 'Component/Loader/Loader';
+import { WRONG_MSG } from 'Enums/api';
 
 import './mainForm.scss';
 
@@ -27,11 +28,13 @@ const MainForm: FC<Props> = ({
     const [loading, setLoading] = useState<boolean>(false);
     const [phone, setPhone] = useState<string>('');
     const [errorMsg, setErrorMsg] = useState<string>('');
+    const [apiErrorMsg, setApiErrorMsg] = useState<string>('');
 
     const handleSubmit = async (
         event: React.FormEvent<HTMLElement>
     ): Promise<void> => {
         event.preventDefault();
+        setApiErrorMsg('');
 
         if (!isValidPhone(phone)) {
             setErrorMsg('Please enter a valid phone number.');
@@ -53,8 +56,10 @@ const MainForm: FC<Props> = ({
                 return;
             }
             callback(null);
+            setApiErrorMsg(WRONG_MSG);
         } catch (error) {
             console.error(error);
+            setApiErrorMsg((error as string) || WRONG_MSG);
             callback(null);
         } finally {
             setLoading(false);
@@ -98,6 +103,7 @@ const MainForm: FC<Props> = ({
             >
                 {loading ? <Loader className="btn-loader" /> : buttonText}
             </button>
+            {apiErrorMsg && <div className="error caption">{apiErrorMsg}</div>}
         </form>
     );
 };

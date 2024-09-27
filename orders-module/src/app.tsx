@@ -39,6 +39,7 @@ const App: FC<ConfigType> = ({
         setIframeSrc(null);
         setOrderId(data.orderId);
         setAgreementId(data.agreementId);
+        setIsFailed(false);
         try {
             await orderComplete({
                 orderId: data.orderId,
@@ -58,6 +59,7 @@ const App: FC<ConfigType> = ({
 
     const handleForm = (url: string | null) => {
         setIsConfirmed(false);
+        setIsFailed(false);
         if (url) {
             if (showIframe) {
                 setIframeSrc(url);
@@ -72,7 +74,6 @@ const App: FC<ConfigType> = ({
         }
 
         setIframeSrc(null);
-        setIsFailed(true);
     };
 
     useEffect(() => {
