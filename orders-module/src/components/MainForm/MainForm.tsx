@@ -2,7 +2,7 @@ import React, { ChangeEvent, FC, useState } from 'react';
 
 import { orderStart } from 'API/OrdersApi';
 import Loader from 'Component/Loader/Loader';
-import { WRONG_MSG } from 'Enums/api';
+import { WRONG_MSG } from 'Constants/index';
 
 import './mainForm.scss';
 
@@ -93,7 +93,9 @@ const MainForm: FC<Props> = ({
                     value={phone}
                     onChange={handlePhoneNumberChange}
                 />
-                {errorMsg && <div className="error caption">{errorMsg}</div>}
+                {errorMsg && (
+                    <div className="text-error caption">{errorMsg}</div>
+                )}
             </div>
             <button
                 type="submit"
@@ -103,7 +105,9 @@ const MainForm: FC<Props> = ({
             >
                 {loading ? <Loader className="btn-loader" /> : buttonText}
             </button>
-            {apiErrorMsg && <div className="error caption">{apiErrorMsg}</div>}
+            {apiErrorMsg && (
+                <div className="text-error caption">{apiErrorMsg}</div>
+            )}
         </form>
     );
 };

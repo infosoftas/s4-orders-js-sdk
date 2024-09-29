@@ -1,5 +1,6 @@
-import { BASE_API, HttpStatusCode } from 'Enums/api';
+import { HttpStatusCode } from 'Enums/api';
 import { ApiResponseType } from 'Types/api';
+import { BASE_API } from 'Constants/index';
 
 export type Method =
     | 'GET'
@@ -38,7 +39,7 @@ function createHeader<T>(options: Fetcher<T>): Fetcher<T> {
 
 async function fetcher<ResponseType, BodyType = void>(
     options: Fetcher<BodyType>
-): Promise<ApiResponseType<ResponseType>> {
+): Promise<ApiResponseType<ResponseType> | ResponseType> {
     const { url, method, headers, body, params } = createHeader(options);
 
     const endpoint = new URL(`${BASE_API}${url}`);
@@ -53,29 +54,31 @@ async function fetcher<ResponseType, BodyType = void>(
         });
     }
 
-    return new Promise<ApiResponseType<ResponseType>>((resolve, reject) => {
-        return fetch(endpoint.toString(), {
-            method,
-            headers,
-            body: body instanceof FormData ? body : JSON.stringify(body),
-        })
-            .then(async (response) => {
-                if (response.status === HttpStatusCode.UNAUTHORIZED) {
-                    localStorage.removeItem('authTokenKey');
-                } else {
-                    const data = await response?.json();
-
-                    if (response.ok) {
-                        resolve(data);
-                    } else {
-                        reject(data);
-                    }
-                }
+    return new Promise<ApiResponseType<ResponseType> | ResponseType>(
+        (resolve, reject) => {
+            return fetch(endpoint.toString(), {
+                method,
+                headers,
+                body: body instanceof FormData ? body : JSON.stringify(body),
             })
-            .catch((error) => {
-                reject(error?.response);
-            });
-    });
+                .then(async (response) => {
+                    if (response.status === HttpStatusCode.UNAUTHORIZED) {
+                        localStorage.removeItem('authTokenKey');
+                    } else {
+                        const data = await response?.json();
+
+                        if (response.ok) {
+                            resolve(data);
+                        } else {
+                            reject(data);
+                        }
+                    }
+                })
+                .catch((error) => {
+                    reject(error?.response);
+                });
+        }
+    );
 }
 
 export default fetcher;

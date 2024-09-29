@@ -3,8 +3,10 @@ import { FC, useEffect, useState } from 'react';
 import useQueryParams from 'Hooks/useQueryParams';
 import useMessageEvent from 'Hooks/useMessageEvent';
 import MainForm from 'Component/MainForm/MainForm';
+import AddSubscriberForm from 'Component/AddSubscriberForm/AddSubscriberForm';
 import MainIframe from 'Component/MainIframe/MainIframe';
-import { CompleteOrderParamsType, ConfigType } from 'Types/general';
+import { ConfigType } from 'Types/general';
+import { CompleteOrderParamsType } from 'Types/order';
 import { orderComplete } from 'API/OrdersApi';
 
 import './App.scss';
@@ -19,6 +21,7 @@ const App: FC<ConfigType> = ({
     generateSubscriberContact,
     redirectUrl,
     showIframe,
+    availablepaymentmethods = [],
     strings = {
         successText: 'Order successful completed!',
         failureText: 'Something went wrong!',
@@ -101,12 +104,13 @@ const App: FC<ConfigType> = ({
         <div className="sdk-order-container">
             {companyName && <h1>{companyName}</h1>}
             {!iframeSrc && !orderId && !agreementId && (
-                <MainForm
+                <AddSubscriberForm
                     callback={handleForm}
                     templatePackageId={templatePackageId}
                     subscriberId={subscriberId}
                     tenantId={tenantId}
                     organizationId={organizationId}
+                    paymentMethods={availablepaymentmethods}
                     redirectUrl={
                         showIframe
                             ? window.location.toString()
@@ -116,9 +120,13 @@ const App: FC<ConfigType> = ({
                 />
             )}
             {showIframe && <MainIframe iframeSrc={iframeSrc} />}
-            {isConfirmed && <p>{strings?.successText}</p>}
+            {isConfirmed && (
+                <p className="text-success">{strings?.successText}</p>
+            )}
             {isFailed && (
-                <p className="error">{failedMsg || strings?.failureText}</p>
+                <p className="text-error">
+                    {failedMsg || strings?.failureText}
+                </p>
             )}
         </div>
     );

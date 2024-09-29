@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { CompleteOrderParamsType } from 'Types/general';
+import { CompleteOrderParamsType } from 'Types/order';
 import useQueryParams from './useQueryParams';
 
 const COMPLETE_EVENT_TYPE = 'completeOrder';

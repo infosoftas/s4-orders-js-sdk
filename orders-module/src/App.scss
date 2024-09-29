@@ -1,10 +1,10 @@
+@import 'Assets/styles/variables.scss';
+
 .sdk-order-container {
     --input-border : #8b8a8b;
     --input-focus-h: 245;
     --input-focus-s: 100%;
     --input-focus-l: 42%;
-
-    text-align: center;
 
     *,
     *::before,
@@ -19,11 +19,19 @@
         border-radius: 8px;
     }
 
-    .error {
-        color: #d9534f;
+    .text-error {
+        color: $error-color !important;
+    }
+
+    .text-success {
+        color: $success-color !important
+    }
+
+    .text-center {
+        text-align: center;
     }
 
     .caption {
-        font-size: 12px;
+        font-size: $xs-font-size;
     }
 }

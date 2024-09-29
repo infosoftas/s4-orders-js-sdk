@@ -24,14 +24,15 @@
         "sourceRoot": "/",
         "paths": {
             "*": ["*"],
+            "API": ["api"],
+            "API/*": ["api/*"],
             "Component/*": ["components/*"],
             "Utils/*": ["utils/*"],
             "Hooks/*": ["hooks/*"],
-            "API": ["api"],
-            "API/*": ["api/*"],
             "Models/*": ["models/*"],
             "Types/*": ["types/*"],
             "Enums/*": ["enums/*"],
+            "Constants/*": ["constants/*"],
             "Assets/*": ["assets/*"]
         }
     },

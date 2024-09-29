@@ -9,14 +9,10 @@ export type ConfigType = {
     paymentMethod?: string;
     generateSubscriberContact?: string;
     showIframe?: boolean;
+    availablepaymentmethods?: string[];
     strings?: {
         successText?: string;
         failureText?: string;
         buttonText?: string;
     };
-};
-
-export type CompleteOrderParamsType = {
-    orderId: string;
-    agreementId: string;
 };

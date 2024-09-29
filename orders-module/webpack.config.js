@@ -22,14 +22,15 @@ module.exports = (env) => {
         resolve: {
             extensions: ['.js', '.jsx', '.ts', '.tsx'],
             alias: {
+                Src: path.resolve(__dirname, 'src'),
+                API: path.resolve(__dirname, 'src/api'),
                 Component: path.resolve(__dirname, 'src/components'),
                 Utils: path.resolve(__dirname, 'src/utils'),
                 Hooks: path.resolve(__dirname, 'src/hooks'),
-                Src: path.resolve(__dirname, 'src'),
-                API: path.resolve(__dirname, 'src/api'),
                 Models: path.resolve(__dirname, 'src/models'),
                 Types: path.resolve(__dirname, 'src/types'),
                 Enums: path.resolve(__dirname, 'src/enums'),
+                Constants: path.resolve(__dirname, 'src/constants'),
                 Assets: path.resolve(__dirname, 'src/assets'),
             },
         },
