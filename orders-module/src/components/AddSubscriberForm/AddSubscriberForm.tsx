@@ -6,7 +6,7 @@ import Button from 'Component/Button/Button';
 import { PAYMENT_METHOD_DEFAULT, WRONG_MSG } from 'Constants/index';
 import { prepareAgreementModel } from 'Utils/order.helper';
 
-import '../MainForm/mainForm.scss';
+import '../OrderForm/orderForm.scss';
 
 type Props = {
     callback: (url: string | null) => void;

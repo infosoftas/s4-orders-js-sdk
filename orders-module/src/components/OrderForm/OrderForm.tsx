@@ -13,7 +13,7 @@ import { OrderFormInputsType } from 'Types/order';
 import { OrderFormFieldsConfigType, OrderFormFiledType } from 'Types/general';
 import { prepareAgreementModel } from 'Utils/order.helper';
 
-import '../MainForm/mainForm.scss';
+import './orderForm.scss';
 
 type Props = {
     callback: (url: string | null) => void;
