@@ -34,4 +34,16 @@
     .caption {
         font-size: $xs-font-size;
     }
+
+    .d-flex {
+        display: flex;
+    }
+
+    .justify-center {
+        justify-content: center;
+    }
+
+    .align-center {
+        align-items: center;
+    }
 }

@@ -4,6 +4,7 @@ import useQueryParams from 'Hooks/useQueryParams';
 import useMessageEvent from 'Hooks/useMessageEvent';
 import MainForm from 'Component/MainForm/MainForm';
 import AddSubscriberForm from 'Component/AddSubscriberForm/AddSubscriberForm';
+import Loader from 'Component/Loader/Loader';
 import MainIframe from 'Component/MainIframe/MainIframe';
 import { ConfigType } from 'Types/general';
 import { CompleteOrderParamsType } from 'Types/order';
@@ -28,6 +29,7 @@ const App: FC<ConfigType> = ({
         buttonText: 'Start',
     },
 }) => {
+    const [loading, setLoading] = useState<boolean>(false);
     const [iframeSrc, setIframeSrc] = useState<string | null>(null);
     const [orderId, setOrderId] = useState<string | null>(null);
     const [agreementId, setAgreementId] = useState<string | null>(null);
@@ -43,18 +45,21 @@ const App: FC<ConfigType> = ({
         setOrderId(data.orderId);
         setAgreementId(data.agreementId);
         setIsFailed(false);
+        setLoading(true);
         try {
             await orderComplete({
                 orderId: data.orderId,
                 agreementId: data.agreementId,
             });
             setIsConfirmed(true);
+            setLoading(false);
         } catch (error) {
             console.log(error);
             if (typeof error === 'string') {
                 setFailedMsg(error);
             }
             setIsFailed(true);
+            setLoading(false);
         }
     };
 
@@ -103,6 +108,11 @@ const App: FC<ConfigType> = ({
     return (
         <div className="sdk-order-container">
             {companyName && <h1>{companyName}</h1>}
+            {loading && (
+                <div className="d-flex justify-center">
+                    <Loader size="lg" dark={true} />
+                </div>
+            )}
             {!iframeSrc && !orderId && !agreementId && (
                 <AddSubscriberForm
                     callback={handleForm}
