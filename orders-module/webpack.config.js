@@ -42,6 +42,7 @@ module.exports = (env) => {
                 type: 'module',
             },
             clean: true,
+            asyncChunks: false,
         },
         plugins: [
             new MiniCssExtractPlugin({

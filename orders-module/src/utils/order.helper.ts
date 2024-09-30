@@ -4,7 +4,8 @@ import { OrderFormInputsType, AgreementsType } from 'Types/order';
 export const prepareAgreementModel = (
     method: string,
     redirectUrl: string,
-    data: OrderFormInputsType
+    data: OrderFormInputsType,
+    generateSubscriberContact: boolean
 ): AgreementsType => {
     const model: AgreementsType = {
         PaymentMethod: method,
@@ -24,7 +25,7 @@ export const prepareAgreementModel = (
     return {
         ...model,
         VippsMobilePay: {
-            GenerateSubscriberContact: true,
+            GenerateSubscriberContact: generateSubscriberContact,
             CustomerPhoneNumber: data.phoneNumber,
             MerchantAgreementUrl:
                 'https://service.info-subscription.com/agreement',

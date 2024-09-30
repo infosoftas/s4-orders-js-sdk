@@ -16,6 +16,7 @@ type Props = {
     organizationId: string;
     redirectUrl: string;
     paymentMethods?: string[];
+    generateSubscriberContact?: boolean;
     buttonText?: string;
 };
 
@@ -27,6 +28,7 @@ const MainForm: FC<Props> = ({
     organizationId,
     redirectUrl,
     paymentMethods = [],
+    generateSubscriberContact = false,
     buttonText = 'Start',
 }) => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -70,7 +72,8 @@ const MainForm: FC<Props> = ({
                         name: name,
                         phoneNumber: phone,
                         paymentMethod: paymentMethod,
-                    }
+                    },
+                    generateSubscriberContact
                 );
 
                 const responseOrder = await orderStartV2({

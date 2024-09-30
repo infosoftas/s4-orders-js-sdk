@@ -2,8 +2,7 @@ import { FC, useEffect, useState } from 'react';
 
 import useQueryParams from 'Hooks/useQueryParams';
 import useMessageEvent from 'Hooks/useMessageEvent';
-import MainForm from 'Component/MainForm/MainForm';
-import AddSubscriberForm from 'Component/AddSubscriberForm/AddSubscriberForm';
+import OrderForm from 'Component/OrderForm/OrderForm';
 import Loader from 'Component/Loader/Loader';
 import MainIframe from 'Component/MainIframe/MainIframe';
 import { ConfigType } from 'Types/general';
@@ -18,11 +17,11 @@ const App: FC<ConfigType> = ({
     subscriberId,
     tenantId,
     organizationId,
-    paymentMethod,
-    generateSubscriberContact,
     redirectUrl,
     showIframe,
-    availablepaymentmethods = [],
+    orderFormFields,
+    availablePaymentMethods = [],
+    generateSubscriberContact = false,
     strings = {
         successText: 'Order successful completed!',
         failureText: 'Something went wrong!',
@@ -106,7 +105,7 @@ const App: FC<ConfigType> = ({
     }
 
     return (
-        <div className="sdk-order-container">
+        <div className="sdk-order-container" data-testid="sdk-app-id">
             {companyName && <h1>{companyName}</h1>}
             {loading && (
                 <div className="d-flex justify-center">
@@ -114,19 +113,23 @@ const App: FC<ConfigType> = ({
                 </div>
             )}
             {!iframeSrc && !orderId && !agreementId && (
-                <AddSubscriberForm
+                <OrderForm
                     callback={handleForm}
                     templatePackageId={templatePackageId}
                     subscriberId={subscriberId}
                     tenantId={tenantId}
                     organizationId={organizationId}
-                    paymentMethods={availablepaymentmethods}
+                    paymentMethods={availablePaymentMethods}
+                    generateSubscriberContact={
+                        generateSubscriberContact || false
+                    }
                     redirectUrl={
                         showIframe
                             ? window.location.toString()
                             : redirectUrl || window.location.toString()
                     }
                     buttonText={strings?.buttonText}
+                    orderFormFields={orderFormFields}
                 />
             )}
             {showIframe && <MainIframe iframeSrc={iframeSrc} />}

@@ -27,6 +27,7 @@ const Button: FC<Props> = ({
 
     return (
         <button
+            data-testid="sdk-button-id"
             type={type}
             disabled={loading || disable}
             className={`sdk-btn ${btnType ? `${btnType}-btn` : ''} ${

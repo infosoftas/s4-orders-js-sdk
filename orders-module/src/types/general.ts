@@ -1,3 +1,14 @@
+import { PaymentMethodEnum } from 'Enums/general';
+
+export type OrderFormFiledType = {
+    name: string;
+    required?: boolean;
+};
+
+export type OrderFormFieldsConfigType = {
+    [key in PaymentMethodEnum]: OrderFormFiledType[];
+};
+
 export type ConfigType = {
     domElementId: string;
     companyName: string;
@@ -6,10 +17,10 @@ export type ConfigType = {
     tenantId: string;
     organizationId: string;
     redirectUrl?: string;
-    paymentMethod?: string;
-    generateSubscriberContact?: string;
+    generateSubscriberContact?: boolean;
     showIframe?: boolean;
-    availablepaymentmethods?: string[];
+    availablePaymentMethods?: PaymentMethodEnum[];
+    orderFormFields?: OrderFormFieldsConfigType;
     strings?: {
         successText?: string;
         failureText?: string;

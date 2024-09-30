@@ -5,6 +5,7 @@ export type CompleteOrderParamsType = {
 
 export type OrderFormInputsType = {
     name?: string;
+    email?: string;
     phoneNumber?: string;
     paymentMethod?: string;
 };

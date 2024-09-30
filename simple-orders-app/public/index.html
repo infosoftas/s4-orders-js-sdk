@@ -42,7 +42,16 @@
             redirectUrl: 'https://localhost:3000/',
             paymentMethod: '',
             generateSubscriberContact: '',
-            availablepaymentmethods: ["Vipps", "MobilePay", "SwedbankPay"],
+            availablePaymentMethods: ["Vipps", "MobilePay", "SwedbankPay"],
+            orderFormFields: {
+                SwedbankPay: [{
+                    name: 'name',
+                    required: false,
+                }, {
+                    name: 'email',
+                    required: true,
+                }]
+            },
             strings: {
                 successText: 'Order successful completed!',
                 failureText: 'Something went wrong!',

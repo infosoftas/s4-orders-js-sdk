@@ -11,6 +11,7 @@ type Props = {
 const Loader: FC<Props> = ({ className = '', size = 'sm', dark = false }) => {
     return (
         <div
+            data-testid="sdk-loader-id"
             className={`sdk-loader ${className} size-${size} ${
                 dark ? 'dark-color' : ''
             }`}

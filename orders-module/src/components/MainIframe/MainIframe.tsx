@@ -26,7 +26,7 @@ const MainIframe: FC<Props> = ({ iframeSrc }) => {
     }, [frameRef, iframeSrc]);
 
     return (
-        <div className="sdk-iframe-wrapper">
+        <div className="sdk-iframe-wrapper" data-testid="sdk-iframe-id">
             {loading && <div>... Loading</div>}
             {iframeSrc && (
                 <iframe
