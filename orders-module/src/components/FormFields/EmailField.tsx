@@ -17,6 +17,9 @@ const EmailField: FC<Props> = ({ required = false, errors }) => {
         <div className="field-wrapper" data-testid="sdk-email-field-id">
             <label>Email</label>
             <input
+                autoComplete="email"
+                className="input-control"
+                type="email"
                 {...register('email', {
                     required: required ? 'This field is required!' : false,
                     pattern: {
@@ -24,8 +27,6 @@ const EmailField: FC<Props> = ({ required = false, errors }) => {
                         message: 'Invalid email address!',
                     },
                 })}
-                className="input-control"
-                type="tel"
             />
             {errors && errors.email && (
                 <div className="text-error caption">{errors.email.message}</div>

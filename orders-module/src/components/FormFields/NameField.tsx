@@ -17,6 +17,7 @@ const NameField: FC<Props> = ({ required = false, errors }) => {
         <div className="field-wrapper" data-testid="sdk-name-field-id">
             <label>Name</label>
             <input
+                autoComplete="name"
                 className="input-control"
                 {...register('name', {
                     required: required ? 'This field is required!' : false,

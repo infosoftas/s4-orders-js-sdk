@@ -8,7 +8,6 @@ import { WRONG_MSG, PAYMENT_METHOD_DEFAULT } from 'Constants/index';
 import Button from 'Component/Button/Button';
 import formFieldsMapper from 'Component/FormFields/FormFieldsMapper';
 import { DEFAULT_ORDER_FORM_FIELDS } from 'Component/FormFields/FormFields.helper';
-import Loader from 'Component/Loader/Loader';
 import { OrderFormInputsType } from 'Types/order';
 import { PaymentMethodOptionsType, OrderFormFiledType } from 'Types/general';
 import { prepareAgreementModel } from 'Utils/order.helper';
@@ -131,13 +130,7 @@ const OrderForm: FC<Props> = ({
                 data-testid="sdk-order-form-id"
             >
                 {orderFields?.length > 0 && (
-                    <Suspense
-                        fallback={
-                            <div className="d-flex justify-center">
-                                <Loader />
-                            </div>
-                        }
-                    >
+                    <Suspense fallback={null}>
                         {orderFields.map((field) => {
                             const Component = formFieldsMapper[field.name];
 

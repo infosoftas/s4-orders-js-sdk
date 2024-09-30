@@ -17,6 +17,9 @@ const PhoneFiled: FC<Props> = ({ required = false, errors }) => {
         <div className="field-wrapper" data-testid="sdk-phone-field-id">
             <label>Phone number</label>
             <input
+                autoComplete="tel"
+                className="input-control"
+                type="tel"
                 {...register('phoneNumber', {
                     required: required ? 'This field is required!' : false,
                     pattern: {
@@ -24,8 +27,6 @@ const PhoneFiled: FC<Props> = ({ required = false, errors }) => {
                         message: 'Invalid phone address!',
                     },
                 })}
-                className="input-control"
-                type="tel"
             />
             {errors && errors.phoneNumber && (
                 <div className="text-error caption">
