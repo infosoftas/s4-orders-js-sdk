@@ -1,17 +1,24 @@
 import { PaymentMethodEnum } from 'Enums/general';
 import { OrderFormInputsType, AgreementsType } from 'Types/order';
 
-export const prepareAgreementModel = (
-    method: string,
-    redirectUrl: string,
-    data: OrderFormInputsType,
-    generateSubscriberContact: boolean
-): AgreementsType => {
+type AgreementModelType = {
+    paymentMethod: PaymentMethodEnum;
+    redirectUrl: string;
+    data: OrderFormInputsType;
+    generateSubscriberContact: boolean;
+};
+
+export const prepareAgreementModel = ({
+    paymentMethod,
+    redirectUrl,
+    data,
+    generateSubscriberContact,
+}: AgreementModelType): AgreementsType => {
     const model: AgreementsType = {
-        PaymentMethod: method,
+        PaymentMethod: paymentMethod,
     };
 
-    if (method === PaymentMethodEnum.SwedbankPay) {
+    if (paymentMethod === PaymentMethodEnum.SwedbankPay) {
         model.SwedbankPay = {
             CancelUrl: `${redirectUrl}?action=cancel`,
             CompleteUrl: `${redirectUrl}?action=complete`,

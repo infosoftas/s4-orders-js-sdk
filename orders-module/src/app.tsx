@@ -19,9 +19,8 @@ const App: FC<ConfigType> = ({
     organizationId,
     redirectUrl,
     showIframe,
-    orderFormFields,
+    paymentMethodsOptions,
     availablePaymentMethods = [],
-    generateSubscriberContact = false,
     strings = {
         successText: 'Order successful completed!',
         failureText: 'Something went wrong!',
@@ -56,6 +55,8 @@ const App: FC<ConfigType> = ({
             console.log(error);
             if (typeof error === 'string') {
                 setFailedMsg(error);
+            } else if ((error as { message: string })?.message) {
+                setFailedMsg((error as { message: string }).message);
             }
             setIsFailed(true);
             setLoading(false);
@@ -120,16 +121,13 @@ const App: FC<ConfigType> = ({
                     tenantId={tenantId}
                     organizationId={organizationId}
                     paymentMethods={availablePaymentMethods}
-                    generateSubscriberContact={
-                        generateSubscriberContact || false
-                    }
+                    buttonText={strings?.buttonText}
                     redirectUrl={
                         showIframe
                             ? window.location.toString()
                             : redirectUrl || window.location.toString()
                     }
-                    buttonText={strings?.buttonText}
-                    orderFormFields={orderFormFields}
+                    paymentMethodsOptions={paymentMethodsOptions}
                 />
             )}
             {showIframe && <MainIframe iframeSrc={iframeSrc} />}

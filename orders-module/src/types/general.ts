@@ -5,8 +5,11 @@ export type OrderFormFiledType = {
     required?: boolean;
 };
 
-export type OrderFormFieldsConfigType = {
-    [key in PaymentMethodEnum]: OrderFormFiledType[];
+export type PaymentMethodOptionsType = {
+    [key in PaymentMethodEnum]: {
+        generateSubscriberContact?: boolean;
+        orderFormFields: OrderFormFiledType[];
+    };
 };
 
 export type ConfigType = {
@@ -17,10 +20,9 @@ export type ConfigType = {
     tenantId: string;
     organizationId: string;
     redirectUrl?: string;
-    generateSubscriberContact?: boolean;
     showIframe?: boolean;
     availablePaymentMethods?: PaymentMethodEnum[];
-    orderFormFields?: OrderFormFieldsConfigType;
+    paymentMethodsOptions?: PaymentMethodOptionsType;
     strings?: {
         successText?: string;
         failureText?: string;

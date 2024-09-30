@@ -10,7 +10,7 @@ import formFieldsMapper from 'Component/FormFields/FormFieldsMapper';
 import { DEFAULT_ORDER_FORM_FIELDS } from 'Component/FormFields/FormFields.helper';
 import Loader from 'Component/Loader/Loader';
 import { OrderFormInputsType } from 'Types/order';
-import { OrderFormFieldsConfigType, OrderFormFiledType } from 'Types/general';
+import { PaymentMethodOptionsType, OrderFormFiledType } from 'Types/general';
 import { prepareAgreementModel } from 'Utils/order.helper';
 
 import './orderForm.scss';
@@ -22,9 +22,8 @@ type Props = {
     tenantId: string;
     organizationId: string;
     redirectUrl: string;
-    orderFormFields?: OrderFormFieldsConfigType;
-    generateSubscriberContact?: boolean;
     paymentMethods?: PaymentMethodEnum[];
+    paymentMethodsOptions?: PaymentMethodOptionsType;
     buttonText?: string;
 };
 
@@ -42,15 +41,15 @@ const OrderForm: FC<Props> = ({
     tenantId,
     organizationId,
     redirectUrl,
-    orderFormFields,
-    generateSubscriberContact = false,
+    paymentMethodsOptions,
     paymentMethods = [],
     buttonText = 'Start',
 }) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [apiErrorMsg, setApiErrorMsg] = useState<string>('');
     const [orderFields, setOrderFields] = useState<OrderFormFiledType[]>(
-        orderFormFields?.[PAYMENT_METHOD_DEFAULT] ?? DEFAULT_ORDER_FORM_FIELDS
+        paymentMethodsOptions?.[PAYMENT_METHOD_DEFAULT]?.orderFormFields ??
+            DEFAULT_ORDER_FORM_FIELDS
     );
 
     const methods = useForm<OrderFormInputsType>({
@@ -84,12 +83,15 @@ const OrderForm: FC<Props> = ({
                 const paymentMethod =
                     data.paymentMethod || PAYMENT_METHOD_DEFAULT;
 
-                const agreements = prepareAgreementModel(
+                const agreements = prepareAgreementModel({
                     paymentMethod,
                     redirectUrl,
                     data,
-                    generateSubscriberContact
-                );
+                    generateSubscriberContact:
+                        paymentMethodsOptions?.[
+                            data.paymentMethod as PaymentMethodEnum
+                        ]?.generateSubscriberContact || false,
+                });
                 const responseOrder = await orderStartV2({
                     templatePackageId,
                     tenantId,
@@ -114,10 +116,10 @@ const OrderForm: FC<Props> = ({
     };
 
     const handlePaymentChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setValue('paymentMethod', e.target.value);
+        setValue('paymentMethod', e.target.value as PaymentMethodEnum);
         const orderFieldsLocal =
-            orderFormFields?.[e.target.value as PaymentMethodEnum] ??
-            DEFAULT_ORDER_FORM_FIELDS;
+            paymentMethodsOptions?.[e.target.value as PaymentMethodEnum]
+                ?.orderFormFields ?? DEFAULT_ORDER_FORM_FIELDS;
         setOrderFields(orderFieldsLocal);
     };
 

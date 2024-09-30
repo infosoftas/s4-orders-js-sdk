@@ -40,17 +40,20 @@
             organizationId: 'abf90cef-661f-4a85-940b-001eafb587e3',
             showIframe: true,
             redirectUrl: 'https://localhost:3000/',
-            paymentMethod: '',
-            generateSubscriberContact: '',
             availablePaymentMethods: ["Vipps", "MobilePay", "SwedbankPay"],
-            orderFormFields: {
-                SwedbankPay: [{
-                    name: 'name',
-                    required: false,
-                }, {
-                    name: 'email',
-                    required: true,
-                }]
+            paymentMethodsOptions: {
+                Vipps: {
+                    GenerateSubscriberContact: true,
+                },
+                SwedbankPay: {
+                    orderFormFields: [{
+                        name: 'name',
+                        required: false,
+                    }, {
+                        name: 'email',
+                        required: true,
+                    }]
+                }
             },
             strings: {
                 successText: 'Order successful completed!',

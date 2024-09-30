@@ -1,3 +1,5 @@
+import { PaymentMethodEnum } from 'Enums/general';
+
 export type CompleteOrderParamsType = {
     orderId: string;
     agreementId: string;
@@ -7,7 +9,7 @@ export type OrderFormInputsType = {
     name?: string;
     email?: string;
     phoneNumber?: string;
-    paymentMethod?: string;
+    paymentMethod?: PaymentMethodEnum;
 };
 
 export type VippsMobilePay = {

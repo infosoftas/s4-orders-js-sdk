@@ -1,10 +1,12 @@
 import React, { ChangeEvent, FC, useState } from 'react';
 
+import { PaymentMethodEnum } from 'Enums/general';
 import { createSubscriber } from 'API/SubscribeApi';
 import { orderStartV2 } from 'API/OrdersApi';
 import Button from 'Component/Button/Button';
 import { PAYMENT_METHOD_DEFAULT, WRONG_MSG } from 'Constants/index';
 import { prepareAgreementModel } from 'Utils/order.helper';
+import { PaymentMethodOptionsType } from 'Types/general';
 
 import '../OrderForm/orderForm.scss';
 
@@ -15,8 +17,8 @@ type Props = {
     tenantId: string;
     organizationId: string;
     redirectUrl: string;
-    paymentMethods?: string[];
-    generateSubscriberContact?: boolean;
+    paymentMethods?: PaymentMethodEnum[];
+    paymentMethodsOptions?: PaymentMethodOptionsType;
     buttonText?: string;
 };
 
@@ -27,8 +29,8 @@ const MainForm: FC<Props> = ({
     tenantId,
     organizationId,
     redirectUrl,
+    paymentMethodsOptions,
     paymentMethods = [],
-    generateSubscriberContact = false,
     buttonText = 'Start',
 }) => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -36,7 +38,7 @@ const MainForm: FC<Props> = ({
     const [errorPhoneMsg, setErrorPhoneMsg] = useState<string>('');
     const [name, setName] = useState<string>('');
     const [errorNameMsg, setErrorNameMsg] = useState<string>('');
-    const [paymentMethod, setPaymentMethod] = useState<string>(
+    const [paymentMethod, setPaymentMethod] = useState<PaymentMethodEnum>(
         PAYMENT_METHOD_DEFAULT
     );
     const [errorPaymentMethodMsg, setErrorPaymentMethodMsg] =
@@ -65,16 +67,19 @@ const MainForm: FC<Props> = ({
                 id = response.id;
             }
             if (id) {
-                const agreements = prepareAgreementModel(
+                const agreements = prepareAgreementModel({
                     paymentMethod,
                     redirectUrl,
-                    {
+                    data: {
                         name: name,
                         phoneNumber: phone,
                         paymentMethod: paymentMethod,
                     },
-                    generateSubscriberContact
-                );
+                    generateSubscriberContact:
+                        paymentMethodsOptions?.[
+                            paymentMethod as PaymentMethodEnum
+                        ]?.generateSubscriberContact || false,
+                });
 
                 const responseOrder = await orderStartV2({
                     templatePackageId,
@@ -156,7 +161,9 @@ const MainForm: FC<Props> = ({
                                     value={item}
                                     checked={item === paymentMethod}
                                     onChange={(e) =>
-                                        setPaymentMethod(e.target.value)
+                                        setPaymentMethod(
+                                            e.target.value as PaymentMethodEnum
+                                        )
                                     }
                                 />
                                 <span>{item}</span>
