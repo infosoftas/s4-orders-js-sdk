@@ -2,7 +2,7 @@ import { createRoot } from 'react-dom/client';
 import { createElement } from 'react';
 
 import { ConfigType } from 'Types/general';
-import App from './App';
+import App from './app';
 
 export const orderComponent = {
     init: function (config: ConfigType) {

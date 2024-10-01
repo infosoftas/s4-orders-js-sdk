@@ -1,7 +1,6 @@
 {
-    "name": "s4-orders-js-sdk",
+    "name": "@s4internal/s4-orders-js-sdk",
     "version": "1.0.0",
-    "private": true,
     "scripts": {
         "build": "rimraf dist && webpack --env mode=production"
     },
@@ -34,5 +33,8 @@
         "ts-loader": "^9.5.1",
         "typescript": "^5.6.2",
         "webpack-cli": "^5.1.4"
+    },
+    "publishConfig": {
+        "access": "restricted"
     }
 }
