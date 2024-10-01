@@ -1,4 +1,5 @@
 import { PaymentMethodEnum } from 'Enums/general';
+import { OrderFormInputsType } from './order';
 
 export type OrderFormFiledType = {
     name: string;
@@ -23,9 +24,10 @@ export type ConfigType = {
     showIframe?: boolean;
     availablePaymentMethods?: PaymentMethodEnum[];
     paymentMethodsOptions?: PaymentMethodOptionsType;
-    strings?: {
+    settings?: {
         successText?: string;
         failureText?: string;
         buttonText?: string;
+        orderDefaultValues?: OrderFormInputsType;
     };
 };

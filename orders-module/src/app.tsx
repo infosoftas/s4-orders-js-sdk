@@ -21,7 +21,7 @@ const App: FC<ConfigType> = ({
     showIframe,
     paymentMethodsOptions,
     availablePaymentMethods = [],
-    strings = {
+    settings = {
         successText: 'Order successful completed!',
         failureText: 'Something went wrong!',
         buttonText: 'Start',
@@ -121,7 +121,8 @@ const App: FC<ConfigType> = ({
                     tenantId={tenantId}
                     organizationId={organizationId}
                     paymentMethods={availablePaymentMethods}
-                    buttonText={strings?.buttonText}
+                    buttonText={settings?.buttonText}
+                    defaultValues={settings?.orderDefaultValues}
                     redirectUrl={
                         showIframe
                             ? window.location.toString()
@@ -132,11 +133,11 @@ const App: FC<ConfigType> = ({
             )}
             {showIframe && <MainIframe iframeSrc={iframeSrc} />}
             {isConfirmed && (
-                <p className="text-success">{strings?.successText}</p>
+                <p className="text-success">{settings?.successText}</p>
             )}
             {isFailed && (
                 <p className="text-error">
-                    {failedMsg || strings?.failureText}
+                    {failedMsg || settings?.failureText}
                 </p>
             )}
         </div>

@@ -21,12 +21,13 @@ type Props = {
     tenantId: string;
     organizationId: string;
     redirectUrl: string;
-    paymentMethods?: PaymentMethodEnum[];
     paymentMethodsOptions?: PaymentMethodOptionsType;
+    defaultValues?: OrderFormInputsType;
+    paymentMethods?: PaymentMethodEnum[];
     buttonText?: string;
 };
 
-const defaultValues = {
+const initialData = {
     name: '',
     email: '',
     phoneNumber: '',
@@ -41,6 +42,7 @@ const OrderForm: FC<Props> = ({
     organizationId,
     redirectUrl,
     paymentMethodsOptions,
+    defaultValues,
     paymentMethods = [],
     buttonText = 'Start',
 }) => {
@@ -52,7 +54,10 @@ const OrderForm: FC<Props> = ({
     );
 
     const methods = useForm<OrderFormInputsType>({
-        defaultValues,
+        defaultValues: {
+            ...initialData,
+            ...(defaultValues ?? {}),
+        },
     });
 
     const {
