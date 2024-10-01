@@ -24,15 +24,16 @@ steps:
   displayName: "Configure pnpm corepack"
 
 - script: |
-    pnpm install webpack webpack-cli --save-dev
-    pnpm exec webpack
+    pnpm install webpack webpack-cli @types/node --save-dev
+    pnpm exec webpack --mode development
   displayName: 'PNPM Install and Run webpack'
+  workingDirectory: $(Build.SourcesDirectory)/orders-module
 
 - task: CopyFiles@2
   inputs:
     sourceFolder: '$(Build.SourcesDirectory)'
     contents: |
-       src/*
+       orders-module/dist/*
        public/*
     targetFolder: '$(Build.ArtifactStagingDirectory)'
   displayName: 'Copy project files'
@@ -43,3 +44,9 @@ steps:
     targetPath: '$(Build.ArtifactStagingDirectory)'
     publishLocation: 'pipeline'
   displayName: 'Publish npm artifact'
+
+- task: Npm@1
+  inputs:
+   command: publish
+   publishRegistry: useFeed
+   publishFeed: S4/Internal
