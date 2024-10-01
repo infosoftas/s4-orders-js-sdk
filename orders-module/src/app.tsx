@@ -1,6 +1,6 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 
-import useQueryParams from 'Hooks/useQueryParams';
+import { MessageEventTypeEnum } from 'Enums/general';
 import useMessageEvent from 'Hooks/useMessageEvent';
 import OrderForm from 'Component/OrderForm/OrderForm';
 import Loader from 'Component/Loader/Loader';
@@ -34,7 +34,6 @@ const App: FC<ConfigType> = ({
     const [isConfirmed, setIsConfirmed] = useState<boolean>(false);
     const [isFailed, setIsFailed] = useState<boolean>(false);
     const [failedMsg, setFailedMsg] = useState<string>('');
-    const queryParams = useQueryParams();
 
     const messageCallback = async (
         data: CompleteOrderParamsType
@@ -63,7 +62,28 @@ const App: FC<ConfigType> = ({
         }
     };
 
-    useMessageEvent(messageCallback);
+    const handleMessageEvent = (type: MessageEventTypeEnum) => {
+        if (type === MessageEventTypeEnum.CANCEL) {
+            setIsFailed(false);
+            setLoading(false);
+            setIframeSrc(null);
+            setOrderId(null);
+            setAgreementId(null);
+        }
+
+        if (type === MessageEventTypeEnum.CALLBACK) {
+            setIsFailed(false);
+            setLoading(false);
+            setIframeSrc(null);
+            setOrderId(null);
+            setAgreementId(null);
+            if (typeof window.sdkOrderCallback === 'function') {
+                window.sdkOrderCallback();
+            }
+        }
+    };
+
+    useMessageEvent(messageCallback, handleMessageEvent, !!showIframe);
 
     const handleForm = (url: string | null) => {
         setIsConfirmed(false);
@@ -83,23 +103,6 @@ const App: FC<ConfigType> = ({
 
         setIframeSrc(null);
     };
-
-    useEffect(() => {
-        if (
-            queryParams.get('orderId') &&
-            queryParams.get('agreementId') &&
-            !showIframe
-        ) {
-            messageCallback({
-                orderId: queryParams.get('orderId') || '',
-                agreementId: queryParams.get('agreementId') || '',
-            });
-        }
-    }, [
-        queryParams.get('orderId'),
-        queryParams.get('agreementId'),
-        showIframe,
-    ]);
 
     if (window !== top) {
         return null;

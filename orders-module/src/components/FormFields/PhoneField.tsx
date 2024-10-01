@@ -15,7 +15,9 @@ const PhoneFiled: FC<Props> = ({ required = false, errors }) => {
     const { register } = useFormContext();
     return (
         <div className="field-wrapper" data-testid="sdk-phone-field-id">
-            <label>Phone number</label>
+            <label>
+                Phone number {required && <span className="text-error">*</span>}
+            </label>
             <input
                 autoComplete="tel"
                 className="input-control"

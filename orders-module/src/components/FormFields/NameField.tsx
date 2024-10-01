@@ -15,7 +15,9 @@ const NameField: FC<Props> = ({ required = false, errors }) => {
     const { register } = useFormContext();
     return (
         <div className="field-wrapper" data-testid="sdk-name-field-id">
-            <label>Name</label>
+            <label>
+                Name {required && <span className="text-error">*</span>}
+            </label>
             <input
                 autoComplete="name"
                 className="input-control"

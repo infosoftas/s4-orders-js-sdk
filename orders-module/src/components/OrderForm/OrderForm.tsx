@@ -154,7 +154,7 @@ const OrderForm: FC<Props> = ({
                     <div className="field-wrapper">
                         <div className="field-label">Payment Method</div>
                         {paymentMethods.map((item) => (
-                            <div className="radio-button-control">
+                            <div className="radio-button-control" key={item}>
                                 <label className="radio-badge">
                                     <input
                                         {...register('paymentMethod', {

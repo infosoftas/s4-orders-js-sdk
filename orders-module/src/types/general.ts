@@ -1,6 +1,12 @@
 import { PaymentMethodEnum } from 'Enums/general';
 import { OrderFormInputsType } from './order';
 
+declare global {
+    interface Window {
+        sdkOrderCallback: () => void;
+    }
+}
+
 export type OrderFormFiledType = {
     name: string;
     required?: boolean;

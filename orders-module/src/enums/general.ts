@@ -3,3 +3,9 @@ export enum PaymentMethodEnum {
     MobilePay = 'MobilePay',
     SwedbankPay = 'SwedbankPay',
 }
+
+export enum MessageEventTypeEnum {
+    CANCEL = 'cancel',
+    COMPLETE = 'complete',
+    CALLBACK = 'callback',
+}

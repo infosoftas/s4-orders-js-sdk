@@ -1,12 +1,15 @@
 import { useEffect } from 'react';
 
+import { MessageEventTypeEnum } from 'Enums/general';
 import { CompleteOrderParamsType } from 'Types/order';
 import useQueryParams from './useQueryParams';
 
-const COMPLETE_EVENT_TYPE = 'completeOrder';
+const COMPLETE_VIPPS_EVENT_TYPE = 'completeOrder';
 
 const useMessageEvent = (
-    messageCallback: (data: CompleteOrderParamsType) => Promise<void>
+    messageCallback: (data: CompleteOrderParamsType) => Promise<void>,
+    handleMessageEvent: (type: MessageEventTypeEnum) => void,
+    showIframe: boolean
 ) => {
     const queryParams = useQueryParams();
 
@@ -14,17 +17,33 @@ const useMessageEvent = (
         window.addEventListener(
             'message',
             async (event) => {
-                if (event.data.type === COMPLETE_EVENT_TYPE) {
+                // Vipps handler
+                if (event.data.type === COMPLETE_VIPPS_EVENT_TYPE) {
                     await messageCallback({
                         orderId: event.data.orderId || '',
                         agreementId: event.data.agreementId || '',
                     });
+                }
+
+                // SwedbankPay handler
+                if (event.data.type === MessageEventTypeEnum.COMPLETE) {
+                    await messageCallback({
+                        orderId: event.data.orderId || '',
+                        agreementId: event.data.agreementId || '',
+                    });
+                }
+                if (event.data.type === MessageEventTypeEnum.CANCEL) {
+                    handleMessageEvent(event.data.type);
+                }
+                if (event.data.type === MessageEventTypeEnum.CANCEL) {
+                    handleMessageEvent(event.data.type);
                 }
             },
             false
         );
     }, []);
 
+    // Vipps
     useEffect(() => {
         if (
             queryParams.get('orderId') &&
@@ -34,7 +53,7 @@ const useMessageEvent = (
         ) {
             top?.postMessage(
                 {
-                    type: COMPLETE_EVENT_TYPE,
+                    type: COMPLETE_VIPPS_EVENT_TYPE,
                     orderId: queryParams.get('orderId'),
                     agreementId: queryParams.get('agreementId'),
                 },
@@ -42,6 +61,78 @@ const useMessageEvent = (
             );
         }
     }, [queryParams.get('orderId'), queryParams.get('agreementId')]);
+
+    //Vipps
+    useEffect(() => {
+        if (
+            queryParams.get('orderId') &&
+            queryParams.get('agreementId') &&
+            !showIframe
+        ) {
+            messageCallback({
+                orderId: queryParams.get('orderId') || '',
+                agreementId: queryParams.get('agreementId') || '',
+            });
+        }
+    }, [
+        queryParams.get('orderId'),
+        queryParams.get('agreementId'),
+        showIframe,
+    ]);
+
+    // SwedbankPay
+    useEffect(() => {
+        if (
+            queryParams.get('action') &&
+            queryParams.get('S4OrderId') &&
+            queryParams.get('TransactionId') &&
+            top &&
+            window !== top
+        ) {
+            top?.postMessage(
+                {
+                    type: queryParams.get('action'),
+                    orderId: queryParams.get('S4OrderId'),
+                    agreementId: queryParams.get('TransactionId'),
+                },
+                top?.location?.origin || '*'
+            );
+        }
+    }, [
+        queryParams.get('OrderId'),
+        queryParams.get('TransactionId'),
+        queryParams.get('action'),
+    ]);
+
+    // SwedbankPay
+    useEffect(() => {
+        if (
+            queryParams.get('S4OrderId') &&
+            queryParams.get('TransactionId') &&
+            queryParams.get('action') === MessageEventTypeEnum.COMPLETE &&
+            !showIframe
+        ) {
+            messageCallback({
+                orderId: queryParams.get('S4OrderId') || '',
+                agreementId: queryParams.get('TransactionId') || '',
+            });
+        }
+
+        if (
+            (queryParams.get('action') === MessageEventTypeEnum.CANCEL ||
+                queryParams.get('action') === MessageEventTypeEnum.COMPLETE) &&
+            !showIframe
+        ) {
+            handleMessageEvent(
+                queryParams.get('action') as MessageEventTypeEnum
+            );
+        }
+    }, [
+        queryParams.get('action'),
+        queryParams.get('S4OrderId'),
+        queryParams.get('TransactionId'),
+        showIframe,
+    ]);
 };
 
 export default useMessageEvent;

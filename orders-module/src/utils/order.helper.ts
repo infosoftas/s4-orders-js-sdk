@@ -1,4 +1,4 @@
-import { PaymentMethodEnum } from 'Enums/general';
+import { MessageEventTypeEnum, PaymentMethodEnum } from 'Enums/general';
 import { OrderFormInputsType, AgreementsType } from 'Types/order';
 
 type AgreementModelType = {
@@ -20,10 +20,10 @@ export const prepareAgreementModel = ({
 
     if (paymentMethod === PaymentMethodEnum.SwedbankPay) {
         model.SwedbankPay = {
-            CancelUrl: `${redirectUrl}?action=cancel`,
-            CompleteUrl: `${redirectUrl}?action=complete`,
-            CallbackUrl: `${redirectUrl}?action=callback`,
-            Culture: 'en-GB',
+            CancelUrl: `${redirectUrl}?action=${MessageEventTypeEnum.CANCEL}`,
+            CompleteUrl: `${redirectUrl}?action=${MessageEventTypeEnum.COMPLETE}`,
+            CallbackUrl: `${redirectUrl}?action=${MessageEventTypeEnum.CALLBACK}`,
+            Culture: 'en-US',
         };
 
         return model;
