@@ -25,26 +25,11 @@ steps:
   displayName: 'PNPM Install and Run webpack'
   workingDirectory: $(Build.SourcesDirectory)/orders-module
 
-- task: CopyFiles@2
-  inputs:
-    sourceFolder: '$(Build.SourcesDirectory)'
-    contents: |
-       orders-module/dist/*
-       public/*
-    targetFolder: '$(Build.ArtifactStagingDirectory)'
-  displayName: 'Copy project files'
-
-- task: PublishPipelineArtifact@1
-  inputs:
-    artifactName: Order-SDK
-    targetPath: '$(Build.ArtifactStagingDirectory)'
-    publishLocation: 'pipeline'
-  displayName: 'Publish to artifacts'
-
 - task: Npm@1
   displayName: 'Publish to registry'
   inputs:
-   command: publish --access=restricted
+   command: custom
+   customCommand: publish --access=restricted
    publishRegistry: useFeed
    publishFeed: Internal
    workingDir: $(Build.SourcesDirectory)/orders-module
