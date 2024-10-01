@@ -1,8 +1,3 @@
-# Node.js with webpack
-# Build a Node.js project using the webpack CLI.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
-
 trigger:
 - main
 
@@ -24,22 +19,18 @@ steps:
   displayName: "Configure pnpm corepack"
 
 - script: |
-    pnpm install webpack webpack-cli --save-dev
-    pnpm exec webpack
+    pnpm install webpack webpack-cli @types/node --save-dev
+    pnpm exec webpack --mode development
+    pnpm pack --pack-destination dist
   displayName: 'PNPM Install and Run webpack'
+  workingDirectory: $(Build.SourcesDirectory)/orders-module
 
-- task: CopyFiles@2
+- task: Npm@1
+  displayName: 'Publish to registry'
   inputs:
-    sourceFolder: '$(Build.SourcesDirectory)'
-    contents: |
-       src/*
-       public/*
-    targetFolder: '$(Build.ArtifactStagingDirectory)'
-  displayName: 'Copy project files'
-
-- task: PublishPipelineArtifact@1
-  inputs:
-    artifactName: Order-SDK
-    targetPath: '$(Build.ArtifactStagingDirectory)'
-    publishLocation: 'pipeline'
-  displayName: 'Publish npm artifact'
+   command: custom
+   customCommand: publish --access=restricted
+   publishRegistry: useFeed
+   publishFeed: Internal
+   workingDir: $(Build.SourcesDirectory)/orders-module
+   
