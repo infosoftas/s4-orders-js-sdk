@@ -44,7 +44,8 @@ steps:
 - task: Npm@1
   displayName: 'Publish to registry'
   inputs:
-   command: publish
+   command: publish --access=restricted
    publishRegistry: useFeed
-   publishFeed: S4/Internal
+   publishFeed: Internal
    workingDir: $(Build.SourcesDirectory)/orders-module
+   
