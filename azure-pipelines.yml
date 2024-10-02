@@ -1,4 +1,5 @@
 trigger:
+
 - main
 
 pool: default
@@ -11,6 +12,19 @@ steps:
   inputs:
     versionSpec: '20.x'
   displayName: 'Install Node.js'
+
+- task: VersionJSONFile@3
+  displayName: "Update package version"
+  inputs:
+    Path: '$(Build.SourcesDirectory)/orders-module'
+    recursion: True
+    VersionNumber: '1.0.$(Build.BuildNumber)'
+    useBuildNumberDirectly: False
+    VersionRegex: '\d+\.\d+\.\d+\.\d+'
+    versionForJSONFileFormat: '{1}.{2}.{3}'
+    FilenamePattern: 'package.json'
+    OutputVersion: 'OutputedVersion'
+
 
 - script: |
     corepack enable
