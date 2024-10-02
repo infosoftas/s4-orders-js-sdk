@@ -53,7 +53,12 @@ const App: FC<ConfigType> = ({
         } catch (error) {
             console.log(error);
             if (typeof error === 'string') {
-                setFailedMsg(error);
+                try {
+                    const parsedError = JSON.parse(error);
+                    setFailedMsg((parsedError as { message: string }).message);
+                } catch (e) {
+                    setFailedMsg(error);
+                }
             } else if ((error as { message: string })?.message) {
                 setFailedMsg((error as { message: string }).message);
             }
