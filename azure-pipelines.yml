@@ -23,7 +23,7 @@ steps:
     useBuildNumberDirectly: False
     #VersionRegex: '\d+\.\d+\.\d+\.\d+^'
     VersionRegex: '[^._]\d+\.\d+$'
-    versionForJSONFileFormat: '{1}.{2}.{3}.{4}'
+    versionForJSONFileFormat: '0.0.{1}'
     FilenamePattern: 'package.json'
     OutputVersion: 'OutputedVersion'
 
