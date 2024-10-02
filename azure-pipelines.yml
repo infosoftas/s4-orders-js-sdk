@@ -19,11 +19,10 @@ steps:
   inputs:
     Path: '$(Build.SourcesDirectory)/orders-module'
     recursion: True
-    VersionNumber: '$(Build.BuildNumber)'
+    VersionNumber: '0.0.$(Date:yyyyMMdd).$(Rev:r)'
     useBuildNumberDirectly: False
-    #VersionRegex: '\d+\.\d+\.\d+\.\d+^'
-    VersionRegex: '[^._]\d+\.\d+$'
-    versionForJSONFileFormat: '0.0.{1}'
+    VersionRegex: '\d+\.\d+\.\d+\.\d+'
+    versionForJSONFileFormat: '{1}.{2}.{3}'
     FilenamePattern: 'package.json'
     OutputVersion: 'OutputedVersion'
 
