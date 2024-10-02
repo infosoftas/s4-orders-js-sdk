@@ -1,4 +1,4 @@
-name: $(Date:yyyyMMdd).$(Rev:r)
+name: $(Date:yyyyMMdd).$(Rev:rrr)
 trigger:
 
 - main
@@ -21,7 +21,7 @@ steps:
     recursion: True
     VersionNumber: '0.$(Build.BuildNumber)'
     useBuildNumberDirectly: False
-    VersionRegex: '\d+\.\d+\.\d+\.\d+'
+    VersionRegex: '\d+\.\d+\.\d+'
     versionForJSONFileFormat: '{1}.{2}.{3}'
     FilenamePattern: 'package.json'
     OutputVersion: 'OutputedVersion'
