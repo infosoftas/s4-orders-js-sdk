@@ -1,3 +1,4 @@
+name: $(Build.DefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:r)
 trigger:
 
 - main
@@ -21,7 +22,7 @@ steps:
     VersionNumber: '1.0.$(Build.BuildNumber)'
     useBuildNumberDirectly: False
     VersionRegex: '\d+\.\d+\.\d+\.\d+'
-    versionForJSONFileFormat: '{1}.{2}.{3}'
+    versionForJSONFileFormat: '{1}.{2}.{3}.{4}'
     FilenamePattern: 'package.json'
     OutputVersion: 'OutputedVersion'
 
