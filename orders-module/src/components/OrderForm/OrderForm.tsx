@@ -5,6 +5,7 @@ import { createSubscriber } from 'API/SubscribeApi';
 import { orderStart } from 'API/OrdersApi';
 import { PaymentMethodEnum } from 'Enums/general';
 import { WRONG_MSG, PAYMENT_METHOD_DEFAULT } from 'Constants/index';
+import Alert from 'Component/Alert/Alert';
 import Button from 'Component/Button/Button';
 import formFieldsMapper from 'Component/FormFields/FormFieldsMapper';
 import { DEFAULT_ORDER_FORM_FIELDS } from 'Component/FormFields/FormFields.helper';
@@ -188,9 +189,7 @@ const OrderForm: FC<Props> = ({
                     loading={loading}
                     buttonText={buttonText}
                 />
-                {apiErrorMsg && (
-                    <div className="text-error caption">{apiErrorMsg}</div>
-                )}
+                <Alert className="mt-2" msg={apiErrorMsg} />
             </form>
         </FormProvider>
     );

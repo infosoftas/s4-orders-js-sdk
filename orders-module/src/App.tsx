@@ -5,6 +5,7 @@ import useMessageEvent from 'Hooks/useMessageEvent';
 import OrderForm from 'Component/OrderForm/OrderForm';
 import Loader from 'Component/Loader/Loader';
 import MainIframe from 'Component/MainIframe/MainIframe';
+import Alert from 'Component/Alert/Alert';
 import { ConfigType } from 'Types/general';
 import { CompleteOrderParamsType } from 'Types/order';
 import { orderComplete } from 'API/OrdersApi';
@@ -128,13 +129,14 @@ const App: FC<ConfigType> = ({
                 )}
                 {showIframe && <MainIframe iframeSrc={iframeSrc} />}
                 {isConfirmed && (
-                    <p className="text-success text-center">
-                        {settings?.successText}
-                    </p>
+                    <Alert
+                        className="mt-2"
+                        type="success"
+                        msg={settings?.successText}
+                    />
                 )}
-                {isFailed && (
-                    <p className="text-error text-center">{failedMsg}</p>
-                )}
+
+                {isFailed && <Alert className="mt-2" msg={failedMsg} />}
             </div>
         </ErrorBoundary>
     );

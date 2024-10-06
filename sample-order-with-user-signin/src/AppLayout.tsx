@@ -20,7 +20,7 @@ const AppLayout: FC = () => {
                 <h5 className="text-center">Login in.</h5>
                 <div className="d-flex flex-column align-center">
                     <SignOutButton className="mb-2" />
-                    <div id="order" className="w-100" />
+                    <div id="order" className="w-100 order-wrapper" />
                 </div>
             </AuthenticatedTemplate>
             <UnauthenticatedTemplate>
