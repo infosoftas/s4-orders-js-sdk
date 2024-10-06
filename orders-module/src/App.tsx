@@ -8,6 +8,9 @@ import MainIframe from 'Component/MainIframe/MainIframe';
 import { ConfigType } from 'Types/general';
 import { CompleteOrderParamsType } from 'Types/order';
 import { orderComplete } from 'API/OrdersApi';
+import { prepareErrorMessage } from 'Utils/helper';
+
+import ErrorBoundary from './ErrorBoundary';
 
 import './App.scss';
 
@@ -15,7 +18,6 @@ const App: FC<ConfigType> = ({
     companyName,
     templatePackageId,
     subscriberId,
-    tenantId,
     organizationId,
     redirectUrl,
     showIframe,
@@ -30,10 +32,9 @@ const App: FC<ConfigType> = ({
     },
 }) => {
     const [loading, setLoading] = useState<boolean>(false);
+    const [showOrderForm, setShowOrderForm] = useState<boolean>(true);
     const [iframeSrc, setIframeSrc] = useState<string | null>(null);
     const [orderId, setOrderId] = useState<string | null>(null);
-    const [newOrderId, setNewOrderId] = useState<string | null>(null);
-    const [agreementId, setAgreementId] = useState<string | null>(null);
     const [isConfirmed, setIsConfirmed] = useState<boolean>(false);
     const [isFailed, setIsFailed] = useState<boolean>(false);
     const [failedMsg, setFailedMsg] = useState<string>('');
@@ -41,39 +42,33 @@ const App: FC<ConfigType> = ({
     const messageCallback = async (
         data: CompleteOrderParamsType
     ): Promise<void> => {
-        setIframeSrc(null);
-        setOrderId(data.orderId);
-        setAgreementId(data.agreementId);
-        setIsFailed(false);
         setLoading(true);
+        setIframeSrc(null);
+        setShowOrderForm(false);
+        setIsFailed(false);
         try {
-            await orderComplete(newOrderId || data.orderId || '');
+            await orderComplete(orderId || data.orderId || '');
             setIsConfirmed(true);
             setLoading(false);
         } catch (error) {
             console.log(error);
-            if (typeof error === 'string') {
-                try {
-                    const parsedError = JSON.parse(error);
-                    setFailedMsg((parsedError as { message: string }).message);
-                } catch (e) {
-                    setFailedMsg(error);
-                }
-            } else if ((error as { message: string })?.message) {
-                setFailedMsg((error as { message: string }).message);
-            }
+            setFailedMsg(
+                prepareErrorMessage(error as Error, settings?.failureText)
+            );
             setIsFailed(true);
             setLoading(false);
+            setShowOrderForm(true);
         }
     };
 
     const handleMessageEvent = (type: MessageEventTypeEnum) => {
         if (type === MessageEventTypeEnum.CANCEL) {
-            setIsFailed(false);
             setLoading(false);
-            setIframeSrc(null);
             setOrderId(null);
-            setAgreementId(null);
+            setIframeSrc(null);
+            setIsConfirmed(false);
+            setIsFailed(false);
+            setShowOrderForm(true);
         }
     };
 
@@ -82,7 +77,7 @@ const App: FC<ConfigType> = ({
     const handleForm = (url: string | null, id?: string | null) => {
         setIsConfirmed(false);
         setIsFailed(false);
-        setNewOrderId(id || null);
+        setOrderId(id || null);
         if (url) {
             if (showIframe) {
                 setIframeSrc(url);
@@ -104,42 +99,44 @@ const App: FC<ConfigType> = ({
     }
 
     return (
-        <div className="sdk-order-container" data-testid="sdk-app-id">
-            {companyName && <h1>{companyName}</h1>}
-            {loading && (
-                <div className="d-flex justify-center">
-                    <Loader size="lg" dark={true} />
-                </div>
-            )}
-            {!iframeSrc && !orderId && !agreementId && (
-                <OrderForm
-                    callback={handleForm}
-                    templatePackageId={templatePackageId}
-                    subscriberId={subscriberId}
-                    organizationId={organizationId}
-                    paymentMethods={availablePaymentMethods}
-                    buttonText={settings?.buttonText}
-                    defaultValues={settings?.orderDefaultValues}
-                    redirectUrl={
-                        showIframe
-                            ? window.location.toString()
-                            : redirectUrl || window.location.toString()
-                    }
-                    paymentMethodsOptions={paymentMethodsOptions}
-                    language={language}
-                    merchantAgreementUrl={merchantAgreementUrl}
-                />
-            )}
-            {showIframe && <MainIframe iframeSrc={iframeSrc} />}
-            {isConfirmed && (
-                <p className="text-success">{settings?.successText}</p>
-            )}
-            {isFailed && (
-                <p className="text-error">
-                    {failedMsg || settings?.failureText}
-                </p>
-            )}
-        </div>
+        <ErrorBoundary>
+            <div className="sdk-order-container" data-testid="sdk-app-id">
+                {companyName && <h1 className="text-center">{companyName}</h1>}
+                {loading && (
+                    <div className="d-flex justify-center">
+                        <Loader size="lg" dark={true} />
+                    </div>
+                )}
+                {!iframeSrc && showOrderForm && (
+                    <OrderForm
+                        callback={handleForm}
+                        templatePackageId={templatePackageId}
+                        subscriberId={subscriberId}
+                        organizationId={organizationId}
+                        paymentMethods={availablePaymentMethods}
+                        buttonText={settings?.buttonText}
+                        defaultValues={settings?.orderDefaultValues}
+                        redirectUrl={
+                            showIframe
+                                ? window.location.toString()
+                                : redirectUrl || window.location.toString()
+                        }
+                        paymentMethodsOptions={paymentMethodsOptions}
+                        language={language}
+                        merchantAgreementUrl={merchantAgreementUrl}
+                    />
+                )}
+                {showIframe && <MainIframe iframeSrc={iframeSrc} />}
+                {isConfirmed && (
+                    <p className="text-success text-center">
+                        {settings?.successText}
+                    </p>
+                )}
+                {isFailed && (
+                    <p className="text-error text-center">{failedMsg}</p>
+                )}
+            </div>
+        </ErrorBoundary>
     );
 };
 

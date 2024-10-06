@@ -15,6 +15,7 @@ export type OrderFormFiledType = {
 export type PaymentMethodOptionsType = {
     [key in PaymentMethodEnum]: {
         generateSubscriberContact?: boolean;
+        accountId?: string;
         orderFormFields: OrderFormFiledType[];
     };
 };
@@ -24,7 +25,6 @@ export type ConfigType = {
     companyName: string;
     templatePackageId: string;
     subscriberId: string;
-    tenantId: string;
     organizationId: string;
     redirectUrl?: string;
     showIframe?: boolean;

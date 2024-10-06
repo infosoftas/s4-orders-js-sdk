@@ -64,17 +64,22 @@ async function fetcher<ResponseType, BodyType = void>(
                 .then(async (response) => {
                     if (response.status === HttpStatusCode.UNAUTHORIZED) {
                         localStorage.removeItem('authTokenKey');
+                        reject({ message: 'Not Authorized user!' });
+                    } else if (response.status === HttpStatusCode.FORBIDDEN) {
+                        reject({ message: 'Something Wrong with permission!' });
                     } else {
                         const data = await response?.json();
-
                         if (response.ok) {
                             resolve(data);
                         } else {
-                            reject(data);
+                            const message =
+                                data.message || data.details || data.title;
+                            reject({ ...data, message });
                         }
                     }
                 })
                 .catch((error) => {
+                    console.log(error, 'error');
                     reject(error?.response);
                 });
         }

@@ -8,6 +8,7 @@ type AgreementModelType = {
     generateSubscriberContact: boolean;
     language: string;
     merchantAgreementUrl: string;
+    accountId?: string;
 };
 
 export const prepareAgreementModel = ({
@@ -17,6 +18,7 @@ export const prepareAgreementModel = ({
     generateSubscriberContact,
     language,
     merchantAgreementUrl,
+    accountId,
 }: AgreementModelType): AgreementsType => {
     const model: AgreementsType = {
         paymentProvider: paymentMethod,
@@ -27,6 +29,7 @@ export const prepareAgreementModel = ({
             cancelUrl: `${redirectUrl}?action=${MessageEventTypeEnum.CANCEL}`,
             completeUrl: `${redirectUrl}?action=${MessageEventTypeEnum.COMPLETE}`,
             language,
+            accountId,
         };
 
         return model;
@@ -37,6 +40,7 @@ export const prepareAgreementModel = ({
         vippsMobilePay: {
             generateSubscriberContact,
             merchantAgreementUrl,
+            accountId,
             phoneNumber: data.phoneNumber,
             merchantRedirectUrl: redirectUrl,
         },

@@ -11,6 +11,7 @@ import { DEFAULT_ORDER_FORM_FIELDS } from 'Component/FormFields/FormFields.helpe
 import { OrderFormInputsType } from 'Types/order';
 import { PaymentMethodOptionsType, OrderFormFiledType } from 'Types/general';
 import { prepareAgreementModel } from 'Utils/order.helper';
+import { prepareErrorMessage } from 'Utils/helper';
 
 import './orderForm.scss';
 
@@ -99,6 +100,10 @@ const OrderForm: FC<Props> = ({
                         paymentMethodsOptions?.[
                             data.paymentMethod as PaymentMethodEnum
                         ]?.generateSubscriberContact || false,
+                    accountId:
+                        paymentMethodsOptions?.[
+                            data.paymentMethod as PaymentMethodEnum
+                        ]?.accountId,
                 });
                 const responseOrder = await orderStart({
                     subscriberId: id,
@@ -115,9 +120,7 @@ const OrderForm: FC<Props> = ({
             setApiErrorMsg(WRONG_MSG);
         } catch (error) {
             console.error(error);
-            setApiErrorMsg(
-                ((error as { title: string })?.title as string) || WRONG_MSG
-            );
+            setApiErrorMsg(prepareErrorMessage(error as Error));
             callback(null);
         } finally {
             setLoading(false);

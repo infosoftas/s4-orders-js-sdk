@@ -1,5 +1,7 @@
+@import 'Assets/styles/variables.scss';
+
 .sdk-loader {
-    border       : 2px solid #f3f3f3;
+    border       : 2px solid $light-gray;
     border-top   : 2px solid transparent;
     border-radius: 50%;
     width        : 16px;
@@ -19,7 +21,7 @@
     }
 
     &.dark-color {
-        border-color    : #1a1a1a;
+        border-color    : $dark-gray;
         border-top-color: transparent;
     }
 }
