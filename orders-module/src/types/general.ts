@@ -30,6 +30,8 @@ export type ConfigType = {
     showIframe?: boolean;
     availablePaymentMethods?: PaymentMethodEnum[];
     paymentMethodsOptions?: PaymentMethodOptionsType;
+    language?: string;
+    merchantAgreementUrl?: string;
     settings?: {
         successText?: string;
         failureText?: string;

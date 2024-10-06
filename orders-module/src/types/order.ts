@@ -13,21 +13,22 @@ export type OrderFormInputsType = {
 };
 
 export type VippsMobilePay = {
-    GenerateSubscriberContact?: boolean;
-    CustomerPhoneNumber?: string;
-    MerchantAgreementUrl: string;
-    MerchantRedirectUrl: string;
+    phoneNumber?: string;
+    merchantRedirectUrl: string;
+    merchantAgreementUrl: string;
+    generateSubscriberContact?: boolean;
+    accountId?: string;
 };
 
 export type SwedbankPay = {
-    CancelUrl: string;
-    CompleteUrl: string;
-    CallbackUrl: string;
-    Culture?: string;
+    accountId?: string;
+    completeUrl: string;
+    cancelUrl: string;
+    language?: string;
 };
 
 export type AgreementsType = {
-    PaymentMethod: string;
-    VippsMobilePay?: VippsMobilePay;
-    SwedbankPay?: SwedbankPay;
+    paymentProvider: PaymentMethodEnum;
+    vippsMobilePay?: VippsMobilePay;
+    swedbankPay?: SwedbankPay;
 };

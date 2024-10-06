@@ -6,6 +6,8 @@ type AgreementModelType = {
     redirectUrl: string;
     data: OrderFormInputsType;
     generateSubscriberContact: boolean;
+    language: string;
+    merchantAgreementUrl: string;
 };
 
 export const prepareAgreementModel = ({
@@ -13,17 +15,18 @@ export const prepareAgreementModel = ({
     redirectUrl,
     data,
     generateSubscriberContact,
+    language,
+    merchantAgreementUrl,
 }: AgreementModelType): AgreementsType => {
     const model: AgreementsType = {
-        PaymentMethod: paymentMethod,
+        paymentProvider: paymentMethod,
     };
 
     if (paymentMethod === PaymentMethodEnum.SwedbankPay) {
-        model.SwedbankPay = {
-            CancelUrl: `${redirectUrl}?action=${MessageEventTypeEnum.CANCEL}`,
-            CompleteUrl: `${redirectUrl}?action=${MessageEventTypeEnum.COMPLETE}`,
-            CallbackUrl: `${redirectUrl}?action=${MessageEventTypeEnum.CALLBACK}`,
-            Culture: 'en-US',
+        model.swedbankPay = {
+            cancelUrl: `${redirectUrl}?action=${MessageEventTypeEnum.CANCEL}`,
+            completeUrl: `${redirectUrl}?action=${MessageEventTypeEnum.COMPLETE}`,
+            language,
         };
 
         return model;
@@ -31,12 +34,11 @@ export const prepareAgreementModel = ({
 
     return {
         ...model,
-        VippsMobilePay: {
-            GenerateSubscriberContact: generateSubscriberContact,
-            CustomerPhoneNumber: data.phoneNumber,
-            MerchantAgreementUrl:
-                'https://service.info-subscription.com/agreement',
-            MerchantRedirectUrl: redirectUrl,
+        vippsMobilePay: {
+            generateSubscriberContact,
+            merchantAgreementUrl,
+            phoneNumber: data.phoneNumber,
+            merchantRedirectUrl: redirectUrl,
         },
     };
 };

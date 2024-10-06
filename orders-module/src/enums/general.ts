@@ -5,7 +5,7 @@ export enum PaymentMethodEnum {
 }
 
 export enum MessageEventTypeEnum {
+    VIPPS_COMPLETE = 'completeOrder',
     CANCEL = 'cancel',
     COMPLETE = 'complete',
-    CALLBACK = 'callback',
 }

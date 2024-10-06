@@ -1,0 +1,63 @@
+@import 'Assets/styles/variables.scss';
+
+.app-layout-wrapper {
+    --input-border : #8b8a8b;
+    --input-focus-h: 245;
+    --input-focus-s: 100%;
+    --input-focus-l: 42%;
+
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+    }
+
+    .text-error {
+        color: $error-color !important;
+    }
+
+    .text-success {
+        color: $success-color !important
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .caption {
+        font-size: $xs-font-size;
+    }
+
+    .d-flex {
+        display: flex;
+    }
+
+    .flex-column {
+        flex-direction: column;
+    }
+
+    .justify-center {
+        justify-content: center;
+    }
+
+    .align-center {
+        align-items: center;
+    }
+
+    .gap-2 {
+        gap: 0.5rem;
+    }
+
+    .mb-2 {
+        margin-bottom: 0.5rem;
+    }
+
+    .mx-2 {
+        margin-left : 0.5rem;
+        margin-right: 0.5rem;
+    }
+
+    .w-100 {
+        width: 100%;
+    }
+}

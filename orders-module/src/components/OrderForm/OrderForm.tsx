@@ -2,7 +2,7 @@ import { FC, ChangeEvent, Suspense, useState } from 'react';
 import { FormProvider, useForm, SubmitHandler } from 'react-hook-form';
 
 import { createSubscriber } from 'API/SubscribeApi';
-import { orderStartV2 } from 'API/OrdersApi';
+import { orderStart } from 'API/OrdersApi';
 import { PaymentMethodEnum } from 'Enums/general';
 import { WRONG_MSG, PAYMENT_METHOD_DEFAULT } from 'Constants/index';
 import Button from 'Component/Button/Button';
@@ -15,12 +15,13 @@ import { prepareAgreementModel } from 'Utils/order.helper';
 import './orderForm.scss';
 
 type Props = {
-    callback: (url: string | null) => void;
+    callback: (url: string | null, id?: string | null) => void;
     templatePackageId: string;
     subscriberId?: string;
-    tenantId: string;
     organizationId: string;
     redirectUrl: string;
+    language: string;
+    merchantAgreementUrl: string;
     paymentMethodsOptions?: PaymentMethodOptionsType;
     defaultValues?: OrderFormInputsType;
     paymentMethods?: PaymentMethodEnum[];
@@ -38,11 +39,12 @@ const OrderForm: FC<Props> = ({
     callback,
     templatePackageId,
     subscriberId,
-    tenantId,
     organizationId,
     redirectUrl,
     paymentMethodsOptions,
     defaultValues,
+    language,
+    merchantAgreementUrl,
     paymentMethods = [],
     buttonText = 'Start',
 }) => {
@@ -91,19 +93,22 @@ const OrderForm: FC<Props> = ({
                     paymentMethod,
                     redirectUrl,
                     data,
+                    language,
+                    merchantAgreementUrl,
                     generateSubscriberContact:
                         paymentMethodsOptions?.[
                             data.paymentMethod as PaymentMethodEnum
                         ]?.generateSubscriberContact || false,
                 });
-                const responseOrder = await orderStartV2({
-                    templatePackageId,
-                    tenantId,
-                    organizationId,
+                const responseOrder = await orderStart({
                     subscriberId: id,
-                    agreementParameters: { ...agreements },
+                    subscriptionPlan: {
+                        organizationId,
+                        templateSubscriptionPlanId: templatePackageId,
+                    },
+                    paymentAgreement: { ...agreements },
                 });
-                callback(responseOrder.terminalRedirectUrl);
+                callback(responseOrder.terminalRedirectUrl, responseOrder.id);
                 return;
             }
             callback(null);

@@ -1,4 +1,3 @@
-import { ApiResponseType } from 'Types/api';
 import fetcher from 'Utils/fetcher';
 
 type CreateSubscriberRequestType = {
@@ -15,6 +14,9 @@ export const createSubscriber = (
 ): Promise<CreateSubscriberResponseType> =>
     fetcher<CreateSubscriberResponseType, CreateSubscriberRequestType>({
         method: 'POST',
-        url: '/sdk/subscriber',
+        url: '/subscriber',
+        headers: {
+            'S4-ORDERS-API-KEY': process.env.API_KEY || '',
+        },
         body,
     }) as Promise<CreateSubscriberResponseType>;

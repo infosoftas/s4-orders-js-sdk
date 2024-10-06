@@ -21,6 +21,8 @@ const App: FC<ConfigType> = ({
     showIframe,
     paymentMethodsOptions,
     availablePaymentMethods = [],
+    language = 'en-US',
+    merchantAgreementUrl = '',
     settings = {
         successText: 'Order successful completed!',
         failureText: 'Something went wrong!',
@@ -30,6 +32,7 @@ const App: FC<ConfigType> = ({
     const [loading, setLoading] = useState<boolean>(false);
     const [iframeSrc, setIframeSrc] = useState<string | null>(null);
     const [orderId, setOrderId] = useState<string | null>(null);
+    const [newOrderId, setNewOrderId] = useState<string | null>(null);
     const [agreementId, setAgreementId] = useState<string | null>(null);
     const [isConfirmed, setIsConfirmed] = useState<boolean>(false);
     const [isFailed, setIsFailed] = useState<boolean>(false);
@@ -44,10 +47,7 @@ const App: FC<ConfigType> = ({
         setIsFailed(false);
         setLoading(true);
         try {
-            await orderComplete({
-                orderId: data.orderId,
-                agreementId: data.agreementId,
-            });
+            await orderComplete(newOrderId || data.orderId || '');
             setIsConfirmed(true);
             setLoading(false);
         } catch (error) {
@@ -75,24 +75,14 @@ const App: FC<ConfigType> = ({
             setOrderId(null);
             setAgreementId(null);
         }
-
-        if (type === MessageEventTypeEnum.CALLBACK) {
-            setIsFailed(false);
-            setLoading(false);
-            setIframeSrc(null);
-            setOrderId(null);
-            setAgreementId(null);
-            if (typeof window.sdkOrderCallback === 'function') {
-                window.sdkOrderCallback();
-            }
-        }
     };
 
     useMessageEvent(messageCallback, handleMessageEvent, !!showIframe);
 
-    const handleForm = (url: string | null) => {
+    const handleForm = (url: string | null, id?: string | null) => {
         setIsConfirmed(false);
         setIsFailed(false);
+        setNewOrderId(id || null);
         if (url) {
             if (showIframe) {
                 setIframeSrc(url);
@@ -126,7 +116,6 @@ const App: FC<ConfigType> = ({
                     callback={handleForm}
                     templatePackageId={templatePackageId}
                     subscriberId={subscriberId}
-                    tenantId={tenantId}
                     organizationId={organizationId}
                     paymentMethods={availablePaymentMethods}
                     buttonText={settings?.buttonText}
@@ -137,6 +126,8 @@ const App: FC<ConfigType> = ({
                             : redirectUrl || window.location.toString()
                     }
                     paymentMethodsOptions={paymentMethodsOptions}
+                    language={language}
+                    merchantAgreementUrl={merchantAgreementUrl}
                 />
             )}
             {showIframe && <MainIframe iframeSrc={iframeSrc} />}

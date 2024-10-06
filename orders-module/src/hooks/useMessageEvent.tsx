@@ -4,8 +4,6 @@ import { MessageEventTypeEnum } from 'Enums/general';
 import { CompleteOrderParamsType } from 'Types/order';
 import useQueryParams from './useQueryParams';
 
-const COMPLETE_VIPPS_EVENT_TYPE = 'completeOrder';
-
 const useMessageEvent = (
     messageCallback: (data: CompleteOrderParamsType) => Promise<void>,
     handleMessageEvent: (type: MessageEventTypeEnum) => void,
@@ -18,7 +16,7 @@ const useMessageEvent = (
             'message',
             async (event) => {
                 // Vipps handler
-                if (event.data.type === COMPLETE_VIPPS_EVENT_TYPE) {
+                if (event.data.type === MessageEventTypeEnum.VIPPS_COMPLETE) {
                     await messageCallback({
                         orderId: event.data.orderId || '',
                         agreementId: event.data.agreementId || '',
@@ -31,9 +29,6 @@ const useMessageEvent = (
                         orderId: event.data.orderId || '',
                         agreementId: event.data.agreementId || '',
                     });
-                }
-                if (event.data.type === MessageEventTypeEnum.CANCEL) {
-                    handleMessageEvent(event.data.type);
                 }
                 if (event.data.type === MessageEventTypeEnum.CANCEL) {
                     handleMessageEvent(event.data.type);
@@ -53,7 +48,7 @@ const useMessageEvent = (
         ) {
             top?.postMessage(
                 {
-                    type: COMPLETE_VIPPS_EVENT_TYPE,
+                    type: MessageEventTypeEnum.VIPPS_COMPLETE,
                     orderId: queryParams.get('orderId'),
                     agreementId: queryParams.get('agreementId'),
                 },
@@ -119,8 +114,7 @@ const useMessageEvent = (
         }
 
         if (
-            (queryParams.get('action') === MessageEventTypeEnum.CANCEL ||
-                queryParams.get('action') === MessageEventTypeEnum.COMPLETE) &&
+            queryParams.get('action') === MessageEventTypeEnum.CANCEL &&
             !showIframe
         ) {
             handleMessageEvent(

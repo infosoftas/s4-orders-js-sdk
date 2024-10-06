@@ -1,31 +1,18 @@
-import { ApiResponseType } from 'Types/api';
 import { AgreementsType } from 'Types/order';
 import fetcher from 'Utils/fetcher';
 
 type RequestOrderStartType = {
-    templatePackageId?: string;
     subscriberId?: string;
-    tenantId?: string;
-    organizationId?: string;
-    redirectUrl?: string;
-    phoneNumber?: string;
-};
-
-type RequestOrderStartV2Type = RequestOrderStartType & {
-    agreementParameters: AgreementsType;
-};
-
-type RequestOrderCompleteType = {
-    orderId: string;
-    agreementId: string;
+    subscriptionPlan?: {
+        organizationId?: string;
+        templateSubscriptionPlanId?: string;
+    };
+    paymentAgreement: AgreementsType;
 };
 
 type OrderResponseType = {
-    url: string;
-};
-
-type OrderV2ResponseType = {
     terminalRedirectUrl: string;
+    id: string;
 };
 
 export const orderStart = (
@@ -33,30 +20,19 @@ export const orderStart = (
 ): Promise<OrderResponseType> =>
     fetcher<OrderResponseType, RequestOrderStartType>({
         method: 'POST',
-        url: '/sdk/orderstart',
+        url: '/order',
+        headers: {
+            'S4-ORDERS-API-KEY': process.env.API_KEY || '',
+        },
         body,
-    });
+    }) as Promise<OrderResponseType>;
 
-export const orderStartV2 = (
-    body: RequestOrderStartV2Type
-): Promise<OrderV2ResponseType> =>
-    fetcher<OrderV2ResponseType, RequestOrderStartV2Type>({
+export const orderComplete = (id: string): Promise<OrderResponseType> =>
+    fetcher<OrderResponseType, null>({
         method: 'POST',
-        url: '/sdk/v2/orderstart',
-        body,
-    }) as Promise<OrderV2ResponseType>;
-
-export const orderComplete = (
-    body: RequestOrderCompleteType
-): Promise<OrderResponseType> =>
-    fetcher<OrderResponseType, RequestOrderCompleteType>({
-        method: 'POST',
-        url: '/sdk/ordercomplete',
-        body,
-    });
-
-export const paymentTypes = (): Promise<OrderResponseType> =>
-    fetcher<OrderResponseType>({
-        method: 'GET',
-        url: '/sdk/paymenttypes',
-    });
+        url: `/order/${id}/complete`,
+        headers: {
+            'S4-ORDERS-API-KEY': process.env.API_KEY || '',
+        },
+        body: null,
+    }) as Promise<OrderResponseType>;
