@@ -10,12 +10,12 @@ type Props = {
     className?: string;
 };
 
-const SignIn: FC<Props> = ({ className = '' }) => {
+const SignInButton: FC<Props> = ({ className = '' }) => {
     const { instance } = useMsal();
 
     const handleLogin = (loginType: string) => {
         const request: PopupRequest = {
-            loginHint: 'mikayel.zarafyan@altoros.com',
+            loginHint: '',
             scopes: loginRequest.scopes,
         };
 
@@ -42,4 +42,4 @@ const SignIn: FC<Props> = ({ className = '' }) => {
     );
 };
 
-export default SignIn;
+export default SignInButton;

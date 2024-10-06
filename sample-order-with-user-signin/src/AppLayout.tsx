@@ -5,7 +5,7 @@ import {
     UnauthenticatedTemplate,
 } from '@azure/msal-react';
 
-import SignIn from 'Component/SignIn/SignIn';
+import SignInButton from 'Component/SignInButton/SignInButton';
 import SignOutButton from 'Component/SignOutButton/SignOutButton';
 import SignUpButton from 'Component/SignUpButton/SignUpButton';
 
@@ -28,7 +28,7 @@ const AppLayout: FC = () => {
                     Please sign-in to see your profile information.
                 </h5>
                 <div className="d-flex justify-center">
-                    <SignIn className="mb-2 mx-2" />
+                    <SignInButton className="mb-2 mx-2" />
                     <SignUpButton className="mb-2 mx-2" />
                 </div>
             </UnauthenticatedTemplate>
