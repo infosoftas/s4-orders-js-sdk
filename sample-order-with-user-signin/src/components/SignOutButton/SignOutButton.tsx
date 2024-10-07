@@ -12,7 +12,7 @@ type Props = {
 const SignOutButton: FC<Props> = ({ className = '' }) => {
     const { instance } = useMsal();
 
-    const handleLogOut = (logoutType: string) => {
+    const handleLogOut = (logoutType: AuthOpenTypeEnum) => {
         const request: EndSessionRequest = {
             postLogoutRedirectUri: '/',
         };

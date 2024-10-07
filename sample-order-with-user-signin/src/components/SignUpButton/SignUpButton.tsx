@@ -13,7 +13,7 @@ type Props = {
 const SignUpButton: FC<Props> = ({ className = '' }) => {
     const { instance } = useMsal();
 
-    const handleLogOut = (logoutType: string) => {
+    const handleLogOut = (logoutType: AuthOpenTypeEnum) => {
         const request: RedirectRequest = {
             scopes: loginRequest.scopes,
             authority: SignUpAuthority,

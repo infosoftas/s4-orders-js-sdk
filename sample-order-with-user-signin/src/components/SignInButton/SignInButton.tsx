@@ -13,7 +13,7 @@ type Props = {
 const SignInButton: FC<Props> = ({ className = '' }) => {
     const { instance } = useMsal();
 
-    const handleLogin = (loginType: string) => {
+    const handleLogin = (loginType: AuthOpenTypeEnum) => {
         const request: PopupRequest = {
             loginHint: '',
             scopes: loginRequest.scopes,

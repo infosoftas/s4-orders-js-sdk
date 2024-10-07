@@ -1,5 +1,3 @@
-const path = require('path');
-
 module.exports = {
     env: {
         browser: true,
@@ -27,7 +25,7 @@ module.exports = {
         ecmaVersion: 'latest',
         sourceType: 'module',
         warnOnUnsupportedTypeScriptVersion: false,
-        project: path.resolve(__dirname, 'tsconfig.json'),
+        project: './tsconfig.json',
         tsconfigRootDir: __dirname,
     },
     plugins: ['import', 'react', '@typescript-eslint', 'react-hooks'],
