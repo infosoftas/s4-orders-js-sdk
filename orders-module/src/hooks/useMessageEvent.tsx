@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 
 import { MessageEventTypeEnum } from 'Enums/general';
 import { CompleteOrderParamsType } from 'Types/order';
@@ -11,31 +11,32 @@ const useMessageEvent = (
 ) => {
     const queryParams = useQueryParams();
 
-    useEffect(() => {
-        window.addEventListener(
-            'message',
-            async (event) => {
-                // Vipps handler
-                if (event.data.type === MessageEventTypeEnum.VIPPS_COMPLETE) {
-                    await messageCallback({
-                        orderId: event.data.orderId || '',
-                        agreementId: event.data.agreementId || '',
-                    });
-                }
+    const handleMessage = useCallback(async (event: MessageEvent) => {
+        // Vipps handler
+        if (event.data.type === MessageEventTypeEnum.VIPPS_COMPLETE) {
+            await messageCallback({
+                orderId: event.data.orderId || '',
+                agreementId: event.data.agreementId || '',
+            });
+        }
 
-                // SwedbankPay handler
-                if (event.data.type === MessageEventTypeEnum.COMPLETE) {
-                    await messageCallback({
-                        orderId: event.data.orderId || '',
-                        agreementId: event.data.agreementId || '',
-                    });
-                }
-                if (event.data.type === MessageEventTypeEnum.CANCEL) {
-                    handleMessageEvent(event.data.type);
-                }
-            },
-            false
-        );
+        // SwedbankPay handler
+        if (event.data.type === MessageEventTypeEnum.COMPLETE) {
+            await messageCallback({
+                orderId: event.data.orderId || '',
+                agreementId: event.data.agreementId || '',
+            });
+        }
+        if (event.data.type === MessageEventTypeEnum.CANCEL) {
+            handleMessageEvent(event.data.type);
+        }
+    }, []);
+
+    useEffect(() => {
+        window.addEventListener('message', handleMessage, false);
+
+        return () =>
+            window.removeEventListener('message', handleMessage, false);
     }, []);
 
     // Vipps

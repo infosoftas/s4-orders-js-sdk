@@ -5,6 +5,7 @@ export enum PaymentMethodEnum {
 }
 
 export enum MessageEventTypeEnum {
+    ORDER_FLOW_COMPLETE = 'orderFlowComplete',
     VIPPS_COMPLETE = 'completeOrder',
     CANCEL = 'cancel',
     COMPLETE = 'complete',

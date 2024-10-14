@@ -51,6 +51,15 @@ const App: FC<ConfigType> = ({
             await orderComplete(orderId || data.orderId || '');
             setIsConfirmed(true);
             setLoading(false);
+            if (window === top) {
+                top.postMessage(
+                    {
+                        type: MessageEventTypeEnum.ORDER_FLOW_COMPLETE,
+                        isCompleted: true,
+                    },
+                    top?.location?.origin || '*'
+                );
+            }
         } catch (error) {
             console.log(error);
             setFailedMsg(
@@ -119,8 +128,9 @@ const App: FC<ConfigType> = ({
                         defaultValues={settings?.orderDefaultValues}
                         redirectUrl={
                             showIframe
-                                ? window.location.toString()
-                                : redirectUrl || window.location.toString()
+                                ? window.location.href.split('?')[0]
+                                : redirectUrl ||
+                                  window.location.href.split('?')[0]
                         }
                         paymentMethodsOptions={paymentMethodsOptions}
                         language={language}
