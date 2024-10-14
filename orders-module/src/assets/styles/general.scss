@@ -1,0 +1,38 @@
+@import 'Assets/styles/variables.scss';
+@import 'Assets/styles/forms.scss';
+
+.d-flex {
+    display: flex;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.align-center {
+    align-items: center;
+}
+
+.mt-2 {
+    margin-top: 0.5rem;
+}
+
+.mb-2 {
+    margin-bottom: 0.5rem;
+}
+
+.text-error {
+    color: $error-color !important;
+}
+
+.text-success {
+    color: $success-color !important
+}
+
+.text-center {
+    text-align: center;
+}
+
+.caption {
+    font-size: $xs-font-size;
+}

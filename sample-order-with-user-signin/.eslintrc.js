@@ -1,4 +1,5 @@
 module.exports = {
+    root: true,
     env: {
         browser: true,
         es2021: true,
@@ -31,6 +32,7 @@ module.exports = {
     plugins: ['import', 'react', '@typescript-eslint', 'react-hooks'],
     ignorePatterns: ['node_modules/'],
     rules: {
+        'prettier/prettier': 'off',
         'no-use-before-define': 'off',
         '@typescript-eslint/no-use-before-define': 'warn',
         'react/display-name': 'off',

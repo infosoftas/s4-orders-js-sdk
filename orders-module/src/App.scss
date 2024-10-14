@@ -1,10 +1,7 @@
 @import 'Assets/styles/variables.scss';
+@import 'Assets/styles/general.scss';
 
 .sdk-order-container {
-    --input-border : #8b8a8b;
-    --input-focus-h: 245;
-    --input-focus-s: 100%;
-    --input-focus-l: 42%;
 
     *,
     *::before,
@@ -23,41 +20,5 @@
         border       : none;
         background   : transparent;
         border-radius: 8px;
-    }
-
-    .text-error {
-        color: $error-color !important;
-    }
-
-    .text-success {
-        color: $success-color !important
-    }
-
-    .text-center {
-        text-align: center;
-    }
-
-    .caption {
-        font-size: $xs-font-size;
-    }
-
-    .d-flex {
-        display: flex;
-    }
-
-    .justify-center {
-        justify-content: center;
-    }
-
-    .align-center {
-        align-items: center;
-    }
-
-    .mt-2 {
-        margin-top: 0.5rem;
-    }
-
-    .mb-2 {
-        margin-bottom: 0.5rem;
     }
 }
