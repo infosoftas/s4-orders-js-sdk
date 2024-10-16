@@ -19,6 +19,8 @@ const App: FC<ConfigType> = ({
     companyName,
     templatePackageId,
     subscriberId,
+    userId,
+    identityProviderId,
     organizationId,
     redirectUrl,
     showIframe,
@@ -122,6 +124,8 @@ const App: FC<ConfigType> = ({
                         callback={handleForm}
                         templatePackageId={templatePackageId}
                         subscriberId={subscriberId}
+                        userId={userId}
+                        identityProviderId={identityProviderId}
                         organizationId={organizationId}
                         paymentMethods={availablePaymentMethods}
                         buttonText={settings?.buttonText}

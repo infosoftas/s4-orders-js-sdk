@@ -2,6 +2,7 @@ import { createRoot } from 'react-dom/client';
 import { createElement } from 'react';
 
 import { ConfigType } from 'Types/general';
+import { createSubscriber, mapSubscriberToUser } from 'API/SubscribeApi';
 import App from './App';
 
 export const orderComponent = {
@@ -11,4 +12,6 @@ export const orderComponent = {
         const reactElement = createElement(App, config);
         root.render(reactElement);
     },
+    createSubscriber,
+    mapSubscriberToUser,
 };

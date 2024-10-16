@@ -1,7 +1,7 @@
 import { FC, ChangeEvent, Suspense, useState } from 'react';
 import { FormProvider, useForm, SubmitHandler } from 'react-hook-form';
 
-import { createSubscriber } from 'API/SubscribeApi';
+import { createSubscriber, mapSubscriberToUser } from 'API/SubscribeApi';
 import { orderStart } from 'API/OrdersApi';
 import { PaymentMethodEnum } from 'Enums/general';
 import { WRONG_MSG, PAYMENT_METHOD_DEFAULT } from 'Constants/index';
@@ -20,6 +20,8 @@ type Props = {
     callback: (url: string | null, id?: string | null) => void;
     templatePackageId: string;
     subscriberId?: string;
+    userId?: string;
+    identityProviderId?: string;
     organizationId: string;
     redirectUrl: string;
     language: string;
@@ -41,6 +43,8 @@ const OrderForm: FC<Props> = ({
     callback,
     templatePackageId,
     subscriberId,
+    userId,
+    identityProviderId,
     organizationId,
     redirectUrl,
     paymentMethodsOptions,
@@ -85,6 +89,13 @@ const OrderForm: FC<Props> = ({
                     phoneNumber: data.phoneNumber,
                 });
                 id = response.id;
+
+                if (userId && identityProviderId) {
+                    await mapSubscriberToUser(id, {
+                        userId: userId,
+                        identityProviderId: identityProviderId,
+                    });
+                }
             }
 
             if (id) {

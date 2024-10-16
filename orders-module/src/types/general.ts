@@ -25,6 +25,8 @@ export type ConfigType = {
     companyName: string;
     templatePackageId: string;
     subscriberId: string;
+    userId: string;
+    identityProviderId: string;
     organizationId: string;
     redirectUrl?: string;
     showIframe?: boolean;
