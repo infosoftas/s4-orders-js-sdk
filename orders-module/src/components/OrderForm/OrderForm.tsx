@@ -154,6 +154,34 @@ const OrderForm: FC<Props> = ({
                 onSubmit={handleSubmit(onSubmit)}
                 data-testid="sdk-order-form-id"
             >
+                {paymentMethods?.length > 0 && (
+                    <div className="field-wrapper">
+                        <div className="field-label">Payment Method</div>
+                        {paymentMethods.map((item) => (
+                            <div className="radio-button-control" key={item}>
+                                <label className="radio-badge">
+                                    <input
+                                        {...register('paymentMethod', {
+                                            required: true,
+                                        })}
+                                        onChange={handlePaymentChange}
+                                        type="radio"
+                                        value={item}
+                                    />
+                                    <span className="value-block">
+                                        <span className="prefix-icon"></span>
+                                        {item}
+                                    </span>
+                                </label>
+                            </div>
+                        ))}
+                        {errors.paymentMethod && (
+                            <div className="text-error caption">
+                                {errors.paymentMethod.message}
+                            </div>
+                        )}
+                    </div>
+                )}
                 {orderFields?.length > 0 && (
                     <Suspense fallback={null}>
                         {orderFields.map((field) => {
@@ -169,31 +197,6 @@ const OrderForm: FC<Props> = ({
                             ) : null;
                         })}
                     </Suspense>
-                )}
-                {paymentMethods?.length > 0 && (
-                    <div className="field-wrapper">
-                        <div className="field-label">Payment Method</div>
-                        {paymentMethods.map((item) => (
-                            <div className="radio-button-control" key={item}>
-                                <label className="radio-badge">
-                                    <input
-                                        {...register('paymentMethod', {
-                                            required: true,
-                                        })}
-                                        onChange={handlePaymentChange}
-                                        type="radio"
-                                        value={item}
-                                    />
-                                    <span>{item}</span>
-                                </label>
-                            </div>
-                        ))}
-                        {errors.paymentMethod && (
-                            <div className="text-error caption">
-                                {errors.paymentMethod.message}
-                            </div>
-                        )}
-                    </div>
                 )}
                 <Button
                     type="submit"

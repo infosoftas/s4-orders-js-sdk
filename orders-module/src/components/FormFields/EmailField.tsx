@@ -15,11 +15,9 @@ const EmailField: FC<Props> = ({ required = false, errors }) => {
     const { register } = useFormContext();
     return (
         <div className="field-wrapper" data-testid="sdk-email-field-id">
-            <label>
-                Email {required && <span className="text-error">*</span>}
-            </label>
             <input
                 autoComplete="email"
+                placeholder=" "
                 className="input-control"
                 type="email"
                 {...register('email', {
@@ -30,6 +28,9 @@ const EmailField: FC<Props> = ({ required = false, errors }) => {
                     },
                 })}
             />
+            <label className="label-control">
+                Email {required && <span className="text-error">*</span>}
+            </label>
             {errors && errors.email && (
                 <div className="text-error caption">{errors.email.message}</div>
             )}

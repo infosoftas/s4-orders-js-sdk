@@ -8,14 +8,25 @@
 }
 
 .field-wrapper {
-    margin-bottom: 20px;
-    width        : 100%;
+    display       : flex;
+    flex-direction: column;
+    width         : 100%;
+    margin-bottom : 20px;
 
     label {
         display      : block;
+        order        : 1;
         margin-bottom: 0.375em;
         font-weight  : 500;
         text-align   : left;
+    }
+
+    .caption {
+        order: 3;
+    }
+
+    .input-control {
+        order: 2;
     }
 }
 
@@ -30,9 +41,9 @@
     background-color: $white;
 
     &[disabled] {
-        $input-border-disabled-color: $input-border-disabled-color;
-        background-color            : $input-border-disabled-bg-color;
-        cursor                      : not-allowed;
+        border-color    : $input-border-disabled-color;
+        background-color: $input-border-disabled-bg-color;
+        cursor          : not-allowed;
     }
 
     &:focus {
@@ -53,7 +64,7 @@
             position: absolute;
             left    : -9999px;
 
-            &:checked+span {
+            &:checked+span.value-block {
                 background-color: mix($white, $primary-color, 84%);
 
                 &:before {
@@ -62,7 +73,7 @@
             }
         }
 
-        span {
+        span.value-block {
             display      : flex;
             align-items  : center;
             padding      : 0.375em 0.75em 0.375em 0.375em;
