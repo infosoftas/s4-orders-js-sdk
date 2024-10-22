@@ -170,7 +170,9 @@ const OrderForm: FC<Props> = ({
                                     />
                                     <span className="value-block">
                                         <span className="prefix-icon"></span>
-                                        {item}
+                                        <span className="text-block">
+                                            {item}
+                                        </span>
                                     </span>
                                 </label>
                             </div>
