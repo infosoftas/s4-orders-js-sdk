@@ -150,7 +150,7 @@ const OrderForm: FC<Props> = ({
     return (
         <FormProvider {...methods}>
             <form
-                className="sdkOrderForm"
+                className="sdk-order-form"
                 onSubmit={handleSubmit(onSubmit)}
                 data-testid="sdk-order-form-id"
             >

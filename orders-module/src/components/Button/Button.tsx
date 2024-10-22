@@ -32,7 +32,7 @@ const Button: FC<Props> = ({
             disabled={loading || disable}
             className={`sdk-btn ${btnType ? `${btnType}-btn` : ''} ${
                 loading ? 'loading' : ''
-            }`}
+            } ${disable ? 'disabled' : 'disabled'}`}
             onClick={handleClick}
         >
             {loading ? <Loader className="btn-loader" /> : buttonText}

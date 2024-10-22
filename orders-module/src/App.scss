@@ -16,9 +16,9 @@
     }
 
     iframe {
-        max-width    : 550px;
+        max-width    : 640px;
         border       : none;
         background   : transparent;
-        border-radius: 8px;
+        border-radius: $border-radius * 2;
     }
 }
