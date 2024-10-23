@@ -22,7 +22,7 @@ export type PaymentMethodOptionsType = {
 
 export type ConfigType = {
     domElementId: string;
-    modulaTitle: string;
+    moduleTitle?: string;
     templatePackageId: string;
     subscriberId: string;
     userId: string;
