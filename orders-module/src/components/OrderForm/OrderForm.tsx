@@ -28,7 +28,7 @@ type Props = {
     merchantAgreementUrl: string;
     paymentMethodsOptions?: PaymentMethodOptionsType;
     defaultValues?: OrderFormInputsType;
-    paymentMethods?: PaymentMethodEnum[];
+    paymentMethods?: { label: string; value: PaymentMethodEnum }[];
     buttonText?: string;
 };
 
@@ -155,10 +155,13 @@ const OrderForm: FC<Props> = ({
                 data-testid="sdk-order-form-id"
             >
                 {paymentMethods?.length > 0 && (
-                    <div className="field-wrapper">
+                    <div className="field-wrapper radio-button-group">
                         <div className="field-label">Payment Method</div>
                         {paymentMethods.map((item) => (
-                            <div className="radio-button-control" key={item}>
+                            <div
+                                className="radio-button-control"
+                                key={item.value}
+                            >
                                 <label className="radio-badge">
                                     <input
                                         {...register('paymentMethod', {
@@ -166,12 +169,12 @@ const OrderForm: FC<Props> = ({
                                         })}
                                         onChange={handlePaymentChange}
                                         type="radio"
-                                        value={item}
+                                        value={item.value}
                                     />
                                     <span className="value-block">
                                         <span className="prefix-icon"></span>
                                         <span className="text-block">
-                                            {item}
+                                            {item.label}
                                         </span>
                                     </span>
                                 </label>

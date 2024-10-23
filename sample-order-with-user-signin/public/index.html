@@ -16,7 +16,7 @@
     <script type="module">
         import { orderComponent } from './script.js';
         const config = {
-            companyName: 'MyCompany',
+            modulaTitle: 'MyCompany',
             domElementId: 'order',
             templatePackageId: 'fefddfeb-e2de-4eaf-abfe-03297591a2d6',
             subscriberId: '25b56197-91a5-4796-9288-6b35877f1f88',
@@ -24,7 +24,11 @@
             organizationId: 'abf90cef-661f-4a85-940b-001eafb587e3',
             showIframe: true,
             redirectUrl: 'https://localhost:3000/',
-            availablePaymentMethods: ["Vipps", "MobilePay", "SwedbankPay"],
+            availablePaymentMethods: [
+                { label: "Vipps", value: "Vipps" },
+                { label: "MobilePay", value: "MobilePay" },
+                { label: "Credit Card/Debit Card", value: "SwedbankPay" }
+            ],
             merchantAgreementUrl:
                 'https://service.info-subscription.com/agreement',
             paymentMethodsOptions: {

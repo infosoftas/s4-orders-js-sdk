@@ -22,7 +22,7 @@ export type PaymentMethodOptionsType = {
 
 export type ConfigType = {
     domElementId: string;
-    companyName: string;
+    modulaTitle: string;
     templatePackageId: string;
     subscriberId: string;
     userId: string;
@@ -30,7 +30,7 @@ export type ConfigType = {
     organizationId: string;
     redirectUrl?: string;
     showIframe?: boolean;
-    availablePaymentMethods?: PaymentMethodEnum[];
+    availablePaymentMethods?: { label: string; value: PaymentMethodEnum }[];
     paymentMethodsOptions?: PaymentMethodOptionsType;
     language?: string;
     merchantAgreementUrl?: string;
