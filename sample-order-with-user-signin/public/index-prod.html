@@ -15,6 +15,8 @@
         const config = {
             modulaTitle: 'MyCompany',
             domElementId: 'order',
+            userId: '9816b3c5-ec3c-4c2c-b709-83b669e114f1',
+            identityProviderId: 'a247d6e7-59eb-4f30-a03a-a0d83ada5211',
             templatePackageId: 'fefddfeb-e2de-4eaf-abfe-03297591a2d6',
             subscriberId: '25b56197-91a5-4796-9288-6b35877f1f88',
             tenantId: 'd5e00e27-0cdf-4753-b9a8-40e289d1bf5b',
@@ -56,8 +58,9 @@
         let timer = setInterval(() => {
             let orderElement = document.getElementById('order');
             if (!orderElement) return;
-            console.log('module init')
+            orderComponent?.remove();
             orderComponent.init(config);
+            console.log('module init');
             clearInterval(timer);
         }, 300);
     </script>
