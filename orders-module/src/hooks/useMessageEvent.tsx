@@ -35,9 +35,10 @@ const useMessageEvent = (
     useEffect(() => {
         window.addEventListener('message', handleMessage, false);
 
-        return () =>
+        return () => {
             window.removeEventListener('message', handleMessage, false);
-    }, []);
+        };
+    }, [handleMessage]);
 
     // Vipps
     useEffect(() => {
@@ -95,7 +96,7 @@ const useMessageEvent = (
             );
         }
     }, [
-        queryParams.get('OrderId'),
+        queryParams.get('S4OrderId'),
         queryParams.get('TransactionId'),
         queryParams.get('action'),
     ]);
