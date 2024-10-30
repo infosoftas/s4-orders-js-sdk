@@ -7,7 +7,7 @@ import Loader from 'Component/Loader/Loader';
 import MainIframe from 'Component/MainIframe/MainIframe';
 import Alert from 'Component/Alert/Alert';
 import { ConfigType } from 'Types/general';
-import { CompleteOrderParamsType } from 'Types/order';
+import { CompleteOrderParamsType, OrderInfoType } from 'Types/order';
 import { orderComplete } from 'API/OrdersApi';
 import { prepareErrorMessage } from 'Utils/helper';
 
@@ -41,6 +41,7 @@ const App: FC<ConfigType> = ({
     const [isConfirmed, setIsConfirmed] = useState<boolean>(false);
     const [isFailed, setIsFailed] = useState<boolean>(false);
     const [failedMsg, setFailedMsg] = useState<string>('');
+    const [orderInfo, setOrderInfo] = useState<OrderInfoType | null>(null);
 
     const messageCallback = async (
         data: CompleteOrderParamsType
@@ -58,6 +59,7 @@ const App: FC<ConfigType> = ({
                     {
                         type: MessageEventTypeEnum.ORDER_FLOW_COMPLETE,
                         isCompleted: true,
+                        orderInfo: orderInfo,
                     },
                     top?.location?.origin || '*'
                 );
@@ -77,6 +79,7 @@ const App: FC<ConfigType> = ({
         if (type === MessageEventTypeEnum.CANCEL) {
             setLoading(false);
             setOrderId(null);
+            setOrderInfo(null);
             setIframeSrc(null);
             setIsConfirmed(false);
             setIsFailed(false);
@@ -84,12 +87,18 @@ const App: FC<ConfigType> = ({
         }
     };
 
-    useMessageEvent(messageCallback, handleMessageEvent, !!showIframe);
+    useMessageEvent(
+        messageCallback,
+        handleMessageEvent,
+        !!showIframe,
+        orderInfo
+    );
 
-    const handleForm = (url: string | null, id?: string | null) => {
+    const handleForm = (url: string | null, data?: OrderInfoType | null) => {
         setIsConfirmed(false);
         setIsFailed(false);
-        setOrderId(id || null);
+        setOrderId(data?.orderId || null);
+        setOrderInfo(data || null);
         if (url) {
             if (showIframe) {
                 setIframeSrc(url);

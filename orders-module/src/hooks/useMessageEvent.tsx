@@ -1,36 +1,42 @@
 import { useEffect, useCallback } from 'react';
 
 import { MessageEventTypeEnum } from 'Enums/general';
-import { CompleteOrderParamsType } from 'Types/order';
+import { CompleteOrderParamsType, OrderInfoType } from 'Types/order';
 import useQueryParams from './useQueryParams';
 
 const useMessageEvent = (
     messageCallback: (data: CompleteOrderParamsType) => Promise<void>,
     handleMessageEvent: (type: MessageEventTypeEnum) => void,
-    showIframe: boolean
+    showIframe: boolean,
+    orderInfo: OrderInfoType | null
 ) => {
     const queryParams = useQueryParams();
 
-    const handleMessage = useCallback(async (event: MessageEvent) => {
-        // Vipps handler
-        if (event.data.type === MessageEventTypeEnum.VIPPS_COMPLETE) {
-            await messageCallback({
-                orderId: event.data.orderId || '',
-                agreementId: event.data.agreementId || '',
-            });
-        }
+    const handleMessage = useCallback(
+        async (event: MessageEvent) => {
+            // Vipps handler
+            if (event.data.type === MessageEventTypeEnum.VIPPS_COMPLETE) {
+                await messageCallback({
+                    orderId: event.data.orderId || '',
+                    agreementId: event.data.agreementId || '',
+                    orderInfo: orderInfo || null,
+                });
+            }
 
-        // SwedbankPay handler
-        if (event.data.type === MessageEventTypeEnum.COMPLETE) {
-            await messageCallback({
-                orderId: event.data.orderId || '',
-                agreementId: event.data.agreementId || '',
-            });
-        }
-        if (event.data.type === MessageEventTypeEnum.CANCEL) {
-            handleMessageEvent(event.data.type);
-        }
-    }, []);
+            // SwedbankPay handler
+            if (event.data.type === MessageEventTypeEnum.COMPLETE) {
+                await messageCallback({
+                    orderId: event.data.orderId || '',
+                    agreementId: event.data.agreementId || '',
+                    orderInfo: orderInfo || null,
+                });
+            }
+            if (event.data.type === MessageEventTypeEnum.CANCEL) {
+                handleMessageEvent(event.data.type);
+            }
+        },
+        [orderInfo]
+    );
 
     useEffect(() => {
         window.addEventListener('message', handleMessage, false);
@@ -69,6 +75,7 @@ const useMessageEvent = (
             messageCallback({
                 orderId: queryParams.get('orderId') || '',
                 agreementId: queryParams.get('agreementId') || '',
+                orderInfo: orderInfo || null,
             });
         }
     }, [
@@ -112,6 +119,7 @@ const useMessageEvent = (
             messageCallback({
                 orderId: queryParams.get('S4OrderId') || '',
                 agreementId: queryParams.get('TransactionId') || '',
+                orderInfo: orderInfo || null,
             });
         }
 

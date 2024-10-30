@@ -9,7 +9,7 @@ import Alert from 'Component/Alert/Alert';
 import Button from 'Component/Button/Button';
 import formFieldsMapper from 'Component/FormFields/FormFieldsMapper';
 import { DEFAULT_ORDER_FORM_FIELDS } from 'Component/FormFields/FormFields.helper';
-import { OrderFormInputsType } from 'Types/order';
+import { OrderFormInputsType, OrderInfoType } from 'Types/order';
 import { PaymentMethodOptionsType, OrderFormFiledType } from 'Types/general';
 import { prepareAgreementModel } from 'Utils/order.helper';
 import { prepareErrorMessage } from 'Utils/helper';
@@ -17,7 +17,7 @@ import { prepareErrorMessage } from 'Utils/helper';
 import './orderForm.scss';
 
 type Props = {
-    callback: (url: string | null, id?: string | null) => void;
+    callback: (url: string | null, orderInfo?: OrderInfoType | null) => void;
     templatePackageId: string;
     subscriberId?: string;
     userId?: string;
@@ -125,7 +125,11 @@ const OrderForm: FC<Props> = ({
                     },
                     paymentAgreement: { ...agreements },
                 });
-                callback(responseOrder.terminalRedirectUrl, responseOrder.id);
+                callback(responseOrder.terminalRedirectUrl, {
+                    orderId: responseOrder.id,
+                    subscriberId: id,
+                    paymentMethod: paymentMethod,
+                });
                 return;
             }
             callback(null);
@@ -156,7 +160,7 @@ const OrderForm: FC<Props> = ({
             >
                 {paymentMethods?.length > 0 && (
                     <div className="field-wrapper radio-button-group">
-                        <div className="field-label">Payment Method</div>
+                        <div className="field-label">Select Payment Method</div>
                         {paymentMethods.map((item) => (
                             <div
                                 className="radio-button-control"
