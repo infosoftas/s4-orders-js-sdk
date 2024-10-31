@@ -22,7 +22,10 @@ export const orderStart = (
         method: 'POST',
         url: '/order',
         headers: {
-            'S4-ORDERS-API-KEY': process.env.API_KEY || '',
+            'S4-ORDERS-API-KEY':
+                sessionStorage.getItem('sdk_api_key') ||
+                process.env.API_KEY ||
+                '',
         },
         body,
     }) as Promise<OrderResponseType>;
@@ -32,7 +35,10 @@ export const orderComplete = (id: string): Promise<OrderResponseType> =>
         method: 'POST',
         url: `/order/${id}/complete`,
         headers: {
-            'S4-ORDERS-API-KEY': process.env.API_KEY || '',
+            'S4-ORDERS-API-KEY':
+                sessionStorage.getItem('sdk_api_key') ||
+                process.env.API_KEY ||
+                '',
         },
         body: null,
     }) as Promise<OrderResponseType>;

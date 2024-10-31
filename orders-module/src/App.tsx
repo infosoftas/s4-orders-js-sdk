@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import { MessageEventTypeEnum } from 'Enums/general';
 import useMessageEvent from 'Hooks/useMessageEvent';
@@ -17,6 +17,7 @@ import './App.scss';
 
 const App: FC<ConfigType> = ({
     moduleTitle,
+    apiKey,
     templatePackageId,
     subscriberId,
     userId,
@@ -42,6 +43,12 @@ const App: FC<ConfigType> = ({
     const [isFailed, setIsFailed] = useState<boolean>(false);
     const [failedMsg, setFailedMsg] = useState<string>('');
     const [orderInfo, setOrderInfo] = useState<OrderInfoType | null>(null);
+
+    useEffect(() => {
+        if (apiKey) {
+            sessionStorage.setItem('sdk_api_key', apiKey);
+        }
+    }, [apiKey]);
 
     const messageCallback = async (
         data: CompleteOrderParamsType
