@@ -40,7 +40,11 @@
     font-family     : inherit;
     background-color: $white;
 
-    &[disabled] {
+    &[disabled],
+    &[readonly],
+    &:read-only,
+    .disabled,
+    .red-only {
         border-color    : $input-border-disabled-color;
         background-color: $input-border-disabled-bg-color;
         cursor          : not-allowed;

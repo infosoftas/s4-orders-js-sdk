@@ -201,6 +201,7 @@ const OrderForm: FC<Props> = ({
                                     key={field.name}
                                     name={field.name}
                                     required={field.required || false}
+                                    readOnly={field.readOnly || false}
                                     errors={errors}
                                 />
                             ) : null;

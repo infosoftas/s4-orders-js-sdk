@@ -10,6 +10,7 @@ declare global {
 export type OrderFormFiledType = {
     name: string;
     required?: boolean;
+    readOnly?: boolean;
 };
 
 export type PaymentMethodOptionsType = {

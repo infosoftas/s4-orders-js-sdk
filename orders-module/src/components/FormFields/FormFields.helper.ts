@@ -10,5 +10,6 @@ export const DEFAULT_ORDER_FORM_FIELDS: OrderFormFiledType[] = [
     {
         name: FIELD_TYPES.PHONE,
         required: false,
+        readOnly: false,
     },
 ];

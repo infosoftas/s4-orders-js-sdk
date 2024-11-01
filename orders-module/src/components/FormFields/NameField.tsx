@@ -4,6 +4,7 @@ import { useFormContext } from 'react-hook-form';
 type Props = {
     name: string;
     required: boolean;
+    readOnly: boolean;
     errors?: {
         name?: {
             message?: string;
@@ -11,14 +12,19 @@ type Props = {
     };
 };
 
-const NameField: FC<Props> = ({ required = false, errors }) => {
+const NameField: FC<Props> = ({
+    required = false,
+    readOnly = false,
+    errors,
+}) => {
     const { register } = useFormContext();
     return (
         <div className="field-wrapper" data-testid="sdk-name-field-id">
             <input
                 autoComplete="name"
                 placeholder=" "
-                className="input-control"
+                readOnly={readOnly}
+                className={`input-control ${readOnly ? 'read-only' : ''}`}
                 {...register('name', {
                     required: required ? 'This field is required!' : false,
                 })}
