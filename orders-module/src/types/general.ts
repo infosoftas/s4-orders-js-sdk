@@ -11,6 +11,7 @@ export type OrderFormFiledType = {
     name: string;
     required?: boolean;
     readOnly?: boolean;
+    label?: string;
 };
 
 export type PaymentMethodOptionsType = {
@@ -41,5 +42,9 @@ export type ConfigType = {
         failureText?: string;
         buttonText?: string;
         orderDefaultValues?: OrderFormInputsType;
+        paymentMethodLabel?: string;
+        errorReqMsg?: string;
+        errorInvalidEmailMsg?: string;
+        errorInvalidPhoneMsg?: string;
     };
 };

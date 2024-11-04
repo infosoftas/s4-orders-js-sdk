@@ -145,6 +145,10 @@ const App: FC<ConfigType> = ({
                         organizationId={organizationId}
                         paymentMethods={availablePaymentMethods}
                         buttonText={settings?.buttonText}
+                        paymentMethodLabel={settings?.paymentMethodLabel}
+                        errorReqMsg={settings?.errorReqMsg}
+                        errorInvalidEmailMsg={settings?.errorInvalidEmailMsg}
+                        errorInvalidPhoneMsg={settings?.errorInvalidPhoneMsg}
                         defaultValues={settings?.orderDefaultValues}
                         redirectUrl={
                             showIframe

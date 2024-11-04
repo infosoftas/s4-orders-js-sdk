@@ -5,6 +5,9 @@ type Props = {
     name: string;
     required: boolean;
     readOnly: boolean;
+    label?: string;
+    errorReqMsg?: string;
+    errorInvalidEmailMsg?: string;
     errors?: {
         email?: {
             message?: string;
@@ -15,6 +18,9 @@ type Props = {
 const EmailField: FC<Props> = ({
     required = false,
     readOnly = false,
+    label = 'Email',
+    errorReqMsg = 'This field is required!',
+    errorInvalidEmailMsg = 'Invalid email address!',
     errors,
 }) => {
     const { register } = useFormContext();
@@ -27,15 +33,15 @@ const EmailField: FC<Props> = ({
                 readOnly={readOnly}
                 type="email"
                 {...register('email', {
-                    required: required ? 'This field is required!' : false,
+                    required: required ? errorReqMsg : false,
                     pattern: {
                         value: /^[-!#-'*+/-9=?^-~]+(?:\.[-!#-'*+/-9=?^-~]+)*@[-!#-'*+/-9=?^-~]+(?:\.[-!#-'*+/-9=?^-~]{2,20})+$/i,
-                        message: 'Invalid email address!',
+                        message: errorInvalidEmailMsg,
                     },
                 })}
             />
             <label className="label-control">
-                Email {required && <span className="text-error">*</span>}
+                {label} {required && <span className="text-error">*</span>}
             </label>
             {errors && errors.email && (
                 <div className="text-error caption">{errors.email.message}</div>

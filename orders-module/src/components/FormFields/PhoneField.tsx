@@ -5,6 +5,9 @@ type Props = {
     name: string;
     required: boolean;
     readOnly: boolean;
+    label?: string;
+    errorReqMsg?: string;
+    errorInvalidPhoneMsg?: string;
     errors?: {
         phoneNumber?: {
             message?: string;
@@ -15,6 +18,9 @@ type Props = {
 const PhoneFiled: FC<Props> = ({
     required = false,
     readOnly = false,
+    label = 'Phone number',
+    errorReqMsg = 'This field is required!',
+    errorInvalidPhoneMsg = 'Invalid phone address!',
     errors,
 }) => {
     const { register } = useFormContext();
@@ -27,15 +33,15 @@ const PhoneFiled: FC<Props> = ({
                 readOnly={readOnly}
                 type="tel"
                 {...register('phoneNumber', {
-                    required: required ? 'This field is required!' : false,
+                    required: required ? errorReqMsg : false,
                     pattern: {
                         value: /^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\./0-9]{6,14}$/g,
-                        message: 'Invalid phone address!',
+                        message: errorInvalidPhoneMsg,
                     },
                 })}
             />
             <label className="label-control">
-                Phone number {required && <span className="text-error">*</span>}
+                {label} {required && <span className="text-error">*</span>}
             </label>
             {errors && errors.phoneNumber && (
                 <div className="text-error caption">

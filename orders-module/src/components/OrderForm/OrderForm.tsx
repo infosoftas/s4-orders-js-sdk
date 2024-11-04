@@ -30,6 +30,10 @@ type Props = {
     defaultValues?: OrderFormInputsType;
     paymentMethods?: { label: string; value: PaymentMethodEnum }[];
     buttonText?: string;
+    paymentMethodLabel?: string;
+    errorReqMsg?: string;
+    errorInvalidEmailMsg?: string;
+    errorInvalidPhoneMsg?: string;
 };
 
 const initialData = {
@@ -53,6 +57,10 @@ const OrderForm: FC<Props> = ({
     merchantAgreementUrl,
     paymentMethods = [],
     buttonText = 'Start',
+    paymentMethodLabel = 'Select Payment Method',
+    errorReqMsg = '',
+    errorInvalidEmailMsg = '',
+    errorInvalidPhoneMsg = '',
 }) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [apiErrorMsg, setApiErrorMsg] = useState<string>('');
@@ -160,7 +168,7 @@ const OrderForm: FC<Props> = ({
             >
                 {paymentMethods?.length > 0 && (
                     <div className="field-wrapper radio-button-group">
-                        <div className="field-label">Select Payment Method</div>
+                        <div className="field-label">{paymentMethodLabel}</div>
                         {paymentMethods.map((item) => (
                             <div
                                 className="radio-button-control"
@@ -200,9 +208,13 @@ const OrderForm: FC<Props> = ({
                                 <Component
                                     key={field.name}
                                     name={field.name}
+                                    label={field.label}
                                     required={field.required || false}
                                     readOnly={field.readOnly || false}
                                     errors={errors}
+                                    errorReqMsg={errorReqMsg}
+                                    errorInvalidEmailMsg={errorInvalidEmailMsg}
+                                    errorInvalidPhoneMsg={errorInvalidPhoneMsg}
                                 />
                             ) : null;
                         })}

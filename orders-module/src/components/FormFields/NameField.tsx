@@ -5,6 +5,8 @@ type Props = {
     name: string;
     required: boolean;
     readOnly: boolean;
+    label?: string;
+    errorReqMsg?: string;
     errors?: {
         name?: {
             message?: string;
@@ -15,6 +17,8 @@ type Props = {
 const NameField: FC<Props> = ({
     required = false,
     readOnly = false,
+    label = 'Name',
+    errorReqMsg = 'This field is required!',
     errors,
 }) => {
     const { register } = useFormContext();
@@ -26,11 +30,11 @@ const NameField: FC<Props> = ({
                 readOnly={readOnly}
                 className={`input-control ${readOnly ? 'read-only' : ''}`}
                 {...register('name', {
-                    required: required ? 'This field is required!' : false,
+                    required: required ? errorReqMsg : false,
                 })}
             />
             <label className="label-control">
-                Name {required && <span className="text-error">*</span>}
+                {label} {required && <span className="text-error">*</span>}
             </label>
             {errors && errors.name && (
                 <div className="text-error caption">{errors.name.message}</div>
