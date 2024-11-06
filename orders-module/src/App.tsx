@@ -128,7 +128,10 @@ const App: FC<ConfigType> = ({
 
     return (
         <ErrorBoundary>
-            <div className="sdk-order-container" data-testid="sdk-app-id">
+            <div
+                className="sdk-order-container"
+                data-testid="sdk-order-module-id"
+            >
                 {moduleTitle && <h1 className="text-center">{moduleTitle}</h1>}
                 {loading && (
                     <div className="d-flex justify-center">

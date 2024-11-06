@@ -10,7 +10,12 @@ type Props = {
 
 const Alert: FC<Props> = ({ msg, type = 'danger', className = '' }) => {
     return msg ? (
-        <div className={`sdk-alert ${type} ${className}`}>{msg}</div>
+        <div
+            className={`sdk-alert ${type} ${className}`}
+            data-testid="sdk-alert-id"
+        >
+            {msg}
+        </div>
     ) : null;
 };
 
