@@ -69,8 +69,8 @@ const useMessageEvent = (
     useEffect(() => {
         if (
             queryParams.get('orderId') &&
-            queryParams.get('agreementId') &&
-            !showIframe
+            queryParams.get('agreementId')
+            // !showIframe
         ) {
             messageCallback({
                 orderId: queryParams.get('orderId') || '',
@@ -81,7 +81,7 @@ const useMessageEvent = (
     }, [
         queryParams.get('orderId'),
         queryParams.get('agreementId'),
-        showIframe,
+        // showIframe,
     ]);
 
     // SwedbankPay

@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 
-import { MessageEventTypeEnum } from 'Enums/general';
+import { MessageEventTypeEnum, PaymentMethodEnum } from 'Enums/general';
 import useMessageEvent from 'Hooks/useMessageEvent';
 import OrderForm from 'Component/OrderForm/OrderForm';
 import Loader from 'Component/Loader/Loader';
@@ -107,11 +107,11 @@ const App: FC<ConfigType> = ({
         setOrderId(data?.orderId || null);
         setOrderInfo(data || null);
         if (url) {
-            if (showIframe) {
+            if (
+                showIframe &&
+                data?.paymentMethod === PaymentMethodEnum.SwedbankPay
+            ) {
                 setIframeSrc(url);
-                let params = new URL(url).searchParams;
-                let token = params.get('token');
-                console.log(token);
                 return;
             }
 
@@ -129,7 +129,9 @@ const App: FC<ConfigType> = ({
     return (
         <ErrorBoundary>
             <div
-                className="sdk-order-container"
+                className={`sdk-order-container ${
+                    iframeSrc ? 'show-iframe' : ''
+                }`}
                 data-testid="sdk-order-module-id"
             >
                 {moduleTitle && <h1 className="text-center">{moduleTitle}</h1>}

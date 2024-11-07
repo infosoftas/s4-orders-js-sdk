@@ -32,7 +32,7 @@ const MainIframe: FC<Props> = ({ iframeSrc }) => {
                 <iframe
                     ref={frameRef}
                     src={iframeSrc}
-                    style={{ minHeight: '645px', width: '100%' }}
+                    style={{ minHeight: '830px', width: '100%' }}
                 ></iframe>
             )}
         </div>
