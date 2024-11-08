@@ -94,7 +94,8 @@ const OrderForm: FC<Props> = ({
             if (!subscriberId) {
                 const response = await createSubscriber({
                     name: data.name,
-                    phoneNumber: data.phoneNumber,
+                    email: data.email,
+                    phone: data.phoneNumber,
                 });
                 id = response.id;
 

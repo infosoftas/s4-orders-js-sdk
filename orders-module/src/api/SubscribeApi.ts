@@ -2,7 +2,8 @@ import fetcher from 'Utils/fetcher';
 
 type CreateSubscriberRequestType = {
     name?: string;
-    phoneNumber?: string;
+    email?: string;
+    phone?: string;
 };
 
 type CreateSubscriberResponseType = {

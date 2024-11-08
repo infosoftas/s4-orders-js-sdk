@@ -9,8 +9,6 @@ export type OrderFormInputsType = {
 
 export type VippsMobilePay = {
     phoneNumber?: string;
-    name?: string;
-    email?: string;
     merchantRedirectUrl: string;
     merchantAgreementUrl: string;
     generateSubscriberContact?: boolean;
@@ -18,9 +16,6 @@ export type VippsMobilePay = {
 };
 
 export type SwedbankPay = {
-    phoneNumber?: string;
-    name?: string;
-    email?: string;
     accountId?: string;
     completeUrl: string;
     cancelUrl: string;
