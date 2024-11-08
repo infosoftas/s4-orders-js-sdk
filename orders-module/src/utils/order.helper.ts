@@ -28,6 +28,9 @@ export const prepareAgreementModel = ({
         model.swedbankPay = {
             cancelUrl: `${redirectUrl}?action=${MessageEventTypeEnum.CANCEL}`,
             completeUrl: `${redirectUrl}?action=${MessageEventTypeEnum.COMPLETE}`,
+            phoneNumber: data.phoneNumber,
+            email: data.email,
+            name: data.name,
             language,
             accountId,
         };
@@ -42,6 +45,8 @@ export const prepareAgreementModel = ({
             merchantAgreementUrl,
             accountId,
             phoneNumber: data.phoneNumber,
+            email: data.email,
+            name: data.name,
             merchantRedirectUrl: redirectUrl,
         },
     };
