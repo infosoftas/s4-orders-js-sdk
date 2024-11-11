@@ -204,12 +204,8 @@ const App: FC<ConfigType> = ({
                         errorInvalidEmailMsg={settings?.errorInvalidEmailMsg}
                         errorInvalidPhoneMsg={settings?.errorInvalidPhoneMsg}
                         defaultValues={settings?.orderDefaultValues}
-                        redirectUrl={
-                            showIframe
-                                ? window.location.href.split('?')[0]
-                                : redirectUrl ||
-                                  window.location.href.split('?')[0]
-                        }
+                        redirectUrl={redirectUrl}
+                        showIframe={showIframe}
                         paymentMethodsOptions={paymentMethodsOptions}
                         language={language}
                         merchantAgreementUrl={merchantAgreementUrl}

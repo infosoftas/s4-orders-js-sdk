@@ -3,7 +3,8 @@ import { AgreementsType } from 'Types/order';
 
 type AgreementModelType = {
     paymentMethod: PaymentMethodEnum;
-    redirectUrl: string;
+    redirectUrl?: string;
+    showIframe?: boolean;
     phoneNumber?: string;
     generateSubscriberContact: boolean;
     language: string;
@@ -14,6 +15,7 @@ type AgreementModelType = {
 export const prepareAgreementModel = ({
     paymentMethod,
     redirectUrl,
+    showIframe,
     phoneNumber,
     generateSubscriberContact,
     language,
@@ -23,11 +25,21 @@ export const prepareAgreementModel = ({
     const model: AgreementsType = {
         paymentProvider: paymentMethod,
     };
+    const url = showIframe
+        ? window.location.href.split('?')[0]
+        : redirectUrl || window.location.href;
+    const cancelUrl = new URL(url);
+    cancelUrl.searchParams.append('action', `${MessageEventTypeEnum.CANCEL}`);
+    const confirmUrl = new URL(url);
+    confirmUrl.searchParams.append(
+        'action',
+        `${MessageEventTypeEnum.COMPLETE}`
+    );
 
     if (paymentMethod === PaymentMethodEnum.SwedbankPay) {
         model.swedbankPay = {
-            cancelUrl: `${redirectUrl}?action=${MessageEventTypeEnum.CANCEL}`,
-            completeUrl: `${redirectUrl}?action=${MessageEventTypeEnum.COMPLETE}`,
+            cancelUrl: `${cancelUrl}`,
+            completeUrl: `${confirmUrl}`,
             language,
             accountId,
         };
@@ -42,7 +54,7 @@ export const prepareAgreementModel = ({
             merchantAgreementUrl,
             accountId,
             phoneNumber,
-            merchantRedirectUrl: redirectUrl,
+            merchantRedirectUrl: redirectUrl || window.location.href,
         },
     };
 };
