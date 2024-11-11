@@ -8,7 +8,7 @@ import MainIframe from 'Component/MainIframe/MainIframe';
 import Alert from 'Component/Alert/Alert';
 import { ConfigType } from 'Types/general';
 import { CompleteOrderParamsType, OrderInfoType } from 'Types/order';
-import { orderComplete } from 'API/OrdersApi';
+import { orderComplete, orderDelete } from 'API/OrdersApi';
 import { prepareErrorMessage } from 'Utils/helper';
 
 import ErrorBoundary from './ErrorBoundary';
@@ -18,6 +18,7 @@ import './App.scss';
 const App: FC<ConfigType> = ({
     moduleTitle,
     apiKey,
+    apiUrl,
     templatePackageId,
     subscriberId,
     userId,
@@ -50,6 +51,12 @@ const App: FC<ConfigType> = ({
         }
     }, [apiKey]);
 
+    useEffect(() => {
+        if (apiUrl) {
+            sessionStorage.setItem('sdk_api_url', apiUrl);
+        }
+    }, [apiUrl]);
+
     const messageCallback = async (
         data: CompleteOrderParamsType
     ): Promise<void> => {
@@ -73,6 +80,15 @@ const App: FC<ConfigType> = ({
             }
         } catch (error) {
             console.log(error);
+            if (
+                (error as { status: number }).status === 409 &&
+                (data.paymentMethod === PaymentMethodEnum.Vipps ||
+                    data.paymentMethod === PaymentMethodEnum.MobilePay)
+            ) {
+                handleOrderDelete(orderId || data.orderId);
+                return;
+            }
+
             setFailedMsg(
                 prepareErrorMessage(error as Error, settings?.failureText)
             );
@@ -82,14 +98,47 @@ const App: FC<ConfigType> = ({
         }
     };
 
-    const handleMessageEvent = (type: MessageEventTypeEnum) => {
+    const handleOrderDelete = async (id: string) => {
+        try {
+            await orderDelete(id);
+            if (window === top) {
+                top.postMessage(
+                    {
+                        type: MessageEventTypeEnum.ORDER_FLOW_CANCEL,
+                        isCanceled: true,
+                        orderInfo: orderInfo,
+                    },
+                    top?.location?.origin || '*'
+                );
+            }
+            setIsFailed(false);
+        } catch (error) {
+            console.log(error);
+            setFailedMsg(
+                prepareErrorMessage(error as Error, settings?.failureText)
+            );
+            setIsFailed(true);
+        }
+
+        setLoading(false);
+        setShowOrderForm(true);
+    };
+
+    const handleMessageEvent = async (type: MessageEventTypeEnum) => {
         if (type === MessageEventTypeEnum.CANCEL) {
+            try {
+                if (orderId) {
+                    await handleOrderDelete(orderId);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+
             setLoading(false);
             setOrderId(null);
             setOrderInfo(null);
             setIframeSrc(null);
             setIsConfirmed(false);
-            setIsFailed(false);
             setShowOrderForm(true);
         }
     };

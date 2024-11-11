@@ -38,4 +38,5 @@ export type CompleteOrderParamsType = {
     orderId: string;
     agreementId: string;
     orderInfo: OrderInfoType | null;
+    paymentMethod?: PaymentMethodEnum | null;
 };

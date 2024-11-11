@@ -93,9 +93,15 @@ const OrderForm: FC<Props> = ({
             let id: string | undefined = subscriberId;
             if (!subscriberId) {
                 const response = await createSubscriber({
-                    name: data.name,
-                    email: data.email,
-                    phone: data.phoneNumber,
+                    name: orderFields.find((i) => i.name === 'name')
+                        ? data.name?.trim() || undefined
+                        : undefined,
+                    email: orderFields.find((i) => i.name === 'email')
+                        ? data.email?.trim() || undefined
+                        : undefined,
+                    phone: orderFields.find((i) => i.name === 'phoneNumber')
+                        ? data.phoneNumber?.trim() || undefined
+                        : undefined,
                 });
                 id = response.id;
 
@@ -114,7 +120,11 @@ const OrderForm: FC<Props> = ({
                 const agreements = prepareAgreementModel({
                     paymentMethod,
                     redirectUrl,
-                    data,
+                    phoneNumber: orderFields.find(
+                        (i) => i.name === 'phoneNumber'
+                    )
+                        ? data.phoneNumber?.trim() || undefined
+                        : undefined,
                     language,
                     merchantAgreementUrl,
                     generateSubscriberContact:

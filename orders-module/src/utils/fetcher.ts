@@ -42,7 +42,8 @@ async function fetcher<ResponseType, BodyType = void>(
 ): Promise<ApiResponseType<ResponseType> | ResponseType> {
     const { url, method, headers, body, params } = createHeader(options);
 
-    const endpoint = new URL(`${BASE_API}${url}`);
+    const apiUrl = sessionStorage.getItem('sdk_api_url');
+    const endpoint = new URL(`${apiUrl || BASE_API}${url}`);
 
     if (params) {
         Object.entries(params).forEach(([key, value]) => {
@@ -68,12 +69,15 @@ async function fetcher<ResponseType, BodyType = void>(
                     } else if (response.status === HttpStatusCode.FORBIDDEN) {
                         reject({ message: 'Something Wrong with permission!' });
                     } else {
-                        const data = await response?.json();
                         if (response.ok) {
-                            resolve(data);
+                            response
+                                .json()
+                                .then((data) => resolve(data))
+                                .catch(() => resolve(null as ResponseType));
                         } else {
+                            const data = await response?.json();
                             const message =
-                                data.message || data.details || data.title;
+                                data.details || data.message || data.title;
                             reject({ ...data, message });
                         }
                     }

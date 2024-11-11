@@ -1,10 +1,10 @@
 import { MessageEventTypeEnum, PaymentMethodEnum } from 'Enums/general';
-import { OrderFormInputsType, AgreementsType } from 'Types/order';
+import { AgreementsType } from 'Types/order';
 
 type AgreementModelType = {
     paymentMethod: PaymentMethodEnum;
     redirectUrl: string;
-    data: OrderFormInputsType;
+    phoneNumber?: string;
     generateSubscriberContact: boolean;
     language: string;
     merchantAgreementUrl: string;
@@ -14,7 +14,7 @@ type AgreementModelType = {
 export const prepareAgreementModel = ({
     paymentMethod,
     redirectUrl,
-    data,
+    phoneNumber,
     generateSubscriberContact,
     language,
     merchantAgreementUrl,
@@ -41,7 +41,7 @@ export const prepareAgreementModel = ({
             generateSubscriberContact,
             merchantAgreementUrl,
             accountId,
-            phoneNumber: data.phoneNumber,
+            phoneNumber,
             merchantRedirectUrl: redirectUrl,
         },
     };

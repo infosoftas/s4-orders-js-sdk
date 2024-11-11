@@ -42,3 +42,16 @@ export const orderComplete = (id: string): Promise<OrderResponseType> =>
         },
         body: null,
     }) as Promise<OrderResponseType>;
+
+export const orderDelete = (id: string): Promise<OrderResponseType> =>
+    fetcher<OrderResponseType, null>({
+        method: 'DELETE',
+        url: `/order/${id}`,
+        headers: {
+            'S4-ORDERS-API-KEY':
+                sessionStorage.getItem('sdk_api_key') ||
+                process.env.API_KEY ||
+                '',
+        },
+        body: null,
+    }) as Promise<OrderResponseType>;
