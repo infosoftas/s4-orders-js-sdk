@@ -49,3 +49,7 @@ export type ConfigType = {
         errorInvalidPhoneMsg?: string;
     };
 };
+
+export type ErrorsMsg = {
+    [key: string]: string[];
+};

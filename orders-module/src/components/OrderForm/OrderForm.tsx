@@ -10,9 +10,13 @@ import Button from 'Component/Button/Button';
 import formFieldsMapper from 'Component/FormFields/FormFieldsMapper';
 import { DEFAULT_ORDER_FORM_FIELDS } from 'Component/FormFields/FormFields.helper';
 import { OrderFormInputsType, OrderInfoType } from 'Types/order';
-import { PaymentMethodOptionsType, OrderFormFiledType } from 'Types/general';
+import {
+    PaymentMethodOptionsType,
+    OrderFormFiledType,
+    ErrorsMsg,
+} from 'Types/general';
 import { prepareAgreementModel } from 'Utils/order.helper';
-import { prepareErrorMessage } from 'Utils/helper';
+import { prepareErrorMessage, prepareErrorsArrayMessage } from 'Utils/helper';
 
 import './orderForm.scss';
 
@@ -66,6 +70,7 @@ const OrderForm: FC<Props> = ({
 }) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [apiErrorMsg, setApiErrorMsg] = useState<string>('');
+    const [errorsMsg, setErrorsMsg] = useState<string[]>([]);
     const [orderFields, setOrderFields] = useState<OrderFormFiledType[]>(
         paymentMethodsOptions?.[PAYMENT_METHOD_DEFAULT]?.orderFormFields ??
             DEFAULT_ORDER_FORM_FIELDS
@@ -89,6 +94,7 @@ const OrderForm: FC<Props> = ({
         data
     ): Promise<void> => {
         setApiErrorMsg('');
+        setErrorsMsg([]);
 
         setLoading(true);
         try {
@@ -156,9 +162,19 @@ const OrderForm: FC<Props> = ({
             }
             callback(null);
             setApiErrorMsg(WRONG_MSG);
+            setErrorsMsg([]);
         } catch (error) {
             console.error(error);
             setApiErrorMsg(prepareErrorMessage(error as Error));
+            setErrorsMsg(
+                prepareErrorsArrayMessage(
+                    (
+                        error as {
+                            errors: ErrorsMsg;
+                        }
+                    )?.errors
+                )
+            );
             callback(null);
         } finally {
             setLoading(false);
@@ -240,6 +256,8 @@ const OrderForm: FC<Props> = ({
                     buttonText={buttonText}
                 />
                 <Alert className="mt-2" msg={apiErrorMsg} />
+                {errorsMsg?.length > 0 &&
+                    errorsMsg.map((i) => <Alert className="mt-2" msg={i} />)}
             </form>
         </FormProvider>
     );

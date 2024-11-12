@@ -1,4 +1,5 @@
 import { WRONG_MSG } from 'Constants/index';
+import { ErrorsMsg } from 'Types/general';
 
 export const prepareErrorMessage = (error: Error, defaultMsg?: string) => {
     if (typeof error === 'string') {
@@ -15,6 +16,22 @@ export const prepareErrorMessage = (error: Error, defaultMsg?: string) => {
             WRONG_MSG
         );
     }
+};
+
+export const prepareErrorsArrayMessage = (errors: ErrorsMsg | null) => {
+    const msg: string[] = [];
+
+    if (errors) {
+        Object.entries(errors).forEach(([_, values]) => {
+            if (values?.length > 0) {
+                values.forEach((i) => {
+                    msg.push(i);
+                });
+            }
+        });
+    }
+
+    return msg;
 };
 
 export function uuidv4() {

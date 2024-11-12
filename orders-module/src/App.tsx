@@ -6,10 +6,10 @@ import OrderForm from 'Component/OrderForm/OrderForm';
 import Loader from 'Component/Loader/Loader';
 import MainIframe from 'Component/MainIframe/MainIframe';
 import Alert from 'Component/Alert/Alert';
-import { ConfigType } from 'Types/general';
+import { ConfigType, ErrorsMsg } from 'Types/general';
 import { CompleteOrderParamsType, OrderInfoType } from 'Types/order';
 import { orderComplete, orderDelete } from 'API/OrdersApi';
-import { prepareErrorMessage } from 'Utils/helper';
+import { prepareErrorMessage, prepareErrorsArrayMessage } from 'Utils/helper';
 
 import ErrorBoundary from './ErrorBoundary';
 
@@ -43,6 +43,7 @@ const App: FC<ConfigType> = ({
     const [isConfirmed, setIsConfirmed] = useState<boolean>(false);
     const [isFailed, setIsFailed] = useState<boolean>(false);
     const [failedMsg, setFailedMsg] = useState<string>('');
+    const [errorsMsg, setErrorsMsg] = useState<string[]>([]);
     const [orderInfo, setOrderInfo] = useState<OrderInfoType | null>(null);
 
     useEffect(() => {
@@ -64,6 +65,8 @@ const App: FC<ConfigType> = ({
         setIframeSrc(null);
         setShowOrderForm(false);
         setIsFailed(false);
+        setFailedMsg('');
+        setErrorsMsg([]);
         try {
             await orderComplete(orderId || data.orderId || '');
             setIsConfirmed(true);
@@ -92,6 +95,15 @@ const App: FC<ConfigType> = ({
             setFailedMsg(
                 prepareErrorMessage(error as Error, settings?.failureText)
             );
+            setErrorsMsg(
+                prepareErrorsArrayMessage(
+                    (
+                        error as {
+                            errors: ErrorsMsg;
+                        }
+                    )?.errors
+                )
+            );
             setIsFailed(true);
             setLoading(false);
             setShowOrderForm(true);
@@ -116,6 +128,15 @@ const App: FC<ConfigType> = ({
             console.log(error);
             setFailedMsg(
                 prepareErrorMessage(error as Error, settings?.failureText)
+            );
+            setErrorsMsg(
+                prepareErrorsArrayMessage(
+                    (
+                        error as {
+                            errors: ErrorsMsg;
+                        }
+                    )?.errors
+                )
             );
             setIsFailed(true);
         }
@@ -221,6 +242,9 @@ const App: FC<ConfigType> = ({
                 )}
 
                 {isFailed && <Alert className="mt-2" msg={failedMsg} />}
+                {isFailed &&
+                    errorsMsg?.length > 0 &&
+                    errorsMsg.map((i) => <Alert className="mt-2" msg={i} />)}
             </div>
         </ErrorBoundary>
     );
