@@ -36,7 +36,7 @@ module.exports = (env) => {
         },
         output: {
             filename: 'script.js',
-            path: path.resolve(__dirname, 'dist'),
+            path: path.resolve(__dirname, '../lib'),
             publicPath: '/',
             library: {
                 type: 'module',

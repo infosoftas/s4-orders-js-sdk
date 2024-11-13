@@ -2,7 +2,7 @@
     "name": "@s4internal/s4-orders-js-sdk",
     "version": "1.0.0",
     "scripts": {
-        "build": "rimraf dist && webpack --env mode=production"
+        "build": "rimraf ../lib && webpack --env mode=production"
     },
     "eslintConfig": {
         "extends": [
