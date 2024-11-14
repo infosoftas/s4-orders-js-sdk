@@ -176,6 +176,16 @@ const App: FC<ConfigType> = ({
         setIsFailed(false);
         setOrderId(data?.orderId || null);
         setOrderInfo(data || null);
+        if (window === top) {
+            top.postMessage(
+                {
+                    type: MessageEventTypeEnum.ORDER_UPDATE_INFO,
+                    isUpdate: true,
+                    orderInfo: data || null,
+                },
+                top?.location?.origin || '*'
+            );
+        }
         if (url) {
             if (
                 showIframe &&
