@@ -45,6 +45,10 @@ const initialData = {
     name: '',
     email: '',
     phoneNumber: '',
+    country: '',
+    city: '',
+    address: '',
+    zip: '',
     paymentMethod: PAYMENT_METHOD_DEFAULT,
 };
 
@@ -109,6 +113,24 @@ const OrderForm: FC<Props> = ({
                         : undefined,
                     phone: orderFields.find((i) => i.name === 'phoneNumber')
                         ? data.phoneNumber?.trim() || undefined
+                        : undefined,
+                    country: orderFields.find((i) => i.name === 'country')
+                        ? data.country?.trim() || undefined
+                        : undefined,
+                    city: orderFields.find((i) => i.name === 'city')
+                        ? data.city?.trim() || undefined
+                        : undefined,
+                    addressLines: orderFields.find((i) => i.name === 'address')
+                        ? data.address?.trim()
+                            ? data.address
+                                  ?.trim()
+                                  .replace(/\r\n/g, '\n')
+                                  .split('\n')
+                                  .filter((line) => line)
+                            : undefined
+                        : undefined,
+                    zip: orderFields.find((i) => i.name === 'zip')
+                        ? data.zip?.trim() || undefined
                         : undefined,
                 });
                 id = response.id;

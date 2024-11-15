@@ -4,6 +4,10 @@ type CreateSubscriberRequestType = {
     name?: string;
     email?: string;
     phone?: string;
+    country?: string;
+    city?: string;
+    addressLines?: string[];
+    zip?: string;
 };
 
 type CreateSubscriberResponseType = {
