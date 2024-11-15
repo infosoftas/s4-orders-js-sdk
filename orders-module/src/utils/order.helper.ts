@@ -25,16 +25,24 @@ export const prepareAgreementModel = ({
     const model: AgreementsType = {
         paymentProvider: paymentMethod,
     };
+    const existUrl = new URL(window.location.href);
+    const journey = existUrl.searchParams.get('journey');
     const url = showIframe
         ? window.location.href.split('?')[0]
         : redirectUrl || window.location.href;
     const cancelUrl = new URL(url);
     cancelUrl.searchParams.append('action', `${MessageEventTypeEnum.CANCEL}`);
+    if (journey) {
+        cancelUrl.searchParams.append('journey', journey);
+    }
     const confirmUrl = new URL(url);
     confirmUrl.searchParams.append(
         'action',
         `${MessageEventTypeEnum.COMPLETE}`
     );
+    if (journey) {
+        confirmUrl.searchParams.append('journey', journey);
+    }
 
     if (paymentMethod === PaymentMethodEnum.SwedbankPay) {
         model.swedbankPay = {
