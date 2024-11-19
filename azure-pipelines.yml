@@ -26,7 +26,6 @@ steps:
     FilenamePattern: 'package.json'
     OutputVersion: 'OutputedVersion'
 
-
 - script: |
     corepack enable
     corepack prepare pnpm@latest-9 --activate
@@ -41,10 +40,10 @@ steps:
   workingDirectory: $(Build.SourcesDirectory)/orders-module
 
 - task: Npm@1
-  displayName: 'Publish to registry'
+  displayName: 'Publish to private registry'
   inputs:
    command: custom
-   customCommand: publish --access=restricted
+   customCommand: publish --access=restricted --@infosoftas:registry=https://pkgs.dev.azure.com/infosoftas/_packaging/Internal/npm/registry/
    publishRegistry: useFeed
    publishFeed: Internal
    workingDir: $(Build.SourcesDirectory)/orders-module
