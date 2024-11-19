@@ -5,6 +5,10 @@ export type OrderFormInputsType = {
     email?: string;
     phoneNumber?: string;
     paymentMethod?: PaymentMethodEnum;
+    country?: string;
+    city?: string;
+    address?: string;
+    zip?: string;
 };
 
 export type VippsMobilePay = {
@@ -38,4 +42,5 @@ export type CompleteOrderParamsType = {
     orderId: string;
     agreementId: string;
     orderInfo: OrderInfoType | null;
+    paymentMethod?: PaymentMethodEnum | null;
 };

@@ -31,6 +31,7 @@ export type ConfigType = {
     identityProviderId: string;
     organizationId: string;
     apiKey?: string;
+    apiUrl?: string;
     redirectUrl?: string;
     showIframe?: boolean;
     availablePaymentMethods?: { label: string; value: PaymentMethodEnum }[];
@@ -47,4 +48,8 @@ export type ConfigType = {
         errorInvalidEmailMsg?: string;
         errorInvalidPhoneMsg?: string;
     };
+};
+
+export type ErrorsMsg = {
+    [key: string]: string[];
 };

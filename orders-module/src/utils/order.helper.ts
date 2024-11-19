@@ -1,10 +1,11 @@
 import { MessageEventTypeEnum, PaymentMethodEnum } from 'Enums/general';
-import { OrderFormInputsType, AgreementsType } from 'Types/order';
+import { AgreementsType } from 'Types/order';
 
 type AgreementModelType = {
     paymentMethod: PaymentMethodEnum;
-    redirectUrl: string;
-    data: OrderFormInputsType;
+    redirectUrl?: string;
+    showIframe?: boolean;
+    phoneNumber?: string;
     generateSubscriberContact: boolean;
     language: string;
     merchantAgreementUrl: string;
@@ -14,7 +15,8 @@ type AgreementModelType = {
 export const prepareAgreementModel = ({
     paymentMethod,
     redirectUrl,
-    data,
+    showIframe,
+    phoneNumber,
     generateSubscriberContact,
     language,
     merchantAgreementUrl,
@@ -23,11 +25,29 @@ export const prepareAgreementModel = ({
     const model: AgreementsType = {
         paymentProvider: paymentMethod,
     };
+    const existUrl = new URL(window.location.href);
+    const journey = existUrl.searchParams.get('journey');
+    const url = showIframe
+        ? window.location.href.split('?')[0]
+        : redirectUrl || window.location.href;
+    const cancelUrl = new URL(url);
+    cancelUrl.searchParams.append('action', `${MessageEventTypeEnum.CANCEL}`);
+    if (journey) {
+        cancelUrl.searchParams.append('journey', journey);
+    }
+    const confirmUrl = new URL(url);
+    confirmUrl.searchParams.append(
+        'action',
+        `${MessageEventTypeEnum.COMPLETE}`
+    );
+    if (journey) {
+        confirmUrl.searchParams.append('journey', journey);
+    }
 
     if (paymentMethod === PaymentMethodEnum.SwedbankPay) {
         model.swedbankPay = {
-            cancelUrl: `${redirectUrl}?action=${MessageEventTypeEnum.CANCEL}`,
-            completeUrl: `${redirectUrl}?action=${MessageEventTypeEnum.COMPLETE}`,
+            cancelUrl: `${cancelUrl}`,
+            completeUrl: `${confirmUrl}`,
             language,
             accountId,
         };
@@ -41,8 +61,8 @@ export const prepareAgreementModel = ({
             generateSubscriberContact,
             merchantAgreementUrl,
             accountId,
-            phoneNumber: data.phoneNumber,
-            merchantRedirectUrl: redirectUrl,
+            phoneNumber,
+            merchantRedirectUrl: redirectUrl || window.location.href,
         },
     };
 };

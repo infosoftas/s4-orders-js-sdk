@@ -6,10 +6,10 @@ import OrderForm from 'Component/OrderForm/OrderForm';
 import Loader from 'Component/Loader/Loader';
 import MainIframe from 'Component/MainIframe/MainIframe';
 import Alert from 'Component/Alert/Alert';
-import { ConfigType } from 'Types/general';
+import { ConfigType, ErrorsMsg } from 'Types/general';
 import { CompleteOrderParamsType, OrderInfoType } from 'Types/order';
-import { orderComplete } from 'API/OrdersApi';
-import { prepareErrorMessage } from 'Utils/helper';
+import { orderComplete, orderDelete } from 'API/OrdersApi';
+import { prepareErrorMessage, prepareErrorsArrayMessage } from 'Utils/helper';
 
 import ErrorBoundary from './ErrorBoundary';
 
@@ -18,6 +18,7 @@ import './App.scss';
 const App: FC<ConfigType> = ({
     moduleTitle,
     apiKey,
+    apiUrl,
     templatePackageId,
     subscriberId,
     userId,
@@ -42,6 +43,7 @@ const App: FC<ConfigType> = ({
     const [isConfirmed, setIsConfirmed] = useState<boolean>(false);
     const [isFailed, setIsFailed] = useState<boolean>(false);
     const [failedMsg, setFailedMsg] = useState<string>('');
+    const [errorsMsg, setErrorsMsg] = useState<string[]>([]);
     const [orderInfo, setOrderInfo] = useState<OrderInfoType | null>(null);
 
     useEffect(() => {
@@ -50,6 +52,12 @@ const App: FC<ConfigType> = ({
         }
     }, [apiKey]);
 
+    useEffect(() => {
+        if (apiUrl) {
+            sessionStorage.setItem('sdk_api_url', apiUrl);
+        }
+    }, [apiUrl]);
+
     const messageCallback = async (
         data: CompleteOrderParamsType
     ): Promise<void> => {
@@ -57,6 +65,8 @@ const App: FC<ConfigType> = ({
         setIframeSrc(null);
         setShowOrderForm(false);
         setIsFailed(false);
+        setFailedMsg('');
+        setErrorsMsg([]);
         try {
             await orderComplete(orderId || data.orderId || '');
             setIsConfirmed(true);
@@ -73,8 +83,26 @@ const App: FC<ConfigType> = ({
             }
         } catch (error) {
             console.log(error);
+            if (
+                (error as { status: number }).status === 409 &&
+                (data.paymentMethod === PaymentMethodEnum.Vipps ||
+                    data.paymentMethod === PaymentMethodEnum.MobilePay)
+            ) {
+                handleOrderDelete(orderId || data.orderId);
+                return;
+            }
+
             setFailedMsg(
                 prepareErrorMessage(error as Error, settings?.failureText)
+            );
+            setErrorsMsg(
+                prepareErrorsArrayMessage(
+                    (
+                        error as {
+                            errors: ErrorsMsg;
+                        }
+                    )?.errors
+                )
             );
             setIsFailed(true);
             setLoading(false);
@@ -82,14 +110,56 @@ const App: FC<ConfigType> = ({
         }
     };
 
-    const handleMessageEvent = (type: MessageEventTypeEnum) => {
+    const handleOrderDelete = async (id: string) => {
+        try {
+            await orderDelete(id);
+            if (window === top) {
+                top.postMessage(
+                    {
+                        type: MessageEventTypeEnum.ORDER_FLOW_CANCEL,
+                        isCanceled: true,
+                        orderInfo: orderInfo,
+                    },
+                    top?.location?.origin || '*'
+                );
+            }
+            setIsFailed(false);
+        } catch (error) {
+            console.log(error);
+            setFailedMsg(
+                prepareErrorMessage(error as Error, settings?.failureText)
+            );
+            setErrorsMsg(
+                prepareErrorsArrayMessage(
+                    (
+                        error as {
+                            errors: ErrorsMsg;
+                        }
+                    )?.errors
+                )
+            );
+            setIsFailed(true);
+        }
+
+        setLoading(false);
+        setShowOrderForm(true);
+    };
+
+    const handleMessageEvent = async (type: MessageEventTypeEnum) => {
         if (type === MessageEventTypeEnum.CANCEL) {
+            try {
+                if (orderId) {
+                    await handleOrderDelete(orderId);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+
             setLoading(false);
             setOrderId(null);
             setOrderInfo(null);
             setIframeSrc(null);
             setIsConfirmed(false);
-            setIsFailed(false);
             setShowOrderForm(true);
         }
     };
@@ -106,6 +176,16 @@ const App: FC<ConfigType> = ({
         setIsFailed(false);
         setOrderId(data?.orderId || null);
         setOrderInfo(data || null);
+        if (window === top) {
+            top.postMessage(
+                {
+                    type: MessageEventTypeEnum.ORDER_UPDATE_INFO,
+                    isUpdate: true,
+                    orderInfo: data || null,
+                },
+                top?.location?.origin || '*'
+            );
+        }
         if (url) {
             if (
                 showIframe &&
@@ -155,12 +235,8 @@ const App: FC<ConfigType> = ({
                         errorInvalidEmailMsg={settings?.errorInvalidEmailMsg}
                         errorInvalidPhoneMsg={settings?.errorInvalidPhoneMsg}
                         defaultValues={settings?.orderDefaultValues}
-                        redirectUrl={
-                            showIframe
-                                ? window.location.href.split('?')[0]
-                                : redirectUrl ||
-                                  window.location.href.split('?')[0]
-                        }
+                        redirectUrl={redirectUrl}
+                        showIframe={showIframe}
                         paymentMethodsOptions={paymentMethodsOptions}
                         language={language}
                         merchantAgreementUrl={merchantAgreementUrl}
@@ -176,6 +252,9 @@ const App: FC<ConfigType> = ({
                 )}
 
                 {isFailed && <Alert className="mt-2" msg={failedMsg} />}
+                {isFailed &&
+                    errorsMsg?.length > 0 &&
+                    errorsMsg.map((i) => <Alert className="mt-2" msg={i} />)}
             </div>
         </ErrorBoundary>
     );

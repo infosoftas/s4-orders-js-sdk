@@ -10,9 +10,13 @@ import Button from 'Component/Button/Button';
 import formFieldsMapper from 'Component/FormFields/FormFieldsMapper';
 import { DEFAULT_ORDER_FORM_FIELDS } from 'Component/FormFields/FormFields.helper';
 import { OrderFormInputsType, OrderInfoType } from 'Types/order';
-import { PaymentMethodOptionsType, OrderFormFiledType } from 'Types/general';
+import {
+    PaymentMethodOptionsType,
+    OrderFormFiledType,
+    ErrorsMsg,
+} from 'Types/general';
 import { prepareAgreementModel } from 'Utils/order.helper';
-import { prepareErrorMessage } from 'Utils/helper';
+import { prepareErrorMessage, prepareErrorsArrayMessage } from 'Utils/helper';
 
 import './orderForm.scss';
 
@@ -23,7 +27,8 @@ type Props = {
     userId?: string;
     identityProviderId?: string;
     organizationId: string;
-    redirectUrl: string;
+    redirectUrl?: string;
+    showIframe?: boolean;
     language: string;
     merchantAgreementUrl: string;
     paymentMethodsOptions?: PaymentMethodOptionsType;
@@ -40,6 +45,10 @@ const initialData = {
     name: '',
     email: '',
     phoneNumber: '',
+    country: '',
+    city: '',
+    address: '',
+    zip: '',
     paymentMethod: PAYMENT_METHOD_DEFAULT,
 };
 
@@ -51,6 +60,7 @@ const OrderForm: FC<Props> = ({
     identityProviderId,
     organizationId,
     redirectUrl,
+    showIframe,
     paymentMethodsOptions,
     defaultValues,
     language,
@@ -64,6 +74,7 @@ const OrderForm: FC<Props> = ({
 }) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [apiErrorMsg, setApiErrorMsg] = useState<string>('');
+    const [errorsMsg, setErrorsMsg] = useState<string[]>([]);
     const [orderFields, setOrderFields] = useState<OrderFormFiledType[]>(
         paymentMethodsOptions?.[PAYMENT_METHOD_DEFAULT]?.orderFormFields ??
             DEFAULT_ORDER_FORM_FIELDS
@@ -87,15 +98,40 @@ const OrderForm: FC<Props> = ({
         data
     ): Promise<void> => {
         setApiErrorMsg('');
+        setErrorsMsg([]);
 
         setLoading(true);
         try {
             let id: string | undefined = subscriberId;
             if (!subscriberId) {
                 const response = await createSubscriber({
-                    name: data.name,
-                    email: data.email,
-                    phone: data.phoneNumber,
+                    name: orderFields.find((i) => i.name === 'name')
+                        ? data.name?.trim() || undefined
+                        : undefined,
+                    email: orderFields.find((i) => i.name === 'email')
+                        ? data.email?.trim() || undefined
+                        : undefined,
+                    phone: orderFields.find((i) => i.name === 'phoneNumber')
+                        ? data.phoneNumber?.trim() || undefined
+                        : undefined,
+                    country: orderFields.find((i) => i.name === 'country')
+                        ? data.country?.trim() || undefined
+                        : undefined,
+                    city: orderFields.find((i) => i.name === 'city')
+                        ? data.city?.trim() || undefined
+                        : undefined,
+                    addressLines: orderFields.find((i) => i.name === 'address')
+                        ? data.address?.trim()
+                            ? data.address
+                                  ?.trim()
+                                  .replace(/\r\n/g, '\n')
+                                  .split('\n')
+                                  .filter((line) => line)
+                            : undefined
+                        : undefined,
+                    zip: orderFields.find((i) => i.name === 'zip')
+                        ? data.zip?.trim() || undefined
+                        : undefined,
                 });
                 id = response.id;
 
@@ -114,7 +150,12 @@ const OrderForm: FC<Props> = ({
                 const agreements = prepareAgreementModel({
                     paymentMethod,
                     redirectUrl,
-                    data,
+                    showIframe,
+                    phoneNumber: orderFields.find(
+                        (i) => i.name === 'phoneNumber'
+                    )
+                        ? data.phoneNumber?.trim() || undefined
+                        : undefined,
                     language,
                     merchantAgreementUrl,
                     generateSubscriberContact:
@@ -143,9 +184,19 @@ const OrderForm: FC<Props> = ({
             }
             callback(null);
             setApiErrorMsg(WRONG_MSG);
+            setErrorsMsg([]);
         } catch (error) {
             console.error(error);
             setApiErrorMsg(prepareErrorMessage(error as Error));
+            setErrorsMsg(
+                prepareErrorsArrayMessage(
+                    (
+                        error as {
+                            errors: ErrorsMsg;
+                        }
+                    )?.errors
+                )
+            );
             callback(null);
         } finally {
             setLoading(false);
@@ -227,6 +278,8 @@ const OrderForm: FC<Props> = ({
                     buttonText={buttonText}
                 />
                 <Alert className="mt-2" msg={apiErrorMsg} />
+                {errorsMsg?.length > 0 &&
+                    errorsMsg.map((i) => <Alert className="mt-2" msg={i} />)}
             </form>
         </FormProvider>
     );

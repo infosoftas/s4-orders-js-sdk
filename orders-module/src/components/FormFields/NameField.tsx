@@ -1,6 +1,8 @@
 import { FC } from 'react';
 import { useFormContext } from 'react-hook-form';
 
+import { uuidv4 } from 'Utils/helper';
+
 type Props = {
     name: string;
     required: boolean;
@@ -22,9 +24,11 @@ const NameField: FC<Props> = ({
     errors,
 }) => {
     const { register } = useFormContext();
+    const id = uuidv4();
     return (
         <div className="field-wrapper" data-testid="sdk-name-field-id">
             <input
+                id={id}
                 autoComplete="name"
                 placeholder=" "
                 readOnly={readOnly}
@@ -33,7 +37,7 @@ const NameField: FC<Props> = ({
                     required: required ? errorReqMsg : false,
                 })}
             />
-            <label className="label-control">
+            <label className="label-control" htmlFor={id}>
                 {label} {required && <span className="text-error">*</span>}
             </label>
             {errors && errors.name && (

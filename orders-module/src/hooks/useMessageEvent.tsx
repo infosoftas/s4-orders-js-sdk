@@ -1,6 +1,6 @@
 import { useEffect, useCallback } from 'react';
 
-import { MessageEventTypeEnum } from 'Enums/general';
+import { MessageEventTypeEnum, PaymentMethodEnum } from 'Enums/general';
 import { CompleteOrderParamsType, OrderInfoType } from 'Types/order';
 import useQueryParams from './useQueryParams';
 
@@ -76,6 +76,7 @@ const useMessageEvent = (
                 orderId: queryParams.get('orderId') || '',
                 agreementId: queryParams.get('agreementId') || '',
                 orderInfo: orderInfo || null,
+                paymentMethod: PaymentMethodEnum.Vipps,
             });
         }
     }, [
