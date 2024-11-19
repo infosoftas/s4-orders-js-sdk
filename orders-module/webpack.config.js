@@ -1,6 +1,7 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const Dotenv = require('dotenv-webpack');
+const CopyPlugin = require('copy-webpack-plugin');
 
 const envEnum = {
     qa: 'qa',
@@ -53,6 +54,13 @@ module.exports = (env) => {
                     env.mode === envEnum.prod ? 'prod' : env.mode || 'prod'
                 }`, // Path to .env file (this is the default)
                 safe: false, // load .env.example (defaults to "false" which does not use dotenv-safe)
+            }),
+            new CopyPlugin({
+                patterns: [
+                    {
+                        from: 'package.json',
+                    },
+                ],
             }),
         ],
         module: {
