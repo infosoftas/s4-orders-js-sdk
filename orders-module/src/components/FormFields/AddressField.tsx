@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { useFormContext } from 'react-hook-form';
 
-import { uuidv4 } from 'Utils/helper';
+import { uuidv4 } from '../../utils/helper';
 
 type Props = {
     name: string;

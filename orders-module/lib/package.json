@@ -1,6 +1,6 @@
 {
     "name": "@infosoftas/s4-orders-js-sdk",
-    "version": "0.0.1-alpha1c",
+    "version": "0.0.1-alpha1d",
     "scripts": {
         "build": "rimraf lib && webpack --env mode=production"
     },

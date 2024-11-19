@@ -1,15 +1,15 @@
 import { FC, useEffect, useState } from 'react';
 
-import { MessageEventTypeEnum, PaymentMethodEnum } from 'Enums/general';
-import useMessageEvent from 'Hooks/useMessageEvent';
-import OrderForm from 'Component/OrderForm/OrderForm';
-import Loader from 'Component/Loader/Loader';
-import MainIframe from 'Component/MainIframe/MainIframe';
-import Alert from 'Component/Alert/Alert';
-import { ConfigType, ErrorsMsg } from 'Types/general';
-import { CompleteOrderParamsType, OrderInfoType } from 'Types/order';
-import { orderComplete, orderDelete } from 'API/OrdersApi';
-import { prepareErrorMessage, prepareErrorsArrayMessage } from 'Utils/helper';
+import { MessageEventTypeEnum, PaymentMethodEnum } from './enums/general';
+import useMessageEvent from './hooks/useMessageEvent';
+import OrderForm from './components/OrderForm/OrderForm';
+import Loader from './components/Loader/Loader';
+import MainIframe from './components/MainIframe/MainIframe';
+import Alert from './components/Alert/Alert';
+import { ConfigType, ErrorsMsg } from './types/general';
+import { CompleteOrderParamsType, OrderInfoType } from './types/order';
+import { orderComplete, orderDelete } from './api/OrdersApi';
+import { prepareErrorMessage, prepareErrorsArrayMessage } from './utils/helper';
 
 import ErrorBoundary from './ErrorBoundary';
 

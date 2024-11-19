@@ -1,4 +1,4 @@
-import { PaymentMethodEnum } from 'Enums/general';
+import { PaymentMethodEnum } from '../enums/general';
 import { OrderFormInputsType } from './order';
 
 declare global {

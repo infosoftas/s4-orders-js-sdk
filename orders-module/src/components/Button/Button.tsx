@@ -1,6 +1,6 @@
 import { FC, MouseEvent } from 'react';
 
-import Loader from 'Component/Loader/Loader';
+import Loader from '../Loader/Loader';
 
 import './button.scss';
 

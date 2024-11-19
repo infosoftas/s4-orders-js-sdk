@@ -1,5 +1,5 @@
-import { WRONG_MSG } from 'Constants/index';
-import { ErrorsMsg } from 'Types/general';
+import { WRONG_MSG } from '../constants/index';
+import { ErrorsMsg } from '../types/general';
 
 export const prepareErrorMessage = (error: Error, defaultMsg?: string) => {
     if (typeof error === 'string') {

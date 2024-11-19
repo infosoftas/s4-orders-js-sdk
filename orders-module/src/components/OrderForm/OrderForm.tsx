@@ -1,22 +1,25 @@
 import { FC, ChangeEvent, Suspense, useState } from 'react';
 import { FormProvider, useForm, SubmitHandler } from 'react-hook-form';
 
-import { createSubscriber, mapSubscriberToUser } from 'API/SubscribeApi';
-import { orderStart } from 'API/OrdersApi';
-import { PaymentMethodEnum } from 'Enums/general';
-import { WRONG_MSG, PAYMENT_METHOD_DEFAULT } from 'Constants/index';
-import Alert from 'Component/Alert/Alert';
-import Button from 'Component/Button/Button';
-import formFieldsMapper from 'Component/FormFields/FormFieldsMapper';
-import { DEFAULT_ORDER_FORM_FIELDS } from 'Component/FormFields/FormFields.helper';
-import { OrderFormInputsType, OrderInfoType } from 'Types/order';
+import { createSubscriber, mapSubscriberToUser } from '../../api/SubscribeApi';
+import { orderStart } from '../../api/OrdersApi';
+import { PaymentMethodEnum } from '../../enums/general';
+import { WRONG_MSG, PAYMENT_METHOD_DEFAULT } from '../../constants/index';
+import Alert from '../Alert/Alert';
+import Button from '../Button/Button';
+import formFieldsMapper from '../FormFields/FormFieldsMapper';
+import { DEFAULT_ORDER_FORM_FIELDS } from '../FormFields/FormFields.helper';
+import { OrderFormInputsType, OrderInfoType } from '../../types/order';
 import {
     PaymentMethodOptionsType,
     OrderFormFiledType,
     ErrorsMsg,
-} from 'Types/general';
-import { prepareAgreementModel } from 'Utils/order.helper';
-import { prepareErrorMessage, prepareErrorsArrayMessage } from 'Utils/helper';
+} from '../../types/general';
+import { prepareAgreementModel } from '../../utils/order.helper';
+import {
+    prepareErrorMessage,
+    prepareErrorsArrayMessage,
+} from '../../utils/helper';
 
 import './orderForm.scss';
 

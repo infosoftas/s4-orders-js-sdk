@@ -1,4 +1,4 @@
-import { HttpStatusCode } from 'Enums/api';
+import { HttpStatusCode } from '../enums/api';
 
 export interface ApiResponseType<T> {
     status: HttpStatusCode;

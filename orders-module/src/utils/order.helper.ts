@@ -1,5 +1,5 @@
-import { MessageEventTypeEnum, PaymentMethodEnum } from 'Enums/general';
-import { AgreementsType } from 'Types/order';
+import { MessageEventTypeEnum, PaymentMethodEnum } from '../enums/general';
+import { AgreementsType } from '../types/order';
 
 type AgreementModelType = {
     paymentMethod: PaymentMethodEnum;

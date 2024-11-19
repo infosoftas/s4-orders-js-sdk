@@ -1,6 +1,6 @@
-import { HttpStatusCode } from 'Enums/api';
-import { ApiResponseType } from 'Types/api';
-import { BASE_API } from 'Constants/index';
+import { HttpStatusCode } from '../enums/api';
+import { ApiResponseType } from '../types/api';
+import { BASE_API } from '../constants/index';
 
 export type Method =
     | 'GET'

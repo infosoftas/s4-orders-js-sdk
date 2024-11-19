@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 
-import useIframe from 'Hooks/useIframe';
+import useIframe from '../../hooks/useIframe';
 
 type Props = {
     iframeSrc: string | null;

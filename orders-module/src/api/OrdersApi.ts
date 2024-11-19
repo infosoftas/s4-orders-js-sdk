@@ -1,5 +1,5 @@
-import { AgreementsType } from 'Types/order';
-import fetcher from 'Utils/fetcher';
+import { AgreementsType } from '../types/order';
+import fetcher from '../utils/fetcher';
 
 type RequestOrderStartType = {
     subscriberId?: string;

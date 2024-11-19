@@ -1,8 +1,8 @@
-import EmailField from 'Component/FormFields/EmailField';
-import PhoneField from 'Component/FormFields/PhoneField';
-import NameField from 'Component/FormFields/NameField';
-import AddressField from 'Component/FormFields/AddressField';
-import InputField from 'Component/FormFields/InputField';
+import EmailField from './EmailField';
+import PhoneField from './PhoneField';
+import NameField from './NameField';
+import AddressField from './AddressField';
+import InputField from './InputField';
 
 import { FIELD_TYPES } from './FormFields.helper';
 

@@ -1,7 +1,7 @@
 import { useEffect, useCallback } from 'react';
 
-import { MessageEventTypeEnum, PaymentMethodEnum } from 'Enums/general';
-import { CompleteOrderParamsType, OrderInfoType } from 'Types/order';
+import { MessageEventTypeEnum, PaymentMethodEnum } from '../enums/general';
+import { CompleteOrderParamsType, OrderInfoType } from '../types/order';
 import useQueryParams from './useQueryParams';
 
 const useMessageEvent = (

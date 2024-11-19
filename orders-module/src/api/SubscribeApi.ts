@@ -1,4 +1,4 @@
-import fetcher from 'Utils/fetcher';
+import fetcher from '../utils/fetcher';
 
 type CreateSubscriberRequestType = {
     name?: string;

@@ -1,8 +1,8 @@
 import { createRoot, Root } from 'react-dom/client';
 import { createElement } from 'react';
 
-import { ConfigType } from 'Types/general';
-import { createSubscriber, mapSubscriberToUser } from 'API/SubscribeApi';
+import { ConfigType } from './types/general';
+import { createSubscriber, mapSubscriberToUser } from './api/SubscribeApi';
 import App from './App';
 
 let root: Root;

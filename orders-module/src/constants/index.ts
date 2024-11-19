@@ -1,4 +1,4 @@
-import { PaymentMethodEnum } from 'Enums/general';
+import { PaymentMethodEnum } from '../enums/general';
 
 export const BASE_API = process.env.API_URL ?? '/';
 
