@@ -82,14 +82,17 @@ const OrderForm: FC<Props> = ({
     const [apiErrorMsg, setApiErrorMsg] = useState<string>('');
     const [errorsMsg, setErrorsMsg] = useState<string[]>([]);
     const [orderFields, setOrderFields] = useState<OrderFormFiledType[]>(
-        paymentMethodsOptions?.[PAYMENT_METHOD_DEFAULT]?.orderFormFields ??
-            DEFAULT_ORDER_FORM_FIELDS
+        paymentMethodsOptions?.[
+            defaultValues?.paymentMethod || PAYMENT_METHOD_DEFAULT
+        ]?.orderFormFields ?? DEFAULT_ORDER_FORM_FIELDS
     );
 
     const methods = useForm<OrderFormInputsType>({
         defaultValues: {
             ...initialData,
             ...(defaultValues ?? {}),
+            paymentMethod:
+                defaultValues?.paymentMethod || PAYMENT_METHOD_DEFAULT,
         },
     });
 
