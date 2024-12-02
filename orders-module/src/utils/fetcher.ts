@@ -68,6 +68,10 @@ async function fetcher<ResponseType, BodyType = void>(
                         reject({ message: 'Not Authorized user!' });
                     } else if (response.status === HttpStatusCode.FORBIDDEN) {
                         reject({ message: 'Something Wrong with permission!' });
+                    } else if (response.status === HttpStatusCode.LIMIT) {
+                        reject({
+                            message: 'System busy please try again shortly!',
+                        });
                     } else {
                         if (response.ok) {
                             response

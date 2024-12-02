@@ -1,3 +1,4 @@
+import { CreateSubscriberRequestType } from '../types/api';
 import { AgreementsType } from '../types/order';
 import fetcher from '../utils/fetcher';
 
@@ -8,6 +9,7 @@ type RequestOrderStartType = {
         templateSubscriptionPlanId?: string;
     };
     paymentAgreement: AgreementsType;
+    invoiceContact?: CreateSubscriberRequestType;
 };
 
 type OrderResponseType = {

@@ -15,7 +15,10 @@ import {
     OrderFormFiledType,
     ErrorsMsg,
 } from '../../types/general';
-import { prepareAgreementModel } from '../../utils/order.helper';
+import {
+    prepareAgreementModel,
+    prepareContactModel,
+} from '../../utils/order.helper';
 import {
     prepareErrorMessage,
     prepareErrorsArrayMessage,
@@ -106,35 +109,10 @@ const OrderForm: FC<Props> = ({
         setLoading(true);
         try {
             let id: string | undefined = subscriberId;
+            const contactModel = prepareContactModel({ data, orderFields });
             if (!subscriberId) {
                 const response = await createSubscriber({
-                    name: orderFields.find((i) => i.name === 'name')
-                        ? data.name?.trim() || undefined
-                        : undefined,
-                    email: orderFields.find((i) => i.name === 'email')
-                        ? data.email?.trim() || undefined
-                        : undefined,
-                    phone: orderFields.find((i) => i.name === 'phoneNumber')
-                        ? data.phoneNumber?.trim() || undefined
-                        : undefined,
-                    country: orderFields.find((i) => i.name === 'country')
-                        ? data.country?.trim() || undefined
-                        : undefined,
-                    city: orderFields.find((i) => i.name === 'city')
-                        ? data.city?.trim() || undefined
-                        : undefined,
-                    addressLines: orderFields.find((i) => i.name === 'address')
-                        ? data.address?.trim()
-                            ? data.address
-                                  ?.trim()
-                                  .replace(/\r\n/g, '\n')
-                                  .split('\n')
-                                  .filter((line) => line)
-                            : undefined
-                        : undefined,
-                    zip: orderFields.find((i) => i.name === 'zip')
-                        ? data.zip?.trim() || undefined
-                        : undefined,
+                    ...contactModel,
                 });
                 id = response.id;
 

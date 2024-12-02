@@ -8,6 +8,10 @@ export const FIELD_TYPES = {
     CITY: 'city',
     ADDRESS: 'address',
     ZIP: 'zip',
+    CARE_OF: 'careOf',
+    ORGANIZATION_NUMBER: 'organizationNumber',
+    BUYER_REFERENCE: 'buyerReference',
+    ORDER_REFERENCE: 'orderReference',
 };
 
 export const DEFAULT_ORDER_FORM_FIELDS: OrderFormFiledType[] = [

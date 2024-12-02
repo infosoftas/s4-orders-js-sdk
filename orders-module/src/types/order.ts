@@ -9,6 +9,7 @@ export type OrderFormInputsType = {
     city?: string;
     address?: string;
     zip?: string;
+    careOf?: string;
 };
 
 export type VippsMobilePay = {

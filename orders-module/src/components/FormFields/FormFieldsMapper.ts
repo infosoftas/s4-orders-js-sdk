@@ -14,6 +14,10 @@ const formFieldsMapper = {
     [FIELD_TYPES.COUNTRY]: InputField,
     [FIELD_TYPES.CITY]: InputField,
     [FIELD_TYPES.ZIP]: InputField,
+    [FIELD_TYPES.CARE_OF]: InputField,
+    [FIELD_TYPES.ORGANIZATION_NUMBER]: InputField,
+    [FIELD_TYPES.BUYER_REFERENCE]: InputField,
+    [FIELD_TYPES.ORDER_REFERENCE]: InputField,
 };
 
 export default formFieldsMapper;

@@ -1,14 +1,5 @@
 import fetcher from '../utils/fetcher';
-
-type CreateSubscriberRequestType = {
-    name?: string;
-    email?: string;
-    phone?: string;
-    country?: string;
-    city?: string;
-    addressLines?: string[];
-    zip?: string;
-};
+import { CreateSubscriberRequestType } from '../types/api';
 
 type CreateSubscriberResponseType = {
     id: string;

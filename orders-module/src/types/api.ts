@@ -10,3 +10,14 @@ export interface ApiResponseType<T> {
     query: string;
     url: string;
 }
+
+export type CreateSubscriberRequestType = {
+    name?: string;
+    email?: string;
+    phone?: string;
+    country?: string;
+    city?: string;
+    addressLines?: string[];
+    zip?: string;
+    careOf?: string;
+};

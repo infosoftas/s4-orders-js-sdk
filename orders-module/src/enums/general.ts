@@ -2,6 +2,10 @@ export enum PaymentMethodEnum {
     Vipps = 'Vipps',
     MobilePay = 'MobilePay',
     SwedbankPay = 'SwedbankPay',
+    Invoice = 'Invoice',
+    Email = 'Email',
+    EHF = 'EHF',
+    OIO = 'OIO',
 }
 
 export enum MessageEventTypeEnum {

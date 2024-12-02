@@ -186,7 +186,23 @@ const App: FC<ConfigType> = ({
                 top?.location?.origin || '*'
             );
         }
-        if (url) {
+        if (
+            data?.paymentMethod === PaymentMethodEnum.Email ||
+            data?.paymentMethod === PaymentMethodEnum.Invoice
+        ) {
+            if (window === top) {
+                setIsConfirmed(true);
+                setLoading(false);
+                top.postMessage(
+                    {
+                        type: MessageEventTypeEnum.ORDER_FLOW_COMPLETE,
+                        isCompleted: true,
+                        orderInfo: data || null,
+                    },
+                    top?.location?.origin || '*'
+                );
+            }
+        } else if (url) {
             if (
                 showIframe &&
                 data?.paymentMethod === PaymentMethodEnum.SwedbankPay
