@@ -11,13 +11,14 @@ type Props = {
     errorReqMsg?: string;
     errorInvalidPhoneMsg?: string;
     errors?: {
-        phoneNumber?: {
+        [key: string]: {
             message?: string;
         };
     };
 };
 
 const PhoneFiled: FC<Props> = ({
+    name = 'phoneNumber',
     required = false,
     readOnly = false,
     label = 'Phone number',
@@ -36,7 +37,7 @@ const PhoneFiled: FC<Props> = ({
                 placeholder=" "
                 readOnly={readOnly}
                 type="tel"
-                {...register('phoneNumber', {
+                {...register(name, {
                     required: required ? errorReqMsg : false,
                     pattern: {
                         value: /^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\./0-9]{6,14}$/g,
@@ -47,10 +48,8 @@ const PhoneFiled: FC<Props> = ({
             <label className="label-control" htmlFor={id}>
                 {label} {required && <span className="text-error">*</span>}
             </label>
-            {errors && errors.phoneNumber && (
-                <div className="text-error caption">
-                    {errors.phoneNumber.message}
-                </div>
+            {errors && errors[name] && (
+                <div className="text-error caption">{errors[name].message}</div>
             )}
         </div>
     );

@@ -12,6 +12,15 @@ export const FIELD_TYPES = {
     ORGANIZATION_NUMBER: 'organizationNumber',
     BUYER_REFERENCE: 'buyerReference',
     ORDER_REFERENCE: 'orderReference',
+    INVOICE_NAME: 'invoiceName',
+    INVOICE_ADDRESS: 'invoiceAddress',
+    INVOICE_CITY: 'invoiceCity',
+    INVOICE_ZIP: 'invoiceZip',
+    INVOICE_COUNTRY: 'invoiceCountry',
+    INVOICE_PHONE: 'invoicePhoneNumber',
+    INVOICE_EMAIL: 'invoiceEmail',
+    INVOICE_CARE_OF: 'invoiceCareOf',
+    INVOICE_BUYER_REFERENCE: 'invoiceBuyerReference',
 };
 
 export const DEFAULT_ORDER_FORM_FIELDS: OrderFormFiledType[] = [

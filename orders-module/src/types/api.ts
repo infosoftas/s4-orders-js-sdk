@@ -20,4 +20,5 @@ export type CreateSubscriberRequestType = {
     addressLines?: string[];
     zip?: string;
     careOf?: string;
+    buyerReference?: string;
 };

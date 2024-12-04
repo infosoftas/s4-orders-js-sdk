@@ -7,6 +7,7 @@ import { PaymentMethodEnum } from '../../enums/general';
 import { WRONG_MSG, PAYMENT_METHOD_DEFAULT } from '../../constants/index';
 import Alert from '../Alert/Alert';
 import Button from '../Button/Button';
+import ToggleField from '../FormFields/ToggleFiled';
 import formFieldsMapper from '../FormFields/FormFieldsMapper';
 import { DEFAULT_ORDER_FORM_FIELDS } from '../FormFields/FormFields.helper';
 import { OrderFormInputsType, OrderInfoType } from '../../types/order';
@@ -16,8 +17,10 @@ import {
     ErrorsMsg,
 } from '../../types/general';
 import {
+    orderInvoiceContactFields,
     prepareAgreementModel,
     prepareContactModel,
+    prepareInvoiceModel,
 } from '../../utils/order.helper';
 import {
     prepareErrorMessage,
@@ -45,9 +48,15 @@ type Props = {
     errorReqMsg?: string;
     errorInvalidEmailMsg?: string;
     errorInvalidPhoneMsg?: string;
+    invoiceAddressSelection?: {
+        enabled?: boolean;
+        label?: string;
+        fields?: OrderFormFiledType[];
+    };
 };
 
 const initialData = {
+    invoiceAddressSelection: false,
     name: '',
     email: '',
     phoneNumber: '',
@@ -56,6 +65,7 @@ const initialData = {
     address: '',
     zip: '',
     paymentMethod: PAYMENT_METHOD_DEFAULT,
+    orderReference: '',
 };
 
 const OrderForm: FC<Props> = ({
@@ -72,6 +82,7 @@ const OrderForm: FC<Props> = ({
     language,
     merchantAgreementUrl,
     paymentMethods = [],
+    invoiceAddressSelection,
     buttonText = 'Start',
     paymentMethodLabel = 'Select Payment Method',
     errorReqMsg = '',
@@ -95,13 +106,18 @@ const OrderForm: FC<Props> = ({
                 defaultValues?.paymentMethod || PAYMENT_METHOD_DEFAULT,
         },
     });
+    const invoiceOrderFields =
+        invoiceAddressSelection?.fields || orderInvoiceContactFields;
 
     const {
         register,
         handleSubmit,
         setValue,
+        watch,
         formState: { errors },
     } = methods;
+
+    const invoiceAddressToggle = watch('invoiceAddressSelection');
 
     const onSubmit: SubmitHandler<OrderFormInputsType> = async (
         data
@@ -158,6 +174,13 @@ const OrderForm: FC<Props> = ({
                         templateSubscriptionPlanId: templatePackageId,
                     },
                     paymentAgreement: { ...agreements },
+                    invoiceContact: invoiceAddressToggle
+                        ? prepareInvoiceModel({
+                              data,
+                              orderFields: invoiceOrderFields,
+                          })
+                        : undefined,
+                    orderReference: data.orderReference || undefined,
                 });
                 callback(responseOrder.terminalRedirectUrl, {
                     orderId: responseOrder.id,
@@ -238,6 +261,35 @@ const OrderForm: FC<Props> = ({
                 {orderFields?.length > 0 && (
                     <Suspense fallback={null}>
                         {orderFields.map((field) => {
+                            const Component = formFieldsMapper[field.name];
+
+                            return Component ? (
+                                <Component
+                                    key={field.name}
+                                    name={field.name}
+                                    label={field.label}
+                                    required={field.required || false}
+                                    readOnly={field.readOnly || false}
+                                    errors={errors}
+                                    errorReqMsg={errorReqMsg}
+                                    errorInvalidEmailMsg={errorInvalidEmailMsg}
+                                    errorInvalidPhoneMsg={errorInvalidPhoneMsg}
+                                />
+                            ) : null;
+                        })}
+                    </Suspense>
+                )}
+                {invoiceAddressSelection?.enabled && (
+                    <ToggleField
+                        name="invoiceAddressSelection"
+                        label={
+                            invoiceAddressSelection?.label ?? 'Invoice Address'
+                        }
+                    />
+                )}
+                {invoiceAddressToggle && invoiceOrderFields?.length > 0 && (
+                    <Suspense fallback={null}>
+                        {invoiceOrderFields.map((field) => {
                             const Component = formFieldsMapper[field.name];
 
                             return Component ? (

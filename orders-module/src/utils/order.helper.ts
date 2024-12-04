@@ -1,6 +1,7 @@
 import { MessageEventTypeEnum, PaymentMethodEnum } from '../enums/general';
 import { AgreementsType, OrderFormInputsType } from '../types/order';
 import { OrderFormFiledType } from '../types/general';
+import { FIELD_TYPES } from '../components/FormFields/FormFields.helper';
 
 type AgreementModelType = {
     paymentMethod: PaymentMethodEnum;
@@ -112,9 +113,111 @@ export const prepareContactModel = ({
             ? data.zip?.trim() || undefined
             : undefined,
         careOf: orderFields.find((i) => i.name === 'careOf')
-            ? data.zip?.trim() || undefined
+            ? data.careOf?.trim() || undefined
             : undefined,
     };
 
     return model;
 };
+
+export const prepareInvoiceModel = ({
+    data,
+    orderFields,
+}: ContactModelType) => {
+    const model = {
+        name: orderFields.find((i) => i.name === 'invoiceName')
+            ? data.invoiceName?.trim() || undefined
+            : undefined,
+        email: orderFields.find((i) => i.name === 'invoiceEmail')
+            ? data.invoiceEmail?.trim() || undefined
+            : undefined,
+        phone: orderFields.find((i) => i.name === 'invoicePhoneNumber')
+            ? data.invoicePhoneNumber?.trim() || undefined
+            : undefined,
+        country: orderFields.find((i) => i.name === 'invoiceCountry')
+            ? data.invoiceCountry?.trim() || undefined
+            : undefined,
+        city: orderFields.find((i) => i.name === 'invoiceCity')
+            ? data.invoiceCity?.trim() || undefined
+            : undefined,
+        addressLines: orderFields.find((i) => i.name === 'invoiceAddress')
+            ? data.invoiceAddress?.trim()
+                ? data.invoiceAddress
+                      ?.trim()
+                      .replace(/\r\n/g, '\n')
+                      .split('\n')
+                      .filter((line) => line)
+                : undefined
+            : undefined,
+        zip: orderFields.find((i) => i.name === 'invoiceZip')
+            ? data.invoiceZip?.trim() || undefined
+            : undefined,
+        careOf: orderFields.find((i) => i.name === 'invoiceCareOf')
+            ? data.invoiceCareOf?.trim() || undefined
+            : undefined,
+        buyerReference: orderFields.find(
+            (i) => i.name === 'invoiceBuyerReference'
+        )
+            ? data.invoiceBuyerReference?.trim() || undefined
+            : undefined,
+    };
+
+    return model;
+};
+
+export const orderInvoiceContactFields = [
+    {
+        name: FIELD_TYPES.INVOICE_NAME,
+        label: 'Name',
+        required: false,
+        readOnly: false,
+    },
+    {
+        name: FIELD_TYPES.INVOICE_EMAIL,
+        label: 'Email',
+        required: false,
+        readOnly: false,
+    },
+    {
+        name: FIELD_TYPES.INVOICE_PHONE,
+        label: 'Phone',
+        required: false,
+        readOnly: false,
+    },
+    {
+        name: FIELD_TYPES.INVOICE_COUNTRY,
+        label: 'Country',
+        required: false,
+        readOnly: false,
+    },
+    {
+        name: FIELD_TYPES.INVOICE_CITY,
+        label: 'City',
+        required: false,
+        readOnly: false,
+    },
+    {
+        name: FIELD_TYPES.INVOICE_ADDRESS,
+        label: 'Address',
+        required: false,
+        readOnly: false,
+    },
+    {
+        name: FIELD_TYPES.INVOICE_ZIP,
+        label: 'Zip',
+        required: false,
+        readOnly: false,
+    },
+    {
+        name: FIELD_TYPES.INVOICE_CARE_OF,
+        label: 'Contact Person',
+        required: false,
+        readOnly: false,
+    },
+    {
+        name: FIELD_TYPES.INVOICE_BUYER_REFERENCE,
+        label: 'Buyer Reference',
+        required: false,
+        readOnly: false,
+    },
+];

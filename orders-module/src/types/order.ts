@@ -10,6 +10,17 @@ export type OrderFormInputsType = {
     address?: string;
     zip?: string;
     careOf?: string;
+    invoiceAddressSelection?: boolean;
+    orderReference?: string;
+    invoiceName?: string;
+    invoiceEmail?: string;
+    invoicePhoneNumber?: string;
+    invoiceCountry?: string;
+    invoiceCity?: string;
+    invoiceAddress?: string;
+    invoiceZip?: string;
+    invoiceCareOf?: string;
+    invoiceBuyerReference?: string;
 };
 
 export type VippsMobilePay = {

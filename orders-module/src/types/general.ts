@@ -38,6 +38,11 @@ export type ConfigType = {
     paymentMethodsOptions?: PaymentMethodOptionsType;
     language?: string;
     merchantAgreementUrl?: string;
+    invoiceAddressSelection?: {
+        enabled?: boolean;
+        label?: string;
+        fields?: OrderFormFiledType[];
+    };
     settings?: {
         successText?: string;
         failureText?: string;

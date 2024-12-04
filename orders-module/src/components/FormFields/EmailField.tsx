@@ -11,13 +11,14 @@ type Props = {
     errorReqMsg?: string;
     errorInvalidEmailMsg?: string;
     errors?: {
-        email?: {
+        [key: string]: {
             message?: string;
         };
     };
 };
 
 const EmailField: FC<Props> = ({
+    name = 'email',
     required = false,
     readOnly = false,
     label = 'Email',
@@ -36,7 +37,7 @@ const EmailField: FC<Props> = ({
                 className={`input-control ${readOnly ? 'read-only' : ''}`}
                 readOnly={readOnly}
                 type="email"
-                {...register('email', {
+                {...register(name, {
                     required: required ? errorReqMsg : false,
                     pattern: {
                         value: /^[-!#-'*+/-9=?^-~]+(?:\.[-!#-'*+/-9=?^-~]+)*@[-!#-'*+/-9=?^-~]+(?:\.[-!#-'*+/-9=?^-~]{2,20})+$/i,
@@ -47,8 +48,8 @@ const EmailField: FC<Props> = ({
             <label className="label-control" htmlFor={id}>
                 {label} {required && <span className="text-error">*</span>}
             </label>
-            {errors && errors.email && (
-                <div className="text-error caption">{errors.email.message}</div>
+            {errors && errors[name] && (
+                <div className="text-error caption">{errors[name].message}</div>
             )}
         </div>
     );

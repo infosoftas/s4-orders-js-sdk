@@ -10,6 +10,7 @@ type RequestOrderStartType = {
     };
     paymentAgreement: AgreementsType;
     invoiceContact?: CreateSubscriberRequestType;
+    orderReference?: string;
 };
 
 type OrderResponseType = {

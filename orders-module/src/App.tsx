@@ -27,6 +27,7 @@ const App: FC<ConfigType> = ({
     redirectUrl,
     showIframe,
     paymentMethodsOptions,
+    invoiceAddressSelection,
     availablePaymentMethods = [],
     language = 'en-US',
     merchantAgreementUrl = '',
@@ -256,6 +257,7 @@ const App: FC<ConfigType> = ({
                         paymentMethodsOptions={paymentMethodsOptions}
                         language={language}
                         merchantAgreementUrl={merchantAgreementUrl}
+                        invoiceAddressSelection={invoiceAddressSelection}
                     />
                 )}
                 {showIframe && <MainIframe iframeSrc={iframeSrc} />}

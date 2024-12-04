@@ -10,13 +10,14 @@ type Props = {
     label?: string;
     errorReqMsg?: string;
     errors?: {
-        address?: {
+        [key: string]: {
             message?: string;
         };
     };
 };
 
 const AddressField: FC<Props> = ({
+    name = 'address',
     required = false,
     readOnly = false,
     label = 'Address',
@@ -33,17 +34,15 @@ const AddressField: FC<Props> = ({
                 placeholder=" "
                 readOnly={readOnly}
                 className={`input-control ${readOnly ? 'read-only' : ''}`}
-                {...register('address', {
+                {...register(name, {
                     required: required ? errorReqMsg : false,
                 })}
             />
             <label className="label-control" htmlFor={id}>
                 {label} {required && <span className="text-error">*</span>}
             </label>
-            {errors && errors.address && (
-                <div className="text-error caption">
-                    {errors.address.message}
-                </div>
+            {errors && errors[name] && (
+                <div className="text-error caption">{errors[name].message}</div>
             )}
         </div>
     );
