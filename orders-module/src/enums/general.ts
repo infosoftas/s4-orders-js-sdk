@@ -16,3 +16,15 @@ export enum MessageEventTypeEnum {
     CANCEL = 'cancel',
     COMPLETE = 'complete',
 }
+
+export enum InvoiceLookupNetworkEnum {
+    EHF = '0192',
+    OIO_GLN = '0088',
+    OIO_Danish_CVR = '0096',
+}
+
+export enum FormTypeEnum {
+    ORDER = 'order',
+    EHF = 'EHF',
+    OIO = 'OIO',
+}

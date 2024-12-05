@@ -43,7 +43,7 @@ type Props = {
     paymentMethodsOptions?: PaymentMethodOptionsType;
     defaultValues?: OrderFormInputsType;
     paymentMethods?: { label: string; value: PaymentMethodEnum }[];
-    buttonText?: string;
+    submitButtonText?: string;
     paymentMethodLabel?: string;
     errorReqMsg?: string;
     errorInvalidEmailMsg?: string;
@@ -83,7 +83,7 @@ const OrderForm: FC<Props> = ({
     merchantAgreementUrl,
     paymentMethods = [],
     invoiceAddressSelection,
-    buttonText = 'Start',
+    submitButtonText = 'Start',
     paymentMethodLabel = 'Select Payment Method',
     errorReqMsg = '',
     errorInvalidEmailMsg = '',
@@ -311,7 +311,7 @@ const OrderForm: FC<Props> = ({
                 <Button
                     type="submit"
                     loading={loading}
-                    buttonText={buttonText}
+                    buttonText={submitButtonText}
                 />
                 <Alert className="mt-2" msg={apiErrorMsg} />
                 {errorsMsg?.length > 0 &&

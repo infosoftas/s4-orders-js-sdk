@@ -7,7 +7,7 @@ import './button.scss';
 type Props = {
     onClick?: (e: MouseEvent<HTMLButtonElement>) => void;
     type?: 'button' | 'submit' | 'reset';
-    btnType?: 'primary';
+    btnType?: 'primary' | 'default';
     buttonText?: string;
     loading?: boolean;
     disable?: boolean;

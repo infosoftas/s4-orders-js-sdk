@@ -46,7 +46,11 @@ export type ConfigType = {
     settings?: {
         successText?: string;
         failureText?: string;
-        buttonText?: string;
+        submitButtonText?: string;
+        backButtonText?: string;
+        verifyButtonText?: string;
+        organizationNumberLabel?: string;
+        glnLabel?: string;
         orderDefaultValues?: OrderFormInputsType;
         paymentMethodLabel?: string;
         errorReqMsg?: string;

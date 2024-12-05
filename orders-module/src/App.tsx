@@ -1,8 +1,14 @@
 import { FC, useEffect, useState } from 'react';
 
-import { MessageEventTypeEnum, PaymentMethodEnum } from './enums/general';
+import {
+    FormTypeEnum,
+    MessageEventTypeEnum,
+    PaymentMethodEnum,
+} from './enums/general';
 import useMessageEvent from './hooks/useMessageEvent';
 import OrderForm from './components/OrderForm/OrderForm';
+import OIOForm from './components/OIOForm/OIOForm';
+import EHFForm from './components/EHFForm/EHFForm';
 import Loader from './components/Loader/Loader';
 import MainIframe from './components/MainIframe/MainIframe';
 import Alert from './components/Alert/Alert';
@@ -35,6 +41,11 @@ const App: FC<ConfigType> = ({
         successText: 'Order successful completed!',
         failureText: 'Something went wrong!',
         buttonText: 'Start',
+        submitButtonText: 'Start',
+        backButtonText: 'Back',
+        verifyButtonText: 'Verify',
+        organizationNumberLabel: 'CVR',
+        glnLabel: 'GLN',
     },
 }) => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -46,6 +57,7 @@ const App: FC<ConfigType> = ({
     const [failedMsg, setFailedMsg] = useState<string>('');
     const [errorsMsg, setErrorsMsg] = useState<string[]>([]);
     const [orderInfo, setOrderInfo] = useState<OrderInfoType | null>(null);
+    const [formType, setFormType] = useState(FormTypeEnum.ORDER);
 
     useEffect(() => {
         if (apiKey) {
@@ -108,6 +120,7 @@ const App: FC<ConfigType> = ({
             setIsFailed(true);
             setLoading(false);
             setShowOrderForm(true);
+            setFormType(FormTypeEnum.ORDER);
         }
     };
 
@@ -191,18 +204,15 @@ const App: FC<ConfigType> = ({
             data?.paymentMethod === PaymentMethodEnum.Email ||
             data?.paymentMethod === PaymentMethodEnum.Invoice
         ) {
-            if (window === top) {
-                setIsConfirmed(true);
-                setLoading(false);
-                top.postMessage(
-                    {
-                        type: MessageEventTypeEnum.ORDER_FLOW_COMPLETE,
-                        isCompleted: true,
-                        orderInfo: data || null,
-                    },
-                    top?.location?.origin || '*'
-                );
-            }
+            messageCallback({
+                orderId: data.orderId || orderId || '',
+                agreementId: '',
+                orderInfo: data || orderInfo || null,
+            });
+        } else if (data?.paymentMethod === PaymentMethodEnum.EHF) {
+            setFormType(FormTypeEnum.EHF);
+        } else if (data?.paymentMethod === PaymentMethodEnum.OIO) {
+            setFormType(FormTypeEnum.OIO);
         } else if (url) {
             if (
                 showIframe &&
@@ -217,6 +227,18 @@ const App: FC<ConfigType> = ({
         }
 
         setIframeSrc(null);
+    };
+
+    const handleInvoiceBack = () => {
+        setFormType(FormTypeEnum.ORDER);
+    };
+
+    const handleInvoiceForm = async () => {
+        await messageCallback({
+            orderId: orderId || '',
+            agreementId: '',
+            orderInfo: orderInfo || null,
+        });
     };
 
     if (window !== top) {
@@ -238,27 +260,67 @@ const App: FC<ConfigType> = ({
                     </div>
                 )}
                 {!iframeSrc && showOrderForm && (
-                    <OrderForm
-                        callback={handleForm}
-                        templatePackageId={templatePackageId}
-                        subscriberId={subscriberId}
-                        userId={userId}
-                        identityProviderId={identityProviderId}
-                        organizationId={organizationId}
-                        paymentMethods={availablePaymentMethods}
-                        buttonText={settings?.buttonText}
-                        paymentMethodLabel={settings?.paymentMethodLabel}
-                        errorReqMsg={settings?.errorReqMsg}
-                        errorInvalidEmailMsg={settings?.errorInvalidEmailMsg}
-                        errorInvalidPhoneMsg={settings?.errorInvalidPhoneMsg}
-                        defaultValues={settings?.orderDefaultValues}
-                        redirectUrl={redirectUrl}
-                        showIframe={showIframe}
-                        paymentMethodsOptions={paymentMethodsOptions}
-                        language={language}
-                        merchantAgreementUrl={merchantAgreementUrl}
-                        invoiceAddressSelection={invoiceAddressSelection}
-                    />
+                    <>
+                        {formType === FormTypeEnum.OIO && (
+                            <OIOForm
+                                onBack={handleInvoiceBack}
+                                callback={handleInvoiceForm}
+                                backButtonText={settings?.backButtonText}
+                                verifyButtonText={settings?.verifyButtonText}
+                                organizationNumberLabel={
+                                    settings?.organizationNumberLabel
+                                }
+                                glnLabel={settings?.glnLabel}
+                            />
+                        )}
+                        {formType === FormTypeEnum.EHF && (
+                            <EHFForm
+                                onBack={handleInvoiceBack}
+                                callback={handleInvoiceForm}
+                                backButtonText={settings?.backButtonText}
+                                verifyButtonText={settings?.verifyButtonText}
+                                organizationNumberLabel={
+                                    settings?.organizationNumberLabel
+                                }
+                            />
+                        )}
+                        {formType !== FormTypeEnum.OIO &&
+                            formType !== FormTypeEnum.EHF && (
+                                <OrderForm
+                                    callback={handleForm}
+                                    templatePackageId={templatePackageId}
+                                    subscriberId={subscriberId}
+                                    userId={userId}
+                                    identityProviderId={identityProviderId}
+                                    organizationId={organizationId}
+                                    paymentMethods={availablePaymentMethods}
+                                    submitButtonText={
+                                        settings?.submitButtonText
+                                    }
+                                    paymentMethodLabel={
+                                        settings?.paymentMethodLabel
+                                    }
+                                    errorReqMsg={settings?.errorReqMsg}
+                                    errorInvalidEmailMsg={
+                                        settings?.errorInvalidEmailMsg
+                                    }
+                                    errorInvalidPhoneMsg={
+                                        settings?.errorInvalidPhoneMsg
+                                    }
+                                    defaultValues={settings?.orderDefaultValues}
+                                    redirectUrl={redirectUrl}
+                                    showIframe={showIframe}
+                                    paymentMethodsOptions={
+                                        paymentMethodsOptions
+                                    }
+                                    language={language}
+                                    merchantAgreementUrl={merchantAgreementUrl}
+                                    invoiceAddressSelection={
+                                        invoiceAddressSelection
+                                    }
+                                />
+                            )}
+                    </>
                 )}
                 {showIframe && <MainIframe iframeSrc={iframeSrc} />}
                 {isConfirmed && (
