@@ -9,7 +9,7 @@ import { LogLevel, BrowserCacheLocation } from '@azure/msal-browser';
 export const msalConfig = {
     auth: {
         clientId: process.env.CLIENT_ID || '',
-        authority: process.env.AUTHORITY || '',
+        authority: `${process.env.AUTHORITY || ''}${process.env.SIGN_IN_AUTHORITY || ''}`,
         knownAuthorities: [process.env.KNOWN_AUTHORITIES || ''],
         mainWindowRedirectUri: '/',
         postLogoutRedirectUri: '/',
@@ -69,4 +69,4 @@ export const graphConfig = {
     graphMeEndpoint: 'https://graph.microsoft.com/v1.0/me',
 };
 
-export const SignUpAuthority = process.env.SIGN_UP_AUTHORITY || '';
+export const SignUpAuthority = `${process.env.AUTHORITY || ''}${process.env.SIGN_UP_AUTHORITY || ''}`;

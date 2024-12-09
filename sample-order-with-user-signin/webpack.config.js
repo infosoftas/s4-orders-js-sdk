@@ -3,7 +3,6 @@ const webpack = require('webpack');
 const Dotenv = require('dotenv-webpack');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
@@ -34,6 +33,7 @@ module.exports = (env) => {
                 Src: path.resolve(__dirname, 'src'),
                 API: path.resolve(__dirname, 'src/api'),
                 Component: path.resolve(__dirname, 'src/components'),
+                Context: path.resolve(__dirname, 'src/context'),
                 Utils: path.resolve(__dirname, 'src/utils'),
                 Hooks: path.resolve(__dirname, 'src/hooks'),
                 Models: path.resolve(__dirname, 'src/models'),
@@ -45,7 +45,6 @@ module.exports = (env) => {
         },
         optimization: {
             minimizer: [
-                new OptimizeCSSAssetsPlugin({}),
                 new TerserPlugin({
                     exclude: /\/node_modules/,
                     terserOptions: {
@@ -133,8 +132,13 @@ module.exports = (env) => {
                 },
                 {
                     test: /\.(ts|tsx)$/,
-                    exclude: /node_modules/,
-                    use: ['ts-loader'],
+                    // exclude: /node_modules/,
+                    use: {
+                        loader: 'ts-loader',
+                        options: {
+                            allowTsInNodeModules: true,
+                        },
+                    },
                 },
                 {
                     test: /\.scss$/,

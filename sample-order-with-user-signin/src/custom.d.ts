@@ -15,3 +15,21 @@ declare module '*.png' {
 }
 
 declare module 'react-to-pdf';
+
+type OrderComponentType = {
+    root: Root | null;
+    init: (config: ConfigType) => void;
+    remove: () => void;
+    createSubscriber: ({ email: string }) => Promise<{ id: string }>;
+    mapSubscriberToUser: (
+        id: string,
+        data: {
+            userId: string;
+            identityProviderId: string;
+        }
+    ) => Promise<void>;
+};
+
+declare module '@infosoftas/s4-orders-js-sdk/src/index' {
+    export const orderComponent: OrderComponentType;
+}

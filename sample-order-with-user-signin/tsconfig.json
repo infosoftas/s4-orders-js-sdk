@@ -27,6 +27,7 @@
             "API": ["api"],
             "API/*": ["api/*"],
             "Component/*": ["components/*"],
+            "Context/*": ["context/*"],
             "Utils/*": ["utils/*"],
             "Hooks/*": ["hooks/*"],
             "Models/*": ["models/*"],

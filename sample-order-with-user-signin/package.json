@@ -18,6 +18,7 @@
     "dependencies": {
         "@azure/msal-browser": "^3.24.0",
         "@azure/msal-react": "^2.1.1",
+        "@infosoftas/s4-orders-js-sdk": "^0.0.1-alpha2b",
         "prop-types": "^15.8.1",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
@@ -50,7 +51,6 @@
         "eslint-webpack-plugin": "^4.2.0",
         "html-webpack-plugin": "^5.6.0",
         "mini-css-extract-plugin": "^2.9.1",
-        "optimize-css-assets-webpack-plugin": "^6.0.1",
         "sass": "^1.79.2",
         "sass-loader": "^16.0.1",
         "style-loader": "^4.0.0",

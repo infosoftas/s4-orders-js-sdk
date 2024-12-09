@@ -1,6 +1,18 @@
 # Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This application contains example of code for the Orders SDK usable to add orders for Tenants within INFO-Subscription.
+
+## Requirements
+
+Node 18 or higher.
+
+## Installation
+
+Install the package with:
+
+```sh
+npm install
+```
 
 ## Available Scripts
 
@@ -14,57 +26,214 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
 ### `npm run build`
 
-Builds the app for production to the `build` folder.\
+Builds the app for production to the `dist` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
 The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Usage
 
-### `npm run eject`
+In index.html configure order module, here example of configuration:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+<!-- prettier-ignore -->
+```js
+import { orderComponent } from './script.js';
+        const config = {
+            modulaTitle: 'MyCompany',
+            domElementId: 'order',
+            redirectUrl: window.location.href,
+            merchantAgreementUrl: "xxxx-xxxx-xxxx-xxxx",
+            showIframe: true,
+            apiKey: "xxxx-xxxx-xxxx-xxxx",
+            apiUrl: "xxxx-xxxx-xxxx-xxxx",
+            userId: "xxxx-xxxx-xxxx-xxxx",
+            subscriberId: "xxxx-xxxx-xxxx-xxxx",
+            templatePackageId: "xxxx-xxxx-xxxx-xxxx",
+            identityProviderId: "xxxx-xxxx-xxxx-xxxx",
+            organizationId: "xxxx-xxxx-xxxx-xxxx",
+            language: 'en-US',
+            availablePaymentMethods: [
+                { label: "Vipps", value: "Vipps" },
+                { label: "MobilePay", value: "MobilePay" },
+                { label: "Credit Card/Debit Card", value: "SwedbankPay" },
+                { label: 'Invoice', translateKey: 'Invoice', value: 'Invoice' },
+                { label: 'Email', translateKey: 'Email', value: 'Email' },
+                { label: 'EHF', translateKey: 'EHF', value: 'EHF' },
+                { label: 'OIO', translateKey: 'OIO', value: 'OIO' },
+            ],
+            paymentMethodsOptions: {
+                Vipps: {
+                    generateSubscriberContact: true,
+                    orderFormFields: [],
+                },
+                SwedbankPay: {
+                    orderFormFields: [
+                        {
+                            name: 'name',
+                            label: 'Name',
+                            required: false,
+                        },
+                        {
+                            name: 'phoneNumber',
+                            label: 'Phone',
+                            readOnly: false,
+                            required: false,
+                        },
+                        {
+                            name: 'email',
+                            label: 'Email',
+                            required: true,
+                            readOnly: false,
+                        },
+                        {
+                            name: 'country',
+                            label: 'Country',
+                            required: false,
+                            readOnly: false,
+                        },
+                        {
+                            name: 'city',
+                            label: 'City',
+                            required: false,
+                            readOnly: false,
+                        },
+                        {
+                            name: 'address',
+                            label: 'Address',
+                            required: false,
+                            readOnly: false,
+                        },
+                    ],
+                },
+                Invoice: {
+                    orderFormFields: [
+                        {
+                            name: 'country',
+                            label: 'Country',
+                            required: false,
+                            readOnly: false,
+                        },
+                        {
+                            name: 'city',
+                            label: 'City',
+                            required: false,
+                            readOnly: false,
+                        },
+                        {
+                            name: 'address',
+                            label: 'Address',
+                            required: false,
+                            readOnly: false,
+                        },
+                    ],
+                },
+                Email: {
+                    orderFormFields: [
+                        {
+                            name: 'country',
+                            label: 'Country',
+                            required: false,
+                            readOnly: false,
+                        },
+                        {
+                            name: 'city',
+                            label: 'City',
+                            required: false,
+                            readOnly: false,
+                        },
+                        {
+                            name: 'address',
+                            label: 'Address',
+                            required: false,
+                            readOnly: false,
+                        },
+                    ],
+                },
+                EHF: {
+                    orderFormFields: [
+                        {
+                            name: 'country',
+                            label: 'Country',
+                            required: false,
+                            readOnly: false,
+                        },
+                        {
+                            name: 'city',
+                            label: 'City',
+                            required: false,
+                            readOnly: false,
+                        },
+                        {
+                            name: 'address',
+                            label: 'Address',
+                            required: false,
+                            readOnly: false,
+                        },
+                    ],
+                },
+                OIO: {
+                    orderFormFields: [
+                        {
+                            name: 'country',
+                            label: 'Country',
+                            required: false,
+                            readOnly: false,
+                        },
+                        {
+                            name: 'city',
+                            label: 'City',
+                            required: false,
+                            readOnly: false,
+                        },
+                        {
+                            name: 'address',
+                            label: 'Address',
+                            required: false,
+                            readOnly: false,
+                        },
+                    ],
+                },
+            },
+            invoiceAddressSelection: {
+                enabled: true,
+                label: 'Invoice Address',
+                fields: [{
+                    name: 'invoiceEmail',
+                    label: 'Email',
+                    required: false,
+                    readOnly: false,
+                },],
+            },
+            settings: {
+                submitButtonText: 'Continue',
+                backButtonText: 'Back',
+                verifyButtonText: 'Verify',
+                organizationNumberLabel: 'CVR',
+                glnLabel: 'GLN/EAN',
+                paymentMethodLabel: 'Select Payment Method',
+                errorReqMsg: 'This field is required!',
+                errorInvalidEmailMsg: 'Invalid email address!',
+                errorInvalidPhoneMsg: 'Invalid phone number!',
+                successText: 'Order successful completed!',
+                failureText: 'Something went wrong!',
+                orderDefaultValues: {
+                    name: '',
+                    email: '',
+                    phoneNumber: '',
+                    paymentMethod: undefined,
+                },
+            }
+        };
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+        let timer = setInterval(() => {
+            let orderElement = document.getElementById('order');
+            if (!orderElement) return;
+            orderComponent?.remove();
+            orderComponent.init(config);
+            console.log('module init');
+            clearInterval(timer);
+        }, 300);
+```
