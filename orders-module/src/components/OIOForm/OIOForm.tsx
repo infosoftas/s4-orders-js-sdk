@@ -106,14 +106,14 @@ const EHFForm: FC<Props> = ({
                     label={organizationNumberLabel}
                     required={!gln}
                     readOnly={false}
-                    errors={errors}
+                    errors={!gln ? errors : undefined}
                 />
                 <InputField
                     name="gln"
                     label={glnLabel}
                     required={!cvr}
                     readOnly={false}
-                    errors={errors}
+                    errors={!cvr ? errors : undefined}
                 />
                 <div className="d-flex justify-center flex-wrap gap-2">
                     <Button
