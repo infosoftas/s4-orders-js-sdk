@@ -29,6 +29,7 @@ export const prepareAgreementModel = ({
     };
     const existUrl = new URL(window.location.href);
     const journey = existUrl.searchParams.get('journey');
+    const hashToken = existUrl.searchParams.get('hashToken');
     const url = showIframe
         ? window.location.href.split('?')[0]
         : redirectUrl || window.location.href;
@@ -37,6 +38,9 @@ export const prepareAgreementModel = ({
     if (journey) {
         cancelUrl.searchParams.append('journey', journey);
     }
+    if (hashToken) {
+        cancelUrl.searchParams.append('hashToken', hashToken);
+    }
     const confirmUrl = new URL(url);
     confirmUrl.searchParams.append(
         'action',
@@ -44,6 +48,9 @@ export const prepareAgreementModel = ({
     );
     if (journey) {
         confirmUrl.searchParams.append('journey', journey);
+    }
+    if (hashToken) {
+        confirmUrl.searchParams.append('hashToken', hashToken);
     }
 
     if (paymentMethod === PaymentMethodEnum.SwedbankPay) {

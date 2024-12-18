@@ -31,6 +31,7 @@ import './orderForm.scss';
 
 type Props = {
     callback: (url: string | null, orderInfo?: OrderInfoType | null) => void;
+    submitStartCallback?: (id: string) => void;
     templatePackageId: string;
     subscriberId?: string;
     userId?: string;
@@ -70,6 +71,7 @@ const initialData = {
 
 const OrderForm: FC<Props> = ({
     callback,
+    submitStartCallback,
     templatePackageId,
     subscriberId,
     userId,
@@ -143,6 +145,8 @@ const OrderForm: FC<Props> = ({
                 }
             }
 
+            submitStartCallback?.(id as string);
+
             if (id) {
                 const paymentMethod =
                     data.paymentMethod || PAYMENT_METHOD_DEFAULT;
@@ -183,6 +187,7 @@ const OrderForm: FC<Props> = ({
                     orderReference: data.orderReference || undefined,
                 });
                 callback(responseOrder.terminalRedirectUrl, {
+                    ...(data || {}),
                     orderId: responseOrder.id,
                     subscriberId: id,
                     paymentMethod: paymentMethod,

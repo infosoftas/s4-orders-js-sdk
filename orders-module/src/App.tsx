@@ -13,7 +13,11 @@ import Loader from './components/Loader/Loader';
 import MainIframe from './components/MainIframe/MainIframe';
 import Alert from './components/Alert/Alert';
 import { ConfigType, ErrorsMsg } from './types/general';
-import { CompleteOrderParamsType, OrderInfoType } from './types/order';
+import {
+    CompleteOrderParamsType,
+    OrderInfoType,
+    OrderFormInputsType,
+} from './types/order';
 import { orderComplete, orderDelete } from './api/OrdersApi';
 import { prepareErrorMessage, prepareErrorsArrayMessage } from './utils/helper';
 
@@ -22,6 +26,7 @@ import ErrorBoundary from './ErrorBoundary';
 import './App.scss';
 
 const App: FC<ConfigType> = ({
+    submitStartCallback,
     moduleTitle,
     apiKey,
     apiUrl,
@@ -45,7 +50,9 @@ const App: FC<ConfigType> = ({
         backButtonText: 'Back',
         verifyButtonText: 'Verify',
         organizationNumberLabel: 'CVR',
+        paymentMethodLabel: '',
         glnLabel: 'GLN',
+        orderDefaultValues: undefined,
     },
 }) => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -58,6 +65,9 @@ const App: FC<ConfigType> = ({
     const [errorsMsg, setErrorsMsg] = useState<string[]>([]);
     const [orderInfo, setOrderInfo] = useState<OrderInfoType | null>(null);
     const [formType, setFormType] = useState(FormTypeEnum.ORDER);
+    const [orderFormValues, setOrderFormValues] = useState(
+        settings?.orderDefaultValues
+    );
 
     useEffect(() => {
         if (apiKey) {
@@ -190,6 +200,9 @@ const App: FC<ConfigType> = ({
         setIsFailed(false);
         setOrderId(data?.orderId || null);
         setOrderInfo(data || null);
+        if (data) {
+            setOrderFormValues(data as unknown as OrderFormInputsType);
+        }
         if (window === top) {
             top.postMessage(
                 {
@@ -222,7 +235,10 @@ const App: FC<ConfigType> = ({
                 return;
             }
 
-            window.location.href = url;
+            setTimeout(() => {
+                window.location.href = url;
+            }, 300);
+
             return;
         }
 
@@ -288,6 +304,7 @@ const App: FC<ConfigType> = ({
                             formType !== FormTypeEnum.EHF && (
                                 <OrderForm
                                     callback={handleForm}
+                                    submitStartCallback={submitStartCallback}
                                     templatePackageId={templatePackageId}
                                     subscriberId={subscriberId}
                                     userId={userId}
@@ -307,7 +324,7 @@ const App: FC<ConfigType> = ({
                                     errorInvalidPhoneMsg={
                                         settings?.errorInvalidPhoneMsg
                                     }
-                                    defaultValues={settings?.orderDefaultValues}
+                                    defaultValues={orderFormValues}
                                     redirectUrl={redirectUrl}
                                     showIframe={showIframe}
                                     paymentMethodsOptions={
