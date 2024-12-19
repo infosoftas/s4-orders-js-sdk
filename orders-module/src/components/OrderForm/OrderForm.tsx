@@ -1,10 +1,14 @@
-import { FC, ChangeEvent, Suspense, useState } from 'react';
+import { FC, ChangeEvent, Suspense, useState, useMemo } from 'react';
 import { FormProvider, useForm, SubmitHandler } from 'react-hook-form';
 
 import { createSubscriber, mapSubscriberToUser } from '../../api/SubscribeApi';
 import { orderStart } from '../../api/OrdersApi';
 import { PaymentMethodEnum } from '../../enums/general';
-import { WRONG_MSG, PAYMENT_METHOD_DEFAULT } from '../../constants/index';
+import {
+    WRONG_MSG,
+    PAYMENT_METHOD_DEFAULT,
+    INVOICE_ALLOWED_PAYMENT_METHODS,
+} from '../../constants/index';
 import Alert from '../Alert/Alert';
 import Button from '../Button/Button';
 import ToggleField from '../FormFields/ToggleFiled';
@@ -44,8 +48,10 @@ type Props = {
     paymentMethodsOptions?: PaymentMethodOptionsType;
     defaultValues?: OrderFormInputsType;
     paymentMethods?: { label: string; value: PaymentMethodEnum }[];
+    allowedPaymentMethods?: PaymentMethodEnum[];
     submitButtonText?: string;
     paymentMethodLabel?: string;
+    paymentMethodNotAllowedMsg?: string;
     errorReqMsg?: string;
     errorInvalidEmailMsg?: string;
     errorInvalidPhoneMsg?: string;
@@ -53,6 +59,7 @@ type Props = {
         enabled?: boolean;
         label?: string;
         fields?: OrderFormFiledType[];
+        paymentMethods?: PaymentMethodEnum[];
     };
 };
 
@@ -84,9 +91,11 @@ const OrderForm: FC<Props> = ({
     language,
     merchantAgreementUrl,
     paymentMethods = [],
+    allowedPaymentMethods,
     invoiceAddressSelection,
     submitButtonText = 'Start',
     paymentMethodLabel = 'Select Payment Method',
+    paymentMethodNotAllowedMsg = 'This payment method not allowed!',
     errorReqMsg = '',
     errorInvalidEmailMsg = '',
     errorInvalidPhoneMsg = '',
@@ -111,6 +120,10 @@ const OrderForm: FC<Props> = ({
     const invoiceOrderFields =
         invoiceAddressSelection?.fields || orderInvoiceContactFields;
 
+    const invoicePaymentMethods =
+        invoiceAddressSelection?.paymentMethods ||
+        INVOICE_ALLOWED_PAYMENT_METHODS;
+
     const {
         register,
         handleSubmit,
@@ -120,6 +133,7 @@ const OrderForm: FC<Props> = ({
     } = methods;
 
     const invoiceAddressToggle = watch('invoiceAddressSelection');
+    const paymentMethodInput = watch('paymentMethod');
 
     const onSubmit: SubmitHandler<OrderFormInputsType> = async (
         data
@@ -221,7 +235,28 @@ const OrderForm: FC<Props> = ({
             paymentMethodsOptions?.[e.target.value as PaymentMethodEnum]
                 ?.orderFormFields ?? DEFAULT_ORDER_FORM_FIELDS;
         setOrderFields(orderFieldsLocal);
+        if (
+            !invoicePaymentMethods.includes(e.target.value as PaymentMethodEnum)
+        ) {
+            setValue('invoiceAddressSelection', false);
+        }
     };
+
+    const allowPaymentMethod = useMemo(() => {
+        if (!allowedPaymentMethods || allowedPaymentMethods?.length === 0) {
+            return true;
+        }
+
+        if (
+            allowedPaymentMethods.includes(
+                paymentMethodInput as PaymentMethodEnum
+            )
+        ) {
+            return true;
+        }
+
+        return false;
+    }, [allowedPaymentMethods, paymentMethodInput]);
 
     return (
         <FormProvider {...methods}>
@@ -263,7 +298,7 @@ const OrderForm: FC<Props> = ({
                         )}
                     </div>
                 )}
-                {orderFields?.length > 0 && (
+                {orderFields?.length > 0 && allowPaymentMethod && (
                     <Suspense fallback={null}>
                         {orderFields.map((field) => {
                             const Component = formFieldsMapper[field.name];
@@ -284,42 +319,63 @@ const OrderForm: FC<Props> = ({
                         })}
                     </Suspense>
                 )}
-                {invoiceAddressSelection?.enabled && (
-                    <ToggleField
-                        name="invoiceAddressSelection"
-                        label={
-                            invoiceAddressSelection?.label ?? 'Invoice Address'
-                        }
+                {invoiceAddressSelection?.enabled &&
+                    allowPaymentMethod &&
+                    invoicePaymentMethods.includes(
+                        paymentMethodInput as PaymentMethodEnum
+                    ) && (
+                        <ToggleField
+                            name="invoiceAddressSelection"
+                            label={
+                                invoiceAddressSelection?.label ??
+                                'Invoice Address'
+                            }
+                        />
+                    )}
+                {invoiceAddressToggle &&
+                    invoiceOrderFields?.length > 0 &&
+                    allowPaymentMethod && (
+                        <Suspense fallback={null}>
+                            {invoiceOrderFields.map((field) => {
+                                const Component = formFieldsMapper[field.name];
+
+                                return Component ? (
+                                    <Component
+                                        key={field.name}
+                                        name={field.name}
+                                        label={field.label}
+                                        required={field.required || false}
+                                        readOnly={field.readOnly || false}
+                                        errors={errors}
+                                        errorReqMsg={errorReqMsg}
+                                        errorInvalidEmailMsg={
+                                            errorInvalidEmailMsg
+                                        }
+                                        errorInvalidPhoneMsg={
+                                            errorInvalidPhoneMsg
+                                        }
+                                    />
+                                ) : null;
+                            })}
+                        </Suspense>
+                    )}
+                {allowPaymentMethod && (
+                    <Button
+                        type="submit"
+                        loading={loading}
+                        buttonText={submitButtonText}
                     />
                 )}
-                {invoiceAddressToggle && invoiceOrderFields?.length > 0 && (
-                    <Suspense fallback={null}>
-                        {invoiceOrderFields.map((field) => {
-                            const Component = formFieldsMapper[field.name];
-
-                            return Component ? (
-                                <Component
-                                    key={field.name}
-                                    name={field.name}
-                                    label={field.label}
-                                    required={field.required || false}
-                                    readOnly={field.readOnly || false}
-                                    errors={errors}
-                                    errorReqMsg={errorReqMsg}
-                                    errorInvalidEmailMsg={errorInvalidEmailMsg}
-                                    errorInvalidPhoneMsg={errorInvalidPhoneMsg}
-                                />
-                            ) : null;
-                        })}
-                    </Suspense>
-                )}
-                <Button
-                    type="submit"
-                    loading={loading}
-                    buttonText={submitButtonText}
+                <Alert
+                    className="mt-2"
+                    msg={
+                        allowPaymentMethod
+                            ? apiErrorMsg
+                            : paymentMethodNotAllowedMsg
+                    }
                 />
-                <Alert className="mt-2" msg={apiErrorMsg} />
                 {errorsMsg?.length > 0 &&
+                    allowPaymentMethod &&
                     errorsMsg.map((i) => <Alert className="mt-2" msg={i} />)}
             </form>
         </FormProvider>

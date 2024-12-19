@@ -18,6 +18,7 @@ type Props = {
     backButtonText?: string;
     verifyButtonText?: string;
     organizationNumberLabel?: string;
+    organizationNumber?: string;
     className?: string;
 };
 
@@ -35,6 +36,7 @@ const EHFForm: FC<Props> = ({
     backButtonText = '',
     verifyButtonText = '',
     organizationNumberLabel = '',
+    organizationNumber = '',
     className = '',
 }) => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -44,6 +46,7 @@ const EHFForm: FC<Props> = ({
     const methods = useForm<EHFFormInputsType>({
         defaultValues: {
             ...initialData,
+            organizationNumber,
         },
     });
 

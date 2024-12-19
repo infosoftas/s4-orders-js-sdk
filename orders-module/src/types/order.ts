@@ -10,6 +10,7 @@ export type OrderFormInputsType = {
     address?: string;
     zip?: string;
     careOf?: string;
+    organizationNumber?: string;
     invoiceAddressSelection?: boolean;
     orderReference?: string;
     invoiceName?: string;

@@ -40,6 +40,7 @@ const App: FC<ConfigType> = ({
     paymentMethodsOptions,
     invoiceAddressSelection,
     availablePaymentMethods = [],
+    allowedPaymentMethods,
     language = 'en-US',
     merchantAgreementUrl = '',
     settings = {
@@ -49,10 +50,15 @@ const App: FC<ConfigType> = ({
         submitButtonText: 'Start',
         backButtonText: 'Back',
         verifyButtonText: 'Verify',
-        organizationNumberLabel: 'CVR',
+        organizationNumberLabel: 'Organization Number',
         paymentMethodLabel: '',
         glnLabel: 'GLN',
+        cvrLabel: 'CVR',
         orderDefaultValues: undefined,
+        errorReqMsg: '',
+        errorInvalidEmailMsg: '',
+        errorInvalidPhoneMsg: '',
+        paymentMethodNotAllowedMsg: '',
     },
 }) => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -283,10 +289,11 @@ const App: FC<ConfigType> = ({
                                 callback={handleInvoiceForm}
                                 backButtonText={settings?.backButtonText}
                                 verifyButtonText={settings?.verifyButtonText}
-                                organizationNumberLabel={
-                                    settings?.organizationNumberLabel
-                                }
+                                organizationNumberLabel={settings?.cvrLabel}
                                 glnLabel={settings?.glnLabel}
+                                organizationNumber={
+                                    orderFormValues?.organizationNumber
+                                }
                             />
                         )}
                         {formType === FormTypeEnum.EHF && (
@@ -297,6 +304,9 @@ const App: FC<ConfigType> = ({
                                 verifyButtonText={settings?.verifyButtonText}
                                 organizationNumberLabel={
                                     settings?.organizationNumberLabel
+                                }
+                                organizationNumber={
+                                    orderFormValues?.organizationNumber
                                 }
                             />
                         )}
@@ -311,11 +321,17 @@ const App: FC<ConfigType> = ({
                                     identityProviderId={identityProviderId}
                                     organizationId={organizationId}
                                     paymentMethods={availablePaymentMethods}
+                                    allowedPaymentMethods={
+                                        allowedPaymentMethods
+                                    }
                                     submitButtonText={
                                         settings?.submitButtonText
                                     }
                                     paymentMethodLabel={
                                         settings?.paymentMethodLabel
+                                    }
+                                    paymentMethodNotAllowedMsg={
+                                        settings?.paymentMethodNotAllowedMsg
                                     }
                                     errorReqMsg={settings?.errorReqMsg}
                                     errorInvalidEmailMsg={

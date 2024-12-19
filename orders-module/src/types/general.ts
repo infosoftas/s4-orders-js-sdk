@@ -36,6 +36,7 @@ export type ConfigType = {
     redirectUrl?: string;
     showIframe?: boolean;
     availablePaymentMethods?: { label: string; value: PaymentMethodEnum }[];
+    allowedPaymentMethods?: PaymentMethodEnum[];
     paymentMethodsOptions?: PaymentMethodOptionsType;
     language?: string;
     merchantAgreementUrl?: string;
@@ -51,12 +52,14 @@ export type ConfigType = {
         backButtonText?: string;
         verifyButtonText?: string;
         organizationNumberLabel?: string;
+        cvrLabel?: string;
         glnLabel?: string;
         orderDefaultValues?: OrderFormInputsType;
         paymentMethodLabel?: string;
         errorReqMsg?: string;
         errorInvalidEmailMsg?: string;
         errorInvalidPhoneMsg?: string;
+        paymentMethodNotAllowedMsg?: string;
     };
 };
 

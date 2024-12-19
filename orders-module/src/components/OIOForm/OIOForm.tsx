@@ -18,6 +18,7 @@ type Props = {
     backButtonText?: string;
     verifyButtonText?: string;
     organizationNumberLabel?: string;
+    organizationNumber?: string;
     glnLabel?: string;
     className?: string;
 };
@@ -38,6 +39,7 @@ const EHFForm: FC<Props> = ({
     backButtonText = '',
     verifyButtonText = '',
     organizationNumberLabel = '',
+    organizationNumber = '',
     glnLabel = '',
     className = '',
 }) => {
@@ -48,6 +50,7 @@ const EHFForm: FC<Props> = ({
     const methods = useForm<OIOFormInputsType>({
         defaultValues: {
             ...initialData,
+            cvr: organizationNumber,
         },
     });
 
