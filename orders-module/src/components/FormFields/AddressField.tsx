@@ -27,7 +27,7 @@ const AddressField: FC<Props> = ({
     const { register } = useFormContext();
     const id = uuidv4();
     return (
-        <div className="field-wrapper" data-testid="sdk-address-field-id">
+        <div className="field-wrapper" data-testid={`sdk-${name}-field-id`}>
             <textarea
                 id={id}
                 autoComplete="address"

@@ -1,26 +1,47 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { FormProvider, useForm, SubmitHandler } from 'react-hook-form';
 
-import { invoiceLookup } from '../../api/InvoiceApi';
 import Alert from '../Alert/Alert';
 import Button from '../Button/Button';
 import InputField from '../FormFields/InputField';
+import { DEFAULT_ORDER_FORM_FIELDS } from '../FormFields/FormFields.helper';
+
+import { PaymentMethodEnum } from '../../enums/general';
 import {
-    prepareErrorMessage,
-    prepareErrorsArrayMessage,
-} from '../../utils/helper';
-import { InvoiceLookupNetworkEnum } from '../../enums/general';
-import { ErrorsMsg } from '../../types/general';
+    OrderFormFiledType,
+    PaymentMethodOptionsType,
+} from '../../types/general';
+import useOrderForm from '../../hooks/useOrderForm';
+import { orderInvoiceContactFields } from '../../utils/order.helper';
+import { OrderFormInputsType, OrderInfoType } from '../../types/order';
 
 type Props = {
-    callback: (value: string) => void;
+    callback: (url: string | null, orderInfo?: OrderInfoType | null) => void;
     onBack: () => void;
+    submitStartCallback?: (id: string) => void;
+    className?: string;
     backButtonText?: string;
     verifyButtonText?: string;
     organizationNumberLabel?: string;
     organizationNumber?: string;
     glnLabel?: string;
-    className?: string;
+    templatePackageId: string;
+    subscriberId?: string;
+    userId?: string;
+    identityProviderId?: string;
+    organizationId: string;
+    redirectUrl?: string;
+    showIframe?: boolean;
+    language: string;
+    merchantAgreementUrl: string;
+    orderValues?: OrderFormInputsType;
+    paymentMethodsOptions?: PaymentMethodOptionsType;
+    invoiceAddressSelection?: {
+        enabled?: boolean;
+        label?: string;
+        fields?: OrderFormFiledType[];
+        paymentMethods?: PaymentMethodEnum[];
+    };
 };
 
 type OIOFormInputsType = {
@@ -36,17 +57,26 @@ const initialData = {
 const EHFForm: FC<Props> = ({
     callback,
     onBack,
+    submitStartCallback,
+    className = '',
     backButtonText = '',
     verifyButtonText = '',
     organizationNumberLabel = '',
     organizationNumber = '',
     glnLabel = '',
-    className = '',
+    templatePackageId,
+    subscriberId,
+    userId,
+    identityProviderId,
+    organizationId,
+    redirectUrl,
+    showIframe,
+    language,
+    merchantAgreementUrl,
+    orderValues,
+    paymentMethodsOptions,
+    invoiceAddressSelection,
 }) => {
-    const [loading, setLoading] = useState<boolean>(false);
-    const [apiErrorMsg, setApiErrorMsg] = useState<string>('');
-    const [errorsMsg, setErrorsMsg] = useState<string[]>([]);
-
     const methods = useForm<OIOFormInputsType>({
         defaultValues: {
             ...initialData,
@@ -63,34 +93,35 @@ const EHFForm: FC<Props> = ({
     const cvr = watch('cvr');
     const gln = watch('gln');
 
+    const invoiceOrderFields =
+        invoiceAddressSelection?.fields || orderInvoiceContactFields;
+
+    const orderFields =
+        paymentMethodsOptions?.[orderValues?.paymentMethod as PaymentMethodEnum]
+            ?.orderFormFields ?? DEFAULT_ORDER_FORM_FIELDS;
+
+    const { orderSubmit, loading, apiErrorMsg, errorsMsg } = useOrderForm({
+        callback,
+        submitStartCallback,
+        organizationId,
+        subscriberId,
+        userId,
+        identityProviderId,
+        orderFields,
+        redirectUrl,
+        showIframe,
+        language,
+        merchantAgreementUrl,
+        paymentMethodsOptions,
+        templatePackageId,
+        invoiceAddressToggle: orderValues?.invoiceAddressSelection,
+        invoiceOrderFields,
+    });
+
     const onSubmit: SubmitHandler<OIOFormInputsType> = async (
         data
     ): Promise<void> => {
-        setApiErrorMsg('');
-        setErrorsMsg([]);
-        setLoading(true);
-        try {
-            await invoiceLookup({
-                network: data.gln
-                    ? InvoiceLookupNetworkEnum.OIO_GLN
-                    : InvoiceLookupNetworkEnum.OIO_Danish_CVR,
-                value: data.gln || data.cvr,
-            });
-            callback(data.gln || data.cvr);
-        } catch (error) {
-            setApiErrorMsg(prepareErrorMessage(error as Error));
-            setErrorsMsg(
-                prepareErrorsArrayMessage(
-                    (
-                        error as {
-                            errors: ErrorsMsg;
-                        }
-                    )?.errors
-                )
-            );
-        } finally {
-            setLoading(false);
-        }
+        orderSubmit({ ...orderValues, gln: data.gln, cvr: data.cvr });
     };
 
     const handleBack = () => {

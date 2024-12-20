@@ -21,4 +21,6 @@ export type CreateSubscriberRequestType = {
     zip?: string;
     careOf?: string;
     buyerReference?: string;
+    gln?: string;
+    organizationNumber?: string;
 };

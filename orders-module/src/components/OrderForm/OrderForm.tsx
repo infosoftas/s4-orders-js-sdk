@@ -1,11 +1,8 @@
 import { FC, ChangeEvent, Suspense, useState, useMemo } from 'react';
 import { FormProvider, useForm, SubmitHandler } from 'react-hook-form';
 
-import { createSubscriber, mapSubscriberToUser } from '../../api/SubscribeApi';
-import { orderStart } from '../../api/OrdersApi';
 import { PaymentMethodEnum } from '../../enums/general';
 import {
-    WRONG_MSG,
     PAYMENT_METHOD_DEFAULT,
     INVOICE_ALLOWED_PAYMENT_METHODS,
 } from '../../constants/index';
@@ -18,23 +15,15 @@ import { OrderFormInputsType, OrderInfoType } from '../../types/order';
 import {
     PaymentMethodOptionsType,
     OrderFormFiledType,
-    ErrorsMsg,
 } from '../../types/general';
-import {
-    orderInvoiceContactFields,
-    prepareAgreementModel,
-    prepareContactModel,
-    prepareInvoiceModel,
-} from '../../utils/order.helper';
-import {
-    prepareErrorMessage,
-    prepareErrorsArrayMessage,
-} from '../../utils/helper';
+import { orderInvoiceContactFields } from '../../utils/order.helper';
+import useOrderForm from '../../hooks/useOrderForm';
 
 import './orderForm.scss';
 
 type Props = {
     callback: (url: string | null, orderInfo?: OrderInfoType | null) => void;
+    updateFormData: (data: OrderFormInputsType) => void;
     submitStartCallback?: (id: string) => void;
     templatePackageId: string;
     subscriberId?: string;
@@ -78,6 +67,7 @@ const initialData = {
 
 const OrderForm: FC<Props> = ({
     callback,
+    updateFormData,
     submitStartCallback,
     templatePackageId,
     subscriberId,
@@ -100,9 +90,6 @@ const OrderForm: FC<Props> = ({
     errorInvalidEmailMsg = '',
     errorInvalidPhoneMsg = '',
 }) => {
-    const [loading, setLoading] = useState<boolean>(false);
-    const [apiErrorMsg, setApiErrorMsg] = useState<string>('');
-    const [errorsMsg, setErrorsMsg] = useState<string[]>([]);
     const [orderFields, setOrderFields] = useState<OrderFormFiledType[]>(
         paymentMethodsOptions?.[
             defaultValues?.paymentMethod || PAYMENT_METHOD_DEFAULT
@@ -135,98 +122,35 @@ const OrderForm: FC<Props> = ({
     const invoiceAddressToggle = watch('invoiceAddressSelection');
     const paymentMethodInput = watch('paymentMethod');
 
+    const { orderSubmit, loading, apiErrorMsg, errorsMsg } = useOrderForm({
+        callback,
+        submitStartCallback,
+        organizationId,
+        subscriberId,
+        userId,
+        identityProviderId,
+        orderFields,
+        redirectUrl,
+        showIframe,
+        language,
+        merchantAgreementUrl,
+        paymentMethodsOptions,
+        templatePackageId,
+        invoiceAddressToggle,
+        invoiceOrderFields,
+    });
+
     const onSubmit: SubmitHandler<OrderFormInputsType> = async (
         data
     ): Promise<void> => {
-        setApiErrorMsg('');
-        setErrorsMsg([]);
-
-        setLoading(true);
-        try {
-            let id: string | undefined = subscriberId;
-            const contactModel = prepareContactModel({ data, orderFields });
-            if (!subscriberId) {
-                const response = await createSubscriber({
-                    ...contactModel,
-                });
-                id = response.id;
-
-                if (userId && identityProviderId) {
-                    await mapSubscriberToUser(id, {
-                        userId: userId,
-                        identityProviderId: identityProviderId,
-                    });
-                }
-            }
-
-            submitStartCallback?.(id as string);
-
-            if (id) {
-                const paymentMethod =
-                    data.paymentMethod || PAYMENT_METHOD_DEFAULT;
-
-                const agreements = prepareAgreementModel({
-                    paymentMethod,
-                    redirectUrl,
-                    showIframe,
-                    phoneNumber: orderFields.find(
-                        (i) => i.name === 'phoneNumber'
-                    )
-                        ? data.phoneNumber?.trim() || undefined
-                        : undefined,
-                    language,
-                    merchantAgreementUrl,
-                    generateSubscriberContact:
-                        paymentMethodsOptions?.[
-                            data.paymentMethod as PaymentMethodEnum
-                        ]?.generateSubscriberContact || false,
-                    accountId:
-                        paymentMethodsOptions?.[
-                            data.paymentMethod as PaymentMethodEnum
-                        ]?.accountId,
-                });
-                const responseOrder = await orderStart({
-                    subscriberId: id,
-                    subscriptionPlan: {
-                        organizationId,
-                        templateSubscriptionPlanId: templatePackageId,
-                    },
-                    paymentAgreement: { ...agreements },
-                    invoiceContact: invoiceAddressToggle
-                        ? prepareInvoiceModel({
-                              data,
-                              orderFields: invoiceOrderFields,
-                          })
-                        : undefined,
-                    orderReference: data.orderReference || undefined,
-                });
-                callback(responseOrder.terminalRedirectUrl, {
-                    ...(data || {}),
-                    orderId: responseOrder.id,
-                    subscriberId: id,
-                    paymentMethod: paymentMethod,
-                });
-                return;
-            }
-            callback(null);
-            setApiErrorMsg(WRONG_MSG);
-            setErrorsMsg([]);
-        } catch (error) {
-            console.error(error);
-            setApiErrorMsg(prepareErrorMessage(error as Error));
-            setErrorsMsg(
-                prepareErrorsArrayMessage(
-                    (
-                        error as {
-                            errors: ErrorsMsg;
-                        }
-                    )?.errors
-                )
-            );
-            callback(null);
-        } finally {
-            setLoading(false);
+        if (
+            paymentMethodInput === PaymentMethodEnum.EHF ||
+            paymentMethodInput === PaymentMethodEnum.OIO
+        ) {
+            updateFormData(data);
+            return;
         }
+        await orderSubmit(data);
     };
 
     const handlePaymentChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -257,6 +181,16 @@ const OrderForm: FC<Props> = ({
 
         return false;
     }, [allowedPaymentMethods, paymentMethodInput]);
+
+    const showInvoiceFields =
+        invoiceAddressToggle &&
+        invoiceOrderFields?.length > 0 &&
+        allowPaymentMethod;
+
+    const showInvoiceToggle =
+        invoiceAddressSelection?.enabled &&
+        allowPaymentMethod &&
+        invoicePaymentMethods.includes(paymentMethodInput as PaymentMethodEnum);
 
     return (
         <FormProvider {...methods}>
@@ -319,46 +253,35 @@ const OrderForm: FC<Props> = ({
                         })}
                     </Suspense>
                 )}
-                {invoiceAddressSelection?.enabled &&
-                    allowPaymentMethod &&
-                    invoicePaymentMethods.includes(
-                        paymentMethodInput as PaymentMethodEnum
-                    ) && (
-                        <ToggleField
-                            name="invoiceAddressSelection"
-                            label={
-                                invoiceAddressSelection?.label ??
-                                'Invoice Address'
-                            }
-                        />
-                    )}
-                {invoiceAddressToggle &&
-                    invoiceOrderFields?.length > 0 &&
-                    allowPaymentMethod && (
-                        <Suspense fallback={null}>
-                            {invoiceOrderFields.map((field) => {
-                                const Component = formFieldsMapper[field.name];
+                {showInvoiceToggle && (
+                    <ToggleField
+                        name="invoiceAddressSelection"
+                        label={
+                            invoiceAddressSelection?.label ?? 'Invoice Address'
+                        }
+                    />
+                )}
+                {showInvoiceFields && (
+                    <Suspense fallback={null}>
+                        {invoiceOrderFields.map((field) => {
+                            const Component = formFieldsMapper[field.name];
 
-                                return Component ? (
-                                    <Component
-                                        key={field.name}
-                                        name={field.name}
-                                        label={field.label}
-                                        required={field.required || false}
-                                        readOnly={field.readOnly || false}
-                                        errors={errors}
-                                        errorReqMsg={errorReqMsg}
-                                        errorInvalidEmailMsg={
-                                            errorInvalidEmailMsg
-                                        }
-                                        errorInvalidPhoneMsg={
-                                            errorInvalidPhoneMsg
-                                        }
-                                    />
-                                ) : null;
-                            })}
-                        </Suspense>
-                    )}
+                            return Component ? (
+                                <Component
+                                    key={field.name}
+                                    name={field.name}
+                                    label={field.label}
+                                    required={field.required || false}
+                                    readOnly={field.readOnly || false}
+                                    errors={errors}
+                                    errorReqMsg={errorReqMsg}
+                                    errorInvalidEmailMsg={errorInvalidEmailMsg}
+                                    errorInvalidPhoneMsg={errorInvalidPhoneMsg}
+                                />
+                            ) : null;
+                        })}
+                    </Suspense>
+                )}
                 {allowPaymentMethod && (
                     <Button
                         type="submit"

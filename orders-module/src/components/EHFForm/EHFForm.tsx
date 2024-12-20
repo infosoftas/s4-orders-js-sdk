@@ -1,25 +1,46 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { FormProvider, useForm, SubmitHandler } from 'react-hook-form';
 
-import { invoiceLookup } from '../../api/InvoiceApi';
 import Alert from '../Alert/Alert';
 import Button from '../Button/Button';
 import InputField from '../FormFields/InputField';
+import { PaymentMethodEnum } from '../../enums/general';
 import {
-    prepareErrorMessage,
-    prepareErrorsArrayMessage,
-} from '../../utils/helper';
-import { InvoiceLookupNetworkEnum } from '../../enums/general';
-import { ErrorsMsg } from '../../types/general';
+    OrderFormFiledType,
+    PaymentMethodOptionsType,
+} from '../../types/general';
+import { OrderFormInputsType, OrderInfoType } from '../../types/order';
+import { orderInvoiceContactFields } from '../../utils/order.helper';
+import useOrderForm from '../../hooks/useOrderForm';
+import { DEFAULT_ORDER_FORM_FIELDS } from '../FormFields/FormFields.helper';
 
 type Props = {
-    callback: (value: string) => void;
+    callback: (url: string | null, orderInfo?: OrderInfoType | null) => void;
     onBack: () => void;
+    submitStartCallback?: (id: string) => void;
+    className?: string;
     backButtonText?: string;
     verifyButtonText?: string;
     organizationNumberLabel?: string;
     organizationNumber?: string;
-    className?: string;
+    glnLabel?: string;
+    templatePackageId: string;
+    subscriberId?: string;
+    userId?: string;
+    identityProviderId?: string;
+    organizationId: string;
+    redirectUrl?: string;
+    showIframe?: boolean;
+    language: string;
+    merchantAgreementUrl: string;
+    orderValues?: OrderFormInputsType;
+    paymentMethodsOptions?: PaymentMethodOptionsType;
+    invoiceAddressSelection?: {
+        enabled?: boolean;
+        label?: string;
+        fields?: OrderFormFiledType[];
+        paymentMethods?: PaymentMethodEnum[];
+    };
 };
 
 type EHFFormInputsType = {
@@ -33,16 +54,25 @@ const initialData = {
 const EHFForm: FC<Props> = ({
     callback,
     onBack,
+    submitStartCallback,
+    className = '',
     backButtonText = '',
     verifyButtonText = '',
     organizationNumberLabel = '',
     organizationNumber = '',
-    className = '',
+    templatePackageId,
+    subscriberId,
+    userId,
+    identityProviderId,
+    organizationId,
+    redirectUrl,
+    showIframe,
+    language,
+    merchantAgreementUrl,
+    orderValues,
+    paymentMethodsOptions,
+    invoiceAddressSelection,
 }) => {
-    const [loading, setLoading] = useState<boolean>(false);
-    const [apiErrorMsg, setApiErrorMsg] = useState<string>('');
-    const [errorsMsg, setErrorsMsg] = useState<string[]>([]);
-
     const methods = useForm<EHFFormInputsType>({
         defaultValues: {
             ...initialData,
@@ -55,32 +85,38 @@ const EHFForm: FC<Props> = ({
         formState: { errors },
     } = methods;
 
+    const invoiceOrderFields =
+        invoiceAddressSelection?.fields || orderInvoiceContactFields;
+
+    const orderFields =
+        paymentMethodsOptions?.[orderValues?.paymentMethod as PaymentMethodEnum]
+            ?.orderFormFields ?? DEFAULT_ORDER_FORM_FIELDS;
+
+    const { orderSubmit, loading, apiErrorMsg, errorsMsg } = useOrderForm({
+        callback,
+        submitStartCallback,
+        organizationId,
+        subscriberId,
+        userId,
+        identityProviderId,
+        orderFields,
+        redirectUrl,
+        showIframe,
+        language,
+        merchantAgreementUrl,
+        paymentMethodsOptions,
+        templatePackageId,
+        invoiceAddressToggle: orderValues?.invoiceAddressSelection,
+        invoiceOrderFields,
+    });
+
     const onSubmit: SubmitHandler<EHFFormInputsType> = async (
         data
     ): Promise<void> => {
-        setApiErrorMsg('');
-        setErrorsMsg([]);
-        setLoading(true);
-        try {
-            await invoiceLookup({
-                network: InvoiceLookupNetworkEnum.EHF,
-                value: data.organizationNumber,
-            });
-            callback(data.organizationNumber);
-        } catch (error) {
-            setApiErrorMsg(prepareErrorMessage(error as Error));
-            setErrorsMsg(
-                prepareErrorsArrayMessage(
-                    (
-                        error as {
-                            errors: ErrorsMsg;
-                        }
-                    )?.errors
-                )
-            );
-        } finally {
-            setLoading(false);
-        }
+        orderSubmit({
+            ...orderValues,
+            organizationNumber: data.organizationNumber,
+        });
     };
 
     const handleBack = () => {
