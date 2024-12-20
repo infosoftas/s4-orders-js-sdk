@@ -255,11 +255,19 @@ const App: FC<ConfigType> = ({
         setFormType(FormTypeEnum.ORDER);
     };
 
-    const handleInvoiceForm = async () => {
+    const updateFormData = (data: OrderFormInputsType) => {
+        setOrderFormValues(data);
+        setFormType(data.paymentMethod as unknown as FormTypeEnum);
+    };
+
+    const handleInvoiceForm = async (
+        _: string | null,
+        data?: OrderInfoType | null
+    ) => {
         await messageCallback({
-            orderId: orderId || '',
+            orderId: data?.orderId || orderId || '',
             agreementId: '',
-            orderInfo: orderInfo || null,
+            orderInfo: data || orderInfo || null,
         });
     };
 
@@ -294,6 +302,20 @@ const App: FC<ConfigType> = ({
                                 organizationNumber={
                                     orderFormValues?.organizationNumber
                                 }
+                                orderValues={orderFormValues}
+                                templatePackageId={templatePackageId}
+                                subscriberId={subscriberId}
+                                userId={userId}
+                                identityProviderId={identityProviderId}
+                                organizationId={organizationId}
+                                redirectUrl={redirectUrl}
+                                showIframe={showIframe}
+                                paymentMethodsOptions={paymentMethodsOptions}
+                                language={language}
+                                merchantAgreementUrl={merchantAgreementUrl}
+                                invoiceAddressSelection={
+                                    invoiceAddressSelection
+                                }
                             />
                         )}
                         {formType === FormTypeEnum.EHF && (
@@ -308,12 +330,27 @@ const App: FC<ConfigType> = ({
                                 organizationNumber={
                                     orderFormValues?.organizationNumber
                                 }
+                                orderValues={orderFormValues}
+                                templatePackageId={templatePackageId}
+                                subscriberId={subscriberId}
+                                userId={userId}
+                                identityProviderId={identityProviderId}
+                                organizationId={organizationId}
+                                redirectUrl={redirectUrl}
+                                showIframe={showIframe}
+                                paymentMethodsOptions={paymentMethodsOptions}
+                                language={language}
+                                merchantAgreementUrl={merchantAgreementUrl}
+                                invoiceAddressSelection={
+                                    invoiceAddressSelection
+                                }
                             />
                         )}
                         {formType !== FormTypeEnum.OIO &&
                             formType !== FormTypeEnum.EHF && (
                                 <OrderForm
                                     callback={handleForm}
+                                    updateFormData={updateFormData}
                                     submitStartCallback={submitStartCallback}
                                     templatePackageId={templatePackageId}
                                     subscriberId={subscriberId}

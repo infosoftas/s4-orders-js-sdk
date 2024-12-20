@@ -29,7 +29,7 @@ const EmailField: FC<Props> = ({
     const { register } = useFormContext();
     const id = uuidv4();
     return (
-        <div className="field-wrapper" data-testid="sdk-email-field-id">
+        <div className="field-wrapper" data-testid={`sdk-${name}-field-id`}>
             <input
                 id={id}
                 autoComplete="email"
