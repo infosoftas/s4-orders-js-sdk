@@ -69,6 +69,21 @@ const useOrderForm = ({
         setLoading(true);
         try {
             let id: string | undefined = subscriberId;
+            if (data.paymentMethod === PaymentMethodEnum.OIO) {
+                await invoiceLookup({
+                    network: data.gln
+                        ? InvoiceLookupNetworkEnum.OIO_GLN
+                        : InvoiceLookupNetworkEnum.OIO_Danish_CVR,
+                    value: data.gln || data.cvr || '',
+                });
+            }
+            if (data.paymentMethod === PaymentMethodEnum.EHF) {
+                await invoiceLookup({
+                    network: InvoiceLookupNetworkEnum.EHF,
+                    value: data.organizationNumber || '',
+                });
+            }
+
             const contactModel = prepareContactModel({ data, orderFields });
             if (!subscriberId) {
                 const response = await createSubscriber({
@@ -130,20 +145,7 @@ const useOrderForm = ({
                         : undefined,
                     orderReference: data.orderReference || undefined,
                 });
-                if (data.paymentMethod === PaymentMethodEnum.OIO) {
-                    await invoiceLookup({
-                        network: data.gln
-                            ? InvoiceLookupNetworkEnum.OIO_GLN
-                            : InvoiceLookupNetworkEnum.OIO_Danish_CVR,
-                        value: data.gln || data.cvr || '',
-                    });
-                }
-                if (data.paymentMethod === PaymentMethodEnum.EHF) {
-                    await invoiceLookup({
-                        network: InvoiceLookupNetworkEnum.EHF,
-                        value: data.organizationNumber || '',
-                    });
-                }
+
                 callback(responseOrder.terminalRedirectUrl, {
                     ...(data || {}),
                     orderId: responseOrder.id,
