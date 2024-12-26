@@ -147,7 +147,6 @@ export const prepareConfig = ({
     country,
     postalCode,
     streetAddress,
-    submitStartCallback,
 }: Props) => {
 
     const config = {
