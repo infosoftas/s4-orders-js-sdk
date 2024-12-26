@@ -49,6 +49,7 @@ type PaymentMethodOptionsType = {
         generateSubscriberContact?: boolean;
         accountId?: string;
         orderFormFields?: OrderFormFiledType[] | never[];
+        paymentInvoiceFields?: OrderFormFiledType[] | never[] | null;
     };
 }
 
@@ -64,9 +65,9 @@ type OrderFormInputsType = {
 };
 
 type ConfigType = {
-    submitStartCallback?: (subscriberId: string) => void;
     domElementId: string;
     moduleTitle?: string;
+    submitStartCallback?: (subscriberId: string) => void;
     apiKey: string;
     apiUrl: string;
     templatePackageId: string;
@@ -146,6 +147,7 @@ export const prepareConfig = ({
     country,
     postalCode,
     streetAddress,
+    submitStartCallback,
 }: Props) => {
 
     const config = {
@@ -217,6 +219,14 @@ export const prepareConfig = ({
                         readOnly: false,
                     },
                 ],
+                paymentInvoiceFields: [
+                    {
+                        name: OrderModuleFiledNameEnum.invoiceEmail,
+                        label: 'Email',
+                        required: true,
+                        readOnly: false,
+                    },
+            ],
             },
             EHF: {
                 orderFormFields: [
@@ -291,7 +301,7 @@ import { encodeJwt } from 'Utils/helper';
 
 const ORDER_PLACE_ID = 'sdk-order';
 
-const OrderPlace: FC = ({journey, userEmail, sub, emails, userId, name, city, country, postalCode, streetAddress}) => {
+const OrderPlace: FC = ({journey, userEmail, sub, emails, userId, name, city, country, postalCode, streetAddress, submitStartCallback}) => {
     const moduleMount = useRef(false);
     const [searchParams, setSearchParams] = useSearchParams();
 
