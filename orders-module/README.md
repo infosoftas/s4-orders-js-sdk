@@ -132,6 +132,7 @@ enum OrderModuleFiledNameEnum {
 }
 
 export const prepareConfig = ({
+    submitStartCallback,
     apiKey,
     apiUrl,
     userId,
@@ -264,12 +265,14 @@ export const prepareConfig = ({
             submitButtonText: 'Continue',
             backButtonText: 'Back',
             verifyButtonText: 'Verify',
-            organizationNumberLabel: 'CVR',
+            organizationNumberLabel: 'Organization Number',
             glnLabel: 'GLN/EAN',
+            cvrLabel: 'CVR',
             paymentMethodLabel: 'Select Payment Method',
             errorReqMsg: 'This field is required!',
             errorInvalidEmailMsg: 'Invalid email address!',
             errorInvalidPhoneMsg: 'Invalid phone number!',
+            paymentMethodNotAllowedMsg: 'This payment method not allowed!',
             successText: 'Success message',
             failureText: 'Failed message',
             orderDefaultValues: {
@@ -289,15 +292,32 @@ export const prepareConfig = ({
 };
 
 
-import { FC, useEffect, useRef } from 'react';
+import { FC, useEffect, useRef, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { orderComponent } from '@infosoftas/s4-orders-js-sdk/src/index';
 
 import { prepareConfig } from 'Utils/moduleConfig';
+import { encodeJwt } from 'Utils/helper';
 
 const ORDER_PLACE_ID = 'sdk-order';
 
-const OrderPlace: FC = ({userEmail, userId, name, city, country, postalCode, streetAddress, submitStartCallback}) => {
+const OrderPlace: FC = ({journey, userEmail, sub, emails, userId, name, city, country, postalCode, streetAddress, submitStartCallback}) => {
     const moduleMount = useRef(false);
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    const submitStartCallback = useCallback(
+        (subscriberId: string) => {
+            const hashTokenValue = {
+                extension_SubscriberId: subscriberId,
+                emails: emails,
+                sub: sub,
+            };
+
+            searchParams?.set('hashToken', encodeJwt(hashTokenValue) as string);
+            setSearchParams(searchParams);
+        },
+        [emails, sub, searchParams, setSearchParams]
+    );
 
     useEffect(() => {
         if (!moduleMount.current && idTokenClaims) {
@@ -317,12 +337,13 @@ const OrderPlace: FC = ({userEmail, userId, name, city, country, postalCode, str
                 country: country,
                 postalCode: postalCode,
                 streetAddress: streetAddress,
-                submitStartCallback,
+                journey: journey,
+                submitStartCallback: submitStartCallback,
             });
             orderComponent?.remove();
             orderComponent?.init(config);
         }
-    }, [userEmail, userId, name, city, country, postalCode, streetAddress, submitStartCallback]);
+    }, [userEmail, userId, name, city, country, postalCode, streetAddress, journey, submitStartCallback]);
 
     return (
         <div
@@ -352,4 +373,4 @@ export default OrderPlace;
 | availablePaymentMethods | [] | available payment methods |
 | language | 'en-US' | language |
 | merchantAgreementUrl | '' | vipps and MobilePay property |
-| settings | {successText: 'Order successful completed!',failureText: 'Something went wrong!',submitButtonText: 'Start',backButtonText: 'Back',verifyButtonText: 'Verify',organizationNumberLabel: 'CVR',glnLabel: 'GLN',paymentMethodLabel:'Select Payment Method',} | label and text properties |
+| settings | {successText: 'Order successful completed!',failureText: 'Something went wrong!',submitButtonText: 'Start',backButtonText: 'Back',verifyButtonText: 'Verify',organizationNumberLabel: 'CVR',glnLabel: 'GLN',paymentMethodLabel:'Select Payment Method', orderDefaultValues: 'Default order form values' } | label and text properties |
