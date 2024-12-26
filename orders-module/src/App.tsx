@@ -65,6 +65,9 @@ const App: FC<ConfigType> = ({
     const [showOrderForm, setShowOrderForm] = useState<boolean>(true);
     const [iframeSrc, setIframeSrc] = useState<string | null>(null);
     const [orderId, setOrderId] = useState<string | null>(null);
+    const [subscriberSdkId, setSubscriberSdkId] = useState<string | undefined>(
+        subscriberId || undefined
+    );
     const [isConfirmed, setIsConfirmed] = useState<boolean>(false);
     const [isFailed, setIsFailed] = useState<boolean>(false);
     const [failedMsg, setFailedMsg] = useState<string>('');
@@ -271,6 +274,11 @@ const App: FC<ConfigType> = ({
         });
     };
 
+    const onSubmitStart = (id: string) => {
+        setSubscriberSdkId(id);
+        submitStartCallback?.(id);
+    };
+
     if (window !== top) {
         return null;
     }
@@ -304,7 +312,7 @@ const App: FC<ConfigType> = ({
                                 }
                                 orderValues={orderFormValues}
                                 templatePackageId={templatePackageId}
-                                subscriberId={subscriberId}
+                                subscriberId={subscriberSdkId}
                                 userId={userId}
                                 identityProviderId={identityProviderId}
                                 organizationId={organizationId}
@@ -332,7 +340,7 @@ const App: FC<ConfigType> = ({
                                 }
                                 orderValues={orderFormValues}
                                 templatePackageId={templatePackageId}
-                                subscriberId={subscriberId}
+                                subscriberId={subscriberSdkId}
                                 userId={userId}
                                 identityProviderId={identityProviderId}
                                 organizationId={organizationId}
@@ -351,9 +359,9 @@ const App: FC<ConfigType> = ({
                                 <OrderForm
                                     callback={handleForm}
                                     updateFormData={updateFormData}
-                                    submitStartCallback={submitStartCallback}
+                                    submitStartCallback={onSubmitStart}
                                     templatePackageId={templatePackageId}
-                                    subscriberId={subscriberId}
+                                    subscriberId={subscriberSdkId}
                                     userId={userId}
                                     identityProviderId={identityProviderId}
                                     organizationId={organizationId}
