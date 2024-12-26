@@ -301,7 +301,7 @@ import { encodeJwt } from 'Utils/helper';
 
 const ORDER_PLACE_ID = 'sdk-order';
 
-const OrderPlace: FC = ({journey, userEmail, sub, emails, userId, name, city, country, postalCode, streetAddress, submitStartCallback}) => {
+const OrderPlace: FC = ({journey, userEmail, sub, emails, userId, name, city, country, postalCode, streetAddress}) => {
     const moduleMount = useRef(false);
     const [searchParams, setSearchParams] = useSearchParams();
 
