@@ -104,12 +104,6 @@ const OrderForm: FC<Props> = ({
                 defaultValues?.paymentMethod || PAYMENT_METHOD_DEFAULT,
         },
     });
-    const invoiceOrderFields =
-        invoiceAddressSelection?.fields || orderInvoiceContactFields;
-
-    const invoicePaymentMethods =
-        invoiceAddressSelection?.paymentMethods ||
-        INVOICE_ALLOWED_PAYMENT_METHODS;
 
     const {
         register,
@@ -121,6 +115,16 @@ const OrderForm: FC<Props> = ({
 
     const invoiceAddressToggle = watch('invoiceAddressSelection');
     const paymentMethodInput = watch('paymentMethod');
+
+    const invoiceOrderFields =
+        paymentMethodsOptions?.[paymentMethodInput || PAYMENT_METHOD_DEFAULT]
+            ?.paymentInvoiceFields ||
+        invoiceAddressSelection?.fields ||
+        orderInvoiceContactFields;
+
+    const invoicePaymentMethods =
+        invoiceAddressSelection?.paymentMethods ||
+        INVOICE_ALLOWED_PAYMENT_METHODS;
 
     const { orderSubmit, loading, apiErrorMsg, errorsMsg } = useOrderForm({
         callback,

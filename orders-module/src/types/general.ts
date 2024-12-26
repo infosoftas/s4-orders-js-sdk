@@ -19,6 +19,7 @@ export type PaymentMethodOptionsType = {
         generateSubscriberContact?: boolean;
         accountId?: string;
         orderFormFields: OrderFormFiledType[];
+        paymentInvoiceFields?: OrderFormFiledType[] | never[] | null;
     };
 };
 

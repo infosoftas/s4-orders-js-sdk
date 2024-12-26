@@ -49,6 +49,7 @@ type PaymentMethodOptionsType = {
         generateSubscriberContact?: boolean;
         accountId?: string;
         orderFormFields?: OrderFormFiledType[] | never[];
+        paymentInvoiceFields?: OrderFormFiledType[] | never[] | null;
     };
 }
 
@@ -66,6 +67,7 @@ type OrderFormInputsType = {
 type ConfigType = {
     domElementId: string;
     moduleTitle?: string;
+    submitStartCallback?: (subscriberId: string) => void;
     apiKey: string;
     apiUrl: string;
     templatePackageId: string;
@@ -144,9 +146,11 @@ export const prepareConfig = ({
     country,
     postalCode,
     streetAddress,
+    submitStartCallback,
 }: Props) => {
 
     const config = {
+        submitStartCallback,
         moduleTitle: '',
         domElementId: ORDER_PLACE_ID,
         redirectUrl: window.location.href,
@@ -214,6 +218,14 @@ export const prepareConfig = ({
                         readOnly: false,
                     },
                 ],
+                paymentInvoiceFields: [
+                    {
+                        name: OrderModuleFiledNameEnum.invoiceEmail,
+                        label: 'Email',
+                        required: true,
+                        readOnly: false,
+                    },
+            ],
             },
             EHF: {
                 orderFormFields: [
@@ -284,7 +296,7 @@ import { prepareConfig } from 'Utils/moduleConfig';
 
 const ORDER_PLACE_ID = 'sdk-order';
 
-const OrderPlace: FC = ({userEmail, userId, name, city, country, postalCode, streetAddress}) => {
+const OrderPlace: FC = ({userEmail, userId, name, city, country, postalCode, streetAddress, submitStartCallback}) => {
     const moduleMount = useRef(false);
 
     useEffect(() => {
@@ -305,11 +317,12 @@ const OrderPlace: FC = ({userEmail, userId, name, city, country, postalCode, str
                 country: country,
                 postalCode: postalCode,
                 streetAddress: streetAddress,
+                submitStartCallback,
             });
             orderComponent?.remove();
             orderComponent?.init(config);
         }
-    }, [userEmail, userId, name, city, country, postalCode, streetAddress]);
+    }, [userEmail, userId, name, city, country, postalCode, streetAddress, submitStartCallback]);
 
     return (
         <div
