@@ -59,6 +59,8 @@ const App: FC<ConfigType> = ({
         errorInvalidEmailMsg: '',
         errorInvalidPhoneMsg: '',
         paymentMethodNotAllowedMsg: '',
+        invoiceLookupNotFoundText:
+            'There was no recipient found for the given information',
     },
 }) => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -324,6 +326,9 @@ const App: FC<ConfigType> = ({
                                 invoiceAddressSelection={
                                     invoiceAddressSelection
                                 }
+                                invoiceLookupNotFoundText={
+                                    settings?.invoiceLookupNotFoundText
+                                }
                             />
                         )}
                         {formType === FormTypeEnum.EHF && (
@@ -351,6 +356,9 @@ const App: FC<ConfigType> = ({
                                 merchantAgreementUrl={merchantAgreementUrl}
                                 invoiceAddressSelection={
                                     invoiceAddressSelection
+                                }
+                                invoiceLookupNotFoundText={
+                                    settings?.invoiceLookupNotFoundText
                                 }
                             />
                         )}

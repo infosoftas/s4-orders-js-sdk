@@ -41,6 +41,7 @@ type Props = {
         fields?: OrderFormFiledType[];
         paymentMethods?: PaymentMethodEnum[];
     };
+    invoiceLookupNotFoundText?: string;
 };
 
 type EHFFormInputsType = {
@@ -72,6 +73,7 @@ const EHFForm: FC<Props> = ({
     orderValues,
     paymentMethodsOptions,
     invoiceAddressSelection,
+    invoiceLookupNotFoundText,
 }) => {
     const methods = useForm<EHFFormInputsType>({
         defaultValues: {
@@ -108,6 +110,7 @@ const EHFForm: FC<Props> = ({
         templatePackageId,
         invoiceAddressToggle: orderValues?.invoiceAddressSelection,
         invoiceOrderFields,
+        invoiceLookupNotFoundText,
     });
 
     const onSubmit: SubmitHandler<EHFFormInputsType> = async (

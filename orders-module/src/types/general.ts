@@ -61,6 +61,7 @@ export type ConfigType = {
         errorInvalidEmailMsg?: string;
         errorInvalidPhoneMsg?: string;
         paymentMethodNotAllowedMsg?: string;
+        invoiceLookupNotFoundText?: string;
     };
 };
 
