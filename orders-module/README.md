@@ -272,6 +272,7 @@ export const prepareConfig = ({
             errorInvalidEmailMsg: 'Invalid email address!',
             errorInvalidPhoneMsg: 'Invalid phone number!',
             paymentMethodNotAllowedMsg: 'This payment method not allowed!',
+            invoiceLookupNotFoundText: 'There was no recipient found for the given information',
             successText: 'Success message',
             failureText: 'Failed message',
             orderDefaultValues: {
@@ -372,4 +373,4 @@ export default OrderPlace;
 | availablePaymentMethods | [] | available payment methods |
 | language | 'en-US' | language |
 | merchantAgreementUrl | '' | vipps and MobilePay property |
-| settings | {successText: 'Order successful completed!',failureText: 'Something went wrong!',submitButtonText: 'Start',backButtonText: 'Back',verifyButtonText: 'Verify',organizationNumberLabel: 'CVR',glnLabel: 'GLN',paymentMethodLabel:'Select Payment Method', orderDefaultValues: 'Default order form values' } | label and text properties |
+| settings | {successText: 'Order successful completed!',failureText: 'Something went wrong!',submitButtonText: 'Start',backButtonText: 'Back',verifyButtonText: 'Verify',organizationNumberLabel: 'CVR',glnLabel: 'GLN',paymentMethodLabel:'Select Payment Method', orderDefaultValues: 'Default order form values', paymentMethodNotAllowedMsg: 'This payment method not allowed!', invoiceLookupNotFoundText: 'There was no recipient found for the given information' } | label and text properties |

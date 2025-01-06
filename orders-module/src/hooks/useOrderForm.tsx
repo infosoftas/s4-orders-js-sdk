@@ -38,6 +38,7 @@ type Props = {
     orderFields: OrderFormFiledType[];
     invoiceAddressToggle?: boolean;
     invoiceOrderFields: OrderFormFiledType[];
+    invoiceLookupNotFoundText?: string;
 };
 
 const useOrderForm = ({
@@ -56,6 +57,7 @@ const useOrderForm = ({
     templatePackageId,
     invoiceAddressToggle,
     invoiceOrderFields,
+    invoiceLookupNotFoundText,
 }: Props) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [apiErrorMsg, setApiErrorMsg] = useState<string>('');
@@ -69,8 +71,9 @@ const useOrderForm = ({
         setLoading(true);
         try {
             let id: string | undefined = subscriberId;
+            let invoiceResponse = null;
             if (data.paymentMethod === PaymentMethodEnum.OIO) {
-                await invoiceLookup({
+                invoiceResponse = await invoiceLookup({
                     network: data.gln
                         ? InvoiceLookupNetworkEnum.OIO_GLN
                         : InvoiceLookupNetworkEnum.OIO_Danish_CVR,
@@ -78,10 +81,20 @@ const useOrderForm = ({
                 });
             }
             if (data.paymentMethod === PaymentMethodEnum.EHF) {
-                await invoiceLookup({
+                invoiceResponse = await invoiceLookup({
                     network: InvoiceLookupNetworkEnum.EHF,
                     value: data.organizationNumber || '',
                 });
+            }
+
+            if (invoiceResponse && !invoiceResponse?.recievesInvoice) {
+                setLoading(false);
+                const value =
+                    data.paymentMethod === PaymentMethodEnum.OIO
+                        ? data.gln || data.cvr || ''
+                        : data.organizationNumber || '';
+                setApiErrorMsg(`${invoiceLookupNotFoundText || ''} (${value})`);
+                return;
             }
 
             const contactModel = prepareContactModel({ data, orderFields });
