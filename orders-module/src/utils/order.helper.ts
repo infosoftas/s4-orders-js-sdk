@@ -14,6 +14,15 @@ type AgreementModelType = {
     accountId?: string;
 };
 
+const mapToSwedbankLanguage = (language: string) => {
+    const allowedLanguages = [ 'sv-SE', 'nb-NO', 'da-DK', 'fi-FI', 'en-GB', 'nn-NO', 'no-NO', 'se-NO' ];
+    if (allowedLanguages.includes(language)) {
+        return language;
+    }
+
+    return 'en-US'; // Default value for 'Swedbank'
+};
+
 export const prepareAgreementModel = ({
     paymentMethod,
     redirectUrl,
@@ -57,7 +66,7 @@ export const prepareAgreementModel = ({
         model.swedbankPay = {
             cancelUrl: `${cancelUrl}`,
             completeUrl: `${confirmUrl}`,
-            language,
+            language: mapToSwedbankLanguage(language),
             accountId,
         };
 
