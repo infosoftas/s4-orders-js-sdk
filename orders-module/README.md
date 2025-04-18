@@ -323,14 +323,14 @@ const OrderPlace: FC = ({journey, userEmail, sub, emails, userId, name, city, co
         if (!moduleMount.current && idTokenClaims) {
             moduleMount.current = true;
             const config = prepareConfig({
-                apiKey: process.env.API_KEY || '',
-                apiUrl: process.env.ORDER_SDK_API_URL || '',
+                apiKey: API_KEY,
+                apiUrl: API_URL,
                 userId: userId || '',
                 subscriberId: userEmail || '',
-                identityProviderId: process.env.IDENTITY_PROVIDER_ID || '',
-                templatePackageId: process.env.TEMPLATE_PACKAGE_ID || '',
-                selfServiceUrl: process.env.SELF_SERVICE_URL || '',
-                organizationId: process.env.ORGANIZATION_ID || '',
+                identityProviderId: IDENTITY_PROVIDER_ID,
+                templatePackageId: TEMPLATE_PACKAGE_ID,
+                selfServiceUrl: SELF_SERVICE_URL,
+                organizationId: ORGANIZATION_ID,
                 userEmail: userEmail || '',
                 name: name,
                 city: city,
