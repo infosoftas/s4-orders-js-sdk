@@ -15,10 +15,12 @@ type AgreementModelType = {
 };
 
 const mapToSwedbankLanguage = (language: string) => {
-    const allowedLanguages = [ 'sv-SE', 'nb-NO', 'da-DK', 'fi-FI', 'en-GB', 'nn-NO', 'no-NO', 'se-NO' ];
+    const allowedLanguages = [ 'en-US', 'sv-SE', 'nb-NO', 'da-DK', 'fi-FI', 'en-GB', 'nn-NO', 'no-NO', 'se-NO' ];
     if (allowedLanguages.includes(language)) {
         return language;
     }
+
+    console.warn(`Language ${language} not supported.`);
 
     return 'en-US'; // Default value for 'Swedbank'
 };
