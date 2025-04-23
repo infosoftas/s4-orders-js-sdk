@@ -22,9 +22,7 @@ export const createSubscriber = (
         url: '/subscriber',
         headers: {
             'S4-ORDERS-API-KEY':
-                sessionStorage.getItem('sdk_api_key') ||
-                process.env.API_KEY ||
-                '',
+                sessionStorage.getItem('sdk_api_key') || '',
         },
         body,
     }) as Promise<CreateSubscriberResponseType>;
@@ -38,9 +36,7 @@ export const mapSubscriberToUser = (
         url: `/subscriber/${id}/user`,
         headers: {
             'S4-ORDERS-API-KEY':
-                sessionStorage.getItem('sdk_api_key') ||
-                process.env.API_KEY ||
-                '',
+                sessionStorage.getItem('sdk_api_key') || '',
         },
         body,
     }) as Promise<MapSubscriberToUserResponseType>;
