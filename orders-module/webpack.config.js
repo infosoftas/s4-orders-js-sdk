@@ -1,22 +1,14 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const Dotenv = require('dotenv-webpack');
 const CopyPlugin = require('copy-webpack-plugin');
 
-const envEnum = {
-    qa: 'qa',
-    dev: 'dev',
-    prod: 'production',
-};
-
-module.exports = (env) => {
-    const enableSourceMap = env.mode === 'dev' ? true : false;
-
+module.exports = (env, argv) => {
+    const isDevelopment = argv.mode !== 'production' ? true : false;
     return {
-        mode: env.mode,
+        mode: argv.mode,
         target: 'web',
         entry: './src/index.tsx',
-        devtool: enableSourceMap ? 'inline-source-map' : false,
+        devtool: isDevelopment ? 'inline-source-map' : false,
         experiments: {
             outputModule: true,
         },
@@ -48,12 +40,6 @@ module.exports = (env) => {
         plugins: [
             new MiniCssExtractPlugin({
                 filename: 'css/style.css',
-            }),
-            new Dotenv({
-                path: `./.env.${
-                    env.mode === envEnum.prod ? 'prod' : env.mode || 'prod'
-                }`, // Path to .env file (this is the default)
-                safe: false, // load .env.example (defaults to "false" which does not use dotenv-safe)
             }),
             new CopyPlugin({
                 patterns: [
@@ -92,12 +78,12 @@ module.exports = (env) => {
                         },
                         {
                             loader: 'css-loader', // translates CSS into CommonJS
-                            options: { sourceMap: enableSourceMap },
+                            options: { sourceMap: isDevelopment },
                         },
                         {
                             loader: 'sass-loader', // compiles Scss to CSS
                             options: {
-                                sourceMap: enableSourceMap,
+                                sourceMap: isDevelopment,
                                 sassOptions: {
                                     javascriptEnabled: true,
                                 },

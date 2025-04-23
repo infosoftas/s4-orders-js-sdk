@@ -26,9 +26,7 @@ export const orderStart = (
         url: '/order',
         headers: {
             'S4-ORDERS-API-KEY':
-                sessionStorage.getItem('sdk_api_key') ||
-                process.env.API_KEY ||
-                '',
+                sessionStorage.getItem('sdk_api_key') || '',
         },
         body,
     }) as Promise<OrderResponseType>;
@@ -39,9 +37,7 @@ export const orderComplete = (id: string): Promise<OrderResponseType> =>
         url: `/order/${id}/complete`,
         headers: {
             'S4-ORDERS-API-KEY':
-                sessionStorage.getItem('sdk_api_key') ||
-                process.env.API_KEY ||
-                '',
+                sessionStorage.getItem('sdk_api_key') || '',
         },
         body: null,
     }) as Promise<OrderResponseType>;
@@ -52,9 +48,7 @@ export const orderDelete = (id: string): Promise<OrderResponseType> =>
         url: `/order/${id}`,
         headers: {
             'S4-ORDERS-API-KEY':
-                sessionStorage.getItem('sdk_api_key') ||
-                process.env.API_KEY ||
-                '',
+                sessionStorage.getItem('sdk_api_key') || '',
         },
         body: null,
     }) as Promise<OrderResponseType>;

@@ -17,9 +17,7 @@ export const invoiceLookup = (
         url: '/invoicelookup',
         headers: {
             'S4-ORDERS-API-KEY':
-                sessionStorage.getItem('sdk_api_key') ||
-                process.env.API_KEY ||
-                '',
+                sessionStorage.getItem('sdk_api_key') || '',
         },
         body,
     }) as Promise<InvoiceLookupResponseType>;
