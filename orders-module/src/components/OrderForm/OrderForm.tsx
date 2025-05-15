@@ -100,7 +100,7 @@ const OrderForm: FC<Props> = ({
     }
 
     if (!subscriberId) {
-        console.error('"organizationId" should be set' );
+        console.error('"subscriberId" should be set' );
     }
 
     if (!userId) {
