@@ -90,6 +90,27 @@ const OrderForm: FC<Props> = ({
     errorInvalidEmailMsg = '',
     errorInvalidPhoneMsg = '',
 }) => {
+
+    if (!templatePackageId) {
+        console.error('"templatePackageId" should be set' );
+    }
+
+    if (!organizationId) {
+        console.error('"organizationId" should be set' );
+    }
+
+    if (!subscriberId) {
+        console.error('"subscriberId" should be set' );
+    }
+
+    if (!userId) {
+        console.error('"userId" should be set' );
+    }
+
+    if (!identityProviderId) {
+        console.error('"identityProviderId" should be set' );
+    }
+
     const [orderFields, setOrderFields] = useState<OrderFormFiledType[]>(
         paymentMethodsOptions?.[
             defaultValues?.paymentMethod || PAYMENT_METHOD_DEFAULT

@@ -8,6 +8,15 @@ import App from './App';
 export const orderComponent = {
     root: null as Root | null,
     init: function (config: ConfigType) {
+
+        if (!config.apiKey) {
+            console.error('"apiKey" should be set' );
+        }
+        
+        if (!config.apiUrl) {
+            console.error('"apiUrl" should be set' );
+        }
+
         const domNode = document.getElementById(config.domElementId);
         orderComponent.root = createRoot(
             domNode || document.createElement('div')
