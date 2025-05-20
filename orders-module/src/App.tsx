@@ -102,6 +102,24 @@ const App: FC<ConfigType> = ({
         setFailedMsg('');
         setErrorsMsg([]);
         try {
+            if (!data.orderInfo) {
+                try {
+                    if (data.orderId) {
+                        await handleOrderDelete(data.orderId);
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
+
+                setLoading(false);
+                setOrderId(null);
+                setOrderInfo(null);
+                setIframeSrc(null);
+                setIsConfirmed(false);
+                setShowOrderForm(true);
+                return;
+            }
+
             await orderComplete(orderId || data.orderId || '');
             setIsConfirmed(true);
             setLoading(false);
