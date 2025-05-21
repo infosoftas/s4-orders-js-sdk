@@ -381,7 +381,7 @@ const App: FC<ConfigType> = ({
                             />
                         )}
                         {formType !== FormTypeEnum.OIO &&
-                            formType !== FormTypeEnum.EHF && (
+                            formType !== FormTypeEnum.EHF && templatePackageId && (
                                 <OrderForm
                                     callback={handleForm}
                                     updateFormData={updateFormData}
