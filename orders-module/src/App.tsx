@@ -102,23 +102,8 @@ const App: FC<ConfigType> = ({
         setFailedMsg('');
         setErrorsMsg([]);
         try {
-            if (!data.orderInfo) {
-                try {
-                    if (data.orderId) {
-                        await handleOrderDelete(data.orderId);
-                    }
-                } catch (error) {
-                    console.log(error);
-                }
-
-                setLoading(false);
-                setOrderId(null);
-                setOrderInfo(null);
-                setIframeSrc(null);
-                setIsConfirmed(false);
-                setShowOrderForm(true);
-                return;
-            }
+            // There is no way to detect the difference between "cancelled" and "accepted" payment for Vipps via UI
+            // Completing an order for cancelled payment is fine. The backend handles it correctly.
 
             await orderComplete(orderId || data.orderId || '');
             setIsConfirmed(true);
