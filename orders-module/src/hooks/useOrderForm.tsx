@@ -112,10 +112,15 @@ const useOrderForm = ({
                 sessionStorage.setItem('subscriberId', id); // For avoiding attempt of creating subscriber again
 
                 if (userId && identityProviderId) {
-                    await mapSubscriberToUser(id, {
+                    const mapResponse = await mapSubscriberToUser(id, {
                         userId: userId,
                         identityProviderId: identityProviderId,
                     });
+
+                    if (!mapResponse.id) {
+                        setErrorsMsg([WRONG_MSG]);
+                        return;
+                    }
                 }
             }
 
