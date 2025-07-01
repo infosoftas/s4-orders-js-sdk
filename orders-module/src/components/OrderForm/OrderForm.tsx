@@ -100,7 +100,10 @@ const OrderForm: FC<Props> = ({
     }
 
     if (!subscriberId) {
-        console.error('"subscriberId" should be set' );
+        const sessionSubscriberId = sessionStorage.getItem('subscriberId');
+        if (sessionSubscriberId) {
+            subscriberId = sessionSubscriberId;
+        }
     }
 
     if (!userId) {
