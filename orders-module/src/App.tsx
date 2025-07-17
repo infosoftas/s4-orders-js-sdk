@@ -27,6 +27,7 @@ import './App.scss';
 
 const App: FC<ConfigType> = ({
     submitStartCallback,
+    userActionCallback,
     moduleTitle,
     apiKey,
     apiUrl,
@@ -145,6 +146,7 @@ const App: FC<ConfigType> = ({
             setLoading(false);
             setShowOrderForm(true);
             setFormType(FormTypeEnum.ORDER);
+            userActionCallback?.('Select form', { form: FormTypeEnum.ORDER });
         }
     };
 

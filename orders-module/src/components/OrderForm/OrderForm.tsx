@@ -25,6 +25,7 @@ type Props = {
     callback: (url: string | null, orderInfo?: OrderInfoType | null) => void;
     updateFormData: (data: OrderFormInputsType) => void;
     submitStartCallback?: (id: string) => void;
+    userActionCallback?: (action: string, args: object | null | undefined) => void;
     templatePackageId: string;
     subscriberId?: string;
     userId?: string;
@@ -69,6 +70,7 @@ const OrderForm: FC<Props> = ({
     callback,
     updateFormData,
     submitStartCallback,
+    userActionCallback,
     templatePackageId,
     subscriberId,
     userId,

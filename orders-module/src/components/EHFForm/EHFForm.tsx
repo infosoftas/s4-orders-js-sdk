@@ -18,6 +18,7 @@ type Props = {
     callback: (url: string | null, orderInfo?: OrderInfoType | null) => void;
     onBack: () => void;
     submitStartCallback?: (id: string) => void;
+    userActionCallback?: (action: string, args: object | null | undefined) => void;
     className?: string;
     backButtonText?: string;
     verifyButtonText?: string;
@@ -56,6 +57,7 @@ const EHFForm: FC<Props> = ({
     callback,
     onBack,
     submitStartCallback,
+    userActionCallback,
     className = '',
     backButtonText = '',
     verifyButtonText = '',
@@ -123,6 +125,7 @@ const EHFForm: FC<Props> = ({
     };
 
     const handleBack = () => {
+        userActionCallback?.('User returns to main', null);
         onBack?.();
     };
 
