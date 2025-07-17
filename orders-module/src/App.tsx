@@ -240,8 +240,10 @@ const App: FC<ConfigType> = ({
             });
         } else if (data?.paymentMethod === PaymentMethodEnum.EHF) {
             setFormType(FormTypeEnum.EHF);
+            userActionCallback?.('Select form', { form: FormTypeEnum.EHF });
         } else if (data?.paymentMethod === PaymentMethodEnum.OIO) {
             setFormType(FormTypeEnum.OIO);
+            userActionCallback?.('Select form', { form: FormTypeEnum.OIO });
         } else if (url) {
             if (
                 showIframe &&
@@ -263,11 +265,13 @@ const App: FC<ConfigType> = ({
 
     const handleInvoiceBack = () => {
         setFormType(FormTypeEnum.ORDER);
+        userActionCallback?.('Select form', { form: FormTypeEnum.ORDER });
     };
 
     const updateFormData = (data: OrderFormInputsType) => {
         setOrderFormValues(data);
         setFormType(data.paymentMethod as unknown as FormTypeEnum);
+        userActionCallback?.('Select form', { form: data.paymentMethod });
     };
 
     const handleInvoiceForm = async (
