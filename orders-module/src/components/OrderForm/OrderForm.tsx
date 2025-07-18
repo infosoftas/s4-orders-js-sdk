@@ -155,6 +155,7 @@ const OrderForm: FC<Props> = ({
     const { orderSubmit, loading, apiErrorMsg, errorsMsg } = useOrderForm({
         callback,
         submitStartCallback,
+        userActionCallback,
         organizationId,
         subscriberId,
         userId,
@@ -194,6 +195,8 @@ const OrderForm: FC<Props> = ({
         ) {
             setValue('invoiceAddressSelection', false);
         }
+
+        userActionCallback?.('Selects payment method', { paymentMethod: e.target.value });
     };
 
     const allowPaymentMethod = useMemo(() => {

@@ -413,6 +413,7 @@ const App: FC<ConfigType> = ({
                                     invoiceAddressSelection={
                                         invoiceAddressSelection
                                     }
+                                    userActionCallback={userActionCallback}
                                 />
                             )}
                     </>
