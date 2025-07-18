@@ -25,6 +25,7 @@ import {
 type Props = {
     callback: (url: string | null, orderInfo?: OrderInfoType | null) => void;
     submitStartCallback?: (id: string) => void;
+    userActionCallback?: (action: string, args: object | null | undefined) => void;
     templatePackageId: string;
     subscriberId?: string;
     userId?: string;
@@ -44,6 +45,7 @@ type Props = {
 const useOrderForm = ({
     callback,
     submitStartCallback,
+    userActionCallback,
     organizationId,
     subscriberId,
     userId,
