@@ -60,6 +60,9 @@ const App: FC<ConfigType> = ({
         errorReqMsg: '',
         errorInvalidEmailMsg: '',
         errorInvalidPhoneMsg: '',
+        errorValidationTitleMsg: 'One or more validation errors occurred.',
+        errorValidationDenialOrderBlockingMsg: 'The order/subscription will not be created because the subscriber has a denial order blocking all.',
+        errorValidationBlockingOffersMsg: 'The order/subscription will not be created because the subscriber has a denial order blocking offers.',
         paymentMethodNotAllowedMsg: '',
         invoiceLookupNotFoundText:
             'There was no recipient found for the given information',
@@ -339,6 +342,10 @@ const App: FC<ConfigType> = ({
                                 invoiceLookupNotFoundText={
                                     settings?.invoiceLookupNotFoundText
                                 }
+                                userActionCallback={userActionCallback}
+                                errorValidationTitleMsg={settings?.errorValidationTitleMsg}
+                                errorValidationDenialOrderBlockingMsg={settings?.errorValidationDenialOrderBlockingMsg}
+                                errorValidationBlockingOffersMsg={settings?.errorValidationBlockingOffersMsg}
                             />
                         )}
                         {formType === FormTypeEnum.EHF && (
@@ -370,6 +377,10 @@ const App: FC<ConfigType> = ({
                                 invoiceLookupNotFoundText={
                                     settings?.invoiceLookupNotFoundText
                                 }
+                                userActionCallback={userActionCallback}
+                                errorValidationTitleMsg={settings?.errorValidationTitleMsg}
+                                errorValidationDenialOrderBlockingMsg={settings?.errorValidationDenialOrderBlockingMsg}
+                                errorValidationBlockingOffersMsg={settings?.errorValidationBlockingOffersMsg}
                             />
                         )}
                         {formType !== FormTypeEnum.OIO &&
@@ -415,6 +426,9 @@ const App: FC<ConfigType> = ({
                                         invoiceAddressSelection
                                     }
                                     userActionCallback={userActionCallback}
+                                    errorValidationTitleMsg={settings?.errorValidationTitleMsg}
+                                    errorValidationDenialOrderBlockingMsg={settings?.errorValidationDenialOrderBlockingMsg}
+                                    errorValidationBlockingOffersMsg={settings?.errorValidationBlockingOffersMsg}
                                 />
                             )}
                     </>

@@ -44,6 +44,9 @@ type Props = {
         paymentMethods?: PaymentMethodEnum[];
     };
     invoiceLookupNotFoundText?: string;
+    errorValidationTitleMsg?: string,
+    errorValidationDenialOrderBlockingMsg?: string,
+    errorValidationBlockingOffersMsg?: string,
 };
 
 type OIOFormInputsType = {
@@ -80,6 +83,9 @@ const EHFForm: FC<Props> = ({
     paymentMethodsOptions,
     invoiceAddressSelection,
     invoiceLookupNotFoundText,
+    errorValidationTitleMsg,
+    errorValidationDenialOrderBlockingMsg,
+    errorValidationBlockingOffersMsg
 }) => {
     const methods = useForm<OIOFormInputsType>({
         defaultValues: {
@@ -121,6 +127,9 @@ const EHFForm: FC<Props> = ({
         invoiceAddressToggle: orderValues?.invoiceAddressSelection,
         invoiceOrderFields,
         invoiceLookupNotFoundText,
+        errorValidationTitleMsg,
+        errorValidationDenialOrderBlockingMsg,
+        errorValidationBlockingOffersMsg
     });
 
     const onSubmit: SubmitHandler<OIOFormInputsType> = async (

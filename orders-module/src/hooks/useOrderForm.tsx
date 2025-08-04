@@ -20,6 +20,7 @@ import {
 import {
     prepareErrorMessage,
     prepareErrorsArrayMessage,
+    ErrorMessages,
 } from '../utils/helper';
 
 type Props = {
@@ -40,6 +41,9 @@ type Props = {
     invoiceAddressToggle?: boolean;
     invoiceOrderFields: OrderFormFiledType[];
     invoiceLookupNotFoundText?: string;
+    errorValidationTitleMsg?: string,
+    errorValidationDenialOrderBlockingMsg?: string,
+    errorValidationBlockingOffersMsg?: string
 };
 
 const useOrderForm = ({
@@ -60,6 +64,9 @@ const useOrderForm = ({
     invoiceAddressToggle,
     invoiceOrderFields,
     invoiceLookupNotFoundText,
+    errorValidationTitleMsg,
+    errorValidationDenialOrderBlockingMsg,
+    errorValidationBlockingOffersMsg
 }: Props) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [apiErrorMsg, setApiErrorMsg] = useState<string>('');
@@ -180,15 +187,23 @@ const useOrderForm = ({
             setApiErrorMsg(WRONG_MSG);
             setErrorsMsg([]);
         } catch (error) {
+
+            const translations = {
+                errorValidationTitleMsg,
+                errorValidationBlockingOffersMsg,
+                errorValidationDenialOrderBlockingMsg
+            } as ErrorMessages;
+
             console.error(error);
-            setApiErrorMsg(prepareErrorMessage(error as Error));
+            setApiErrorMsg(prepareErrorMessage(error as Error, undefined, translations));
             setErrorsMsg(
                 prepareErrorsArrayMessage(
                     (
                         error as {
                             errors: ErrorsMsg;
                         }
-                    )?.errors
+                    )?.errors,
+                    translations
                 )
             );
             callback(null);
