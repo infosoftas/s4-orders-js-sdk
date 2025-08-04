@@ -1,4 +1,4 @@
-import { PaymentMethodEnum } from '../enums/general';
+import { PaymentMethodEnum, UserActionEnum } from '../enums/general';
 import { OrderFormInputsType } from './order';
 
 declare global {
@@ -25,6 +25,7 @@ export type PaymentMethodOptionsType = {
 
 export type ConfigType = {
     submitStartCallback?: (subscriberId: string) => void;
+    userActionCallback?: (action: UserActionEnum, args: object | null | undefined) => void;
     domElementId: string;
     moduleTitle?: string;
     templatePackageId: string;

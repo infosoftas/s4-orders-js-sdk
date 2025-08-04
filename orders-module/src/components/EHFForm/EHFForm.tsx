@@ -4,7 +4,7 @@ import { FormProvider, useForm, SubmitHandler } from 'react-hook-form';
 import Alert from '../Alert/Alert';
 import Button from '../Button/Button';
 import InputField from '../FormFields/InputField';
-import { PaymentMethodEnum } from '../../enums/general';
+import { PaymentMethodEnum, UserActionEnum } from '../../enums/general';
 import {
     OrderFormFiledType,
     PaymentMethodOptionsType,
@@ -18,6 +18,7 @@ type Props = {
     callback: (url: string | null, orderInfo?: OrderInfoType | null) => void;
     onBack: () => void;
     submitStartCallback?: (id: string) => void;
+    userActionCallback?: (action: UserActionEnum, args: object | null | undefined) => void;
     className?: string;
     backButtonText?: string;
     verifyButtonText?: string;
@@ -56,6 +57,7 @@ const EHFForm: FC<Props> = ({
     callback,
     onBack,
     submitStartCallback,
+    userActionCallback,
     className = '',
     backButtonText = '',
     verifyButtonText = '',
@@ -123,6 +125,7 @@ const EHFForm: FC<Props> = ({
     };
 
     const handleBack = () => {
+        userActionCallback?.(UserActionEnum.RETURN_TO_MAIN, null);
         onBack?.();
     };
 

@@ -4,6 +4,7 @@ import {
     FormTypeEnum,
     MessageEventTypeEnum,
     PaymentMethodEnum,
+    UserActionEnum,
 } from './enums/general';
 import useMessageEvent from './hooks/useMessageEvent';
 import OrderForm from './components/OrderForm/OrderForm';
@@ -27,6 +28,7 @@ import './App.scss';
 
 const App: FC<ConfigType> = ({
     submitStartCallback,
+    userActionCallback,
     moduleTitle,
     apiKey,
     apiUrl,
@@ -145,6 +147,7 @@ const App: FC<ConfigType> = ({
             setLoading(false);
             setShowOrderForm(true);
             setFormType(FormTypeEnum.ORDER);
+            userActionCallback?.(UserActionEnum.SELECT_FORM, { form: FormTypeEnum.ORDER });
         }
     };
 
@@ -238,8 +241,10 @@ const App: FC<ConfigType> = ({
             });
         } else if (data?.paymentMethod === PaymentMethodEnum.EHF) {
             setFormType(FormTypeEnum.EHF);
+            userActionCallback?.(UserActionEnum.SELECT_FORM, { form: FormTypeEnum.EHF });
         } else if (data?.paymentMethod === PaymentMethodEnum.OIO) {
             setFormType(FormTypeEnum.OIO);
+            userActionCallback?.(UserActionEnum.SELECT_FORM, { form: FormTypeEnum.OIO });
         } else if (url) {
             if (
                 showIframe &&
@@ -261,11 +266,13 @@ const App: FC<ConfigType> = ({
 
     const handleInvoiceBack = () => {
         setFormType(FormTypeEnum.ORDER);
+        userActionCallback?.(UserActionEnum.SELECT_FORM, { form: FormTypeEnum.ORDER });
     };
 
     const updateFormData = (data: OrderFormInputsType) => {
         setOrderFormValues(data);
         setFormType(data.paymentMethod as unknown as FormTypeEnum);
+        userActionCallback?.(UserActionEnum.SELECT_FORM, { form: data.paymentMethod });
     };
 
     const handleInvoiceForm = async (
@@ -407,6 +414,7 @@ const App: FC<ConfigType> = ({
                                     invoiceAddressSelection={
                                         invoiceAddressSelection
                                     }
+                                    userActionCallback={userActionCallback}
                                 />
                             )}
                     </>

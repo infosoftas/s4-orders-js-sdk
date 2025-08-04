@@ -1,7 +1,7 @@
 import { FC, ChangeEvent, Suspense, useState, useMemo } from 'react';
 import { FormProvider, useForm, SubmitHandler } from 'react-hook-form';
 
-import { PaymentMethodEnum } from '../../enums/general';
+import { PaymentMethodEnum, UserActionEnum } from '../../enums/general';
 import {
     PAYMENT_METHOD_DEFAULT,
     INVOICE_ALLOWED_PAYMENT_METHODS,
@@ -25,6 +25,7 @@ type Props = {
     callback: (url: string | null, orderInfo?: OrderInfoType | null) => void;
     updateFormData: (data: OrderFormInputsType) => void;
     submitStartCallback?: (id: string) => void;
+    userActionCallback?: (action: UserActionEnum, args: object | null | undefined) => void;
     templatePackageId: string;
     subscriberId?: string;
     userId?: string;
@@ -69,6 +70,7 @@ const OrderForm: FC<Props> = ({
     callback,
     updateFormData,
     submitStartCallback,
+    userActionCallback,
     templatePackageId,
     subscriberId,
     userId,
@@ -153,6 +155,7 @@ const OrderForm: FC<Props> = ({
     const { orderSubmit, loading, apiErrorMsg, errorsMsg } = useOrderForm({
         callback,
         submitStartCallback,
+        userActionCallback,
         organizationId,
         subscriberId,
         userId,
@@ -192,6 +195,8 @@ const OrderForm: FC<Props> = ({
         ) {
             setValue('invoiceAddressSelection', false);
         }
+
+        userActionCallback?.(UserActionEnum.SELECT_PAYMENT_METHOD, { paymentMethod: e.target.value });
     };
 
     const allowPaymentMethod = useMemo(() => {

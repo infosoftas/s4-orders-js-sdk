@@ -64,10 +64,17 @@ type OrderFormInputsType = {
     zip?: string;
 };
 
+enum UserActionEnum {
+    SELECT_FORM = 'selectForm',
+    SELECT_PAYMENT_METHOD = 'selectPaymentMethod',
+    RETURN_TO_MAIN = 'returnToMain',
+}
+
 type ConfigType = {
     domElementId: string;
     moduleTitle?: string;
     submitStartCallback?: (subscriberId: string) => void;
+    userActionCallback?: (action: UserActionEnum, args: object | null | undefined) => void;
     apiKey: string;
     apiUrl: string;
     templatePackageId: string;
@@ -151,6 +158,10 @@ export const prepareConfig = ({
 
     const config = {
         submitStartCallback,
+        userActionCallback: (action, args) => {
+          console.log(action);
+          console.table(args);
+        },
         moduleTitle: '',
         domElementId: ORDER_PLACE_ID,
         redirectUrl: window.location.href,
@@ -369,6 +380,7 @@ export default OrderPlace;
 | organizationId        |                                       ''                                       |            organization id |
 | redirectUrl           |                              window.location.href                              |               redirect url |
 | showIframe            |                                     false                                      | show credit card in iframe |
+| userActionCallback    |                                   undefined                                    | function for tracking user actions |
 | paymentMethodsOptions | orderFormFields: [{name: 'phone, required: false, readOnly: false, label: ''}] |        default form fields |
 | availablePaymentMethods | [] | available payment methods |
 | language | 'en-US' | language |
