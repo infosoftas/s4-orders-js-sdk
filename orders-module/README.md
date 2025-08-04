@@ -64,11 +64,17 @@ type OrderFormInputsType = {
     zip?: string;
 };
 
+enum UserActionEnum {
+    SELECT_FORM = 'selectForm',
+    SELECT_PAYMENT_METHOD = 'selectPaymentMethod',
+    RETURN_TO_MAIN = 'returnToMain',
+}
+
 type ConfigType = {
     domElementId: string;
     moduleTitle?: string;
     submitStartCallback?: (subscriberId: string) => void;
-    userActionCallback?: (action: string, args: object | null | undefined) => void;
+    userActionCallback?: (action: UserActionEnum, args: object | null | undefined) => void;
     apiKey: string;
     apiUrl: string;
     templatePackageId: string;

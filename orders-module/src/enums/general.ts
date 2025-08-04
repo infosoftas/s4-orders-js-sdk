@@ -28,3 +28,9 @@ export enum FormTypeEnum {
     EHF = 'EHF',
     OIO = 'OIO',
 }
+
+export enum UserActionEnum {
+    SELECT_FORM = 'selectForm',
+    SELECT_PAYMENT_METHOD = 'selectPaymentMethod',
+    RETURN_TO_MAIN = 'returnToMain',
+}

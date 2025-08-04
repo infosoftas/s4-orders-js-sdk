@@ -4,7 +4,7 @@ import { SubmitHandler } from 'react-hook-form';
 import { createSubscriber, mapSubscriberToUser } from '../api/SubscribeApi';
 import { orderStart } from '../api/OrdersApi';
 import { invoiceLookup } from '../api/InvoiceApi';
-import { InvoiceLookupNetworkEnum, PaymentMethodEnum } from '../enums/general';
+import { InvoiceLookupNetworkEnum, PaymentMethodEnum, UserActionEnum } from '../enums/general';
 import { WRONG_MSG, PAYMENT_METHOD_DEFAULT } from '../constants/index';
 import { OrderFormInputsType, OrderInfoType } from '../types/order';
 import {
@@ -25,7 +25,7 @@ import {
 type Props = {
     callback: (url: string | null, orderInfo?: OrderInfoType | null) => void;
     submitStartCallback?: (id: string) => void;
-    userActionCallback?: (action: string, args: object | null | undefined) => void;
+    userActionCallback?: (action: UserActionEnum, args: object | null | undefined) => void;
     templatePackageId: string;
     subscriberId?: string;
     userId?: string;

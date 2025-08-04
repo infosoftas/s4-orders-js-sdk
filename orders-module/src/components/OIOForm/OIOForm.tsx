@@ -6,7 +6,7 @@ import Button from '../Button/Button';
 import InputField from '../FormFields/InputField';
 import { DEFAULT_ORDER_FORM_FIELDS } from '../FormFields/FormFields.helper';
 
-import { PaymentMethodEnum } from '../../enums/general';
+import { PaymentMethodEnum, UserActionEnum } from '../../enums/general';
 import {
     OrderFormFiledType,
     PaymentMethodOptionsType,
@@ -19,7 +19,7 @@ type Props = {
     callback: (url: string | null, orderInfo?: OrderInfoType | null) => void;
     onBack: () => void;
     submitStartCallback?: (id: string) => void;
-    userActionCallback?: (action: string, args: object | null | undefined) => void;
+    userActionCallback?: (action: UserActionEnum, args: object | null | undefined) => void;
     className?: string;
     backButtonText?: string;
     verifyButtonText?: string;
@@ -130,7 +130,7 @@ const EHFForm: FC<Props> = ({
     };
 
     const handleBack = () => {
-        userActionCallback?.('User returns to main', null);
+        userActionCallback?.(UserActionEnum.RETURN_TO_MAIN, null);
         onBack?.();
     };
 
