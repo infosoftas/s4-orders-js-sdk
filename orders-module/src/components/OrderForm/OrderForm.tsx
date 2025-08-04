@@ -51,6 +51,9 @@ type Props = {
         fields?: OrderFormFiledType[];
         paymentMethods?: PaymentMethodEnum[];
     };
+    errorValidationTitleMsg?: string,
+    errorValidationDenialOrderBlockingMsg?: string,
+    errorValidationBlockingOffersMsg?: string,
 };
 
 const initialData = {
@@ -91,6 +94,9 @@ const OrderForm: FC<Props> = ({
     errorReqMsg = '',
     errorInvalidEmailMsg = '',
     errorInvalidPhoneMsg = '',
+    errorValidationTitleMsg,
+    errorValidationDenialOrderBlockingMsg,
+    errorValidationBlockingOffersMsg
 }) => {
 
     if (!templatePackageId) {
@@ -169,6 +175,9 @@ const OrderForm: FC<Props> = ({
         templatePackageId,
         invoiceAddressToggle,
         invoiceOrderFields,
+        errorValidationTitleMsg,
+        errorValidationDenialOrderBlockingMsg,
+        errorValidationBlockingOffersMsg
     });
 
     const onSubmit: SubmitHandler<OrderFormInputsType> = async (

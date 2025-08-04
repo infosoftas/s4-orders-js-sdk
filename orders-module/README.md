@@ -106,6 +106,9 @@ type ConfigType = {
         errorReqMsg?: string;
         errorInvalidEmailMsg?: string;
         errorInvalidPhoneMsg?: string;
+        errorValidationTitleMsg?: string;
+        errorValidationDenialOrderBlockingMsg?: string;
+        errorValidationBlockingOffersMsg?: string;
     };
 }
 ```
@@ -282,6 +285,9 @@ export const prepareConfig = ({
             errorReqMsg: 'This field is required!',
             errorInvalidEmailMsg: 'Invalid email address!',
             errorInvalidPhoneMsg: 'Invalid phone number!',
+            errorValidationTitleMsg: 'One or more validation errors occurred.',
+            errorValidationDenialOrderBlockingMsg: 'The order/subscription will not be created because the subscriber has a denial order blocking all.',
+            errorValidationBlockingOffersMsg: 'The order/subscription will not be created because the subscriber has a denial order blocking offers.',
             paymentMethodNotAllowedMsg: 'This payment method not allowed!',
             invoiceLookupNotFoundText: 'There was no recipient found for the given information',
             successText: 'Success message',

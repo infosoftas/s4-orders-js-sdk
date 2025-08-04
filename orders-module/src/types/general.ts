@@ -63,6 +63,9 @@ export type ConfigType = {
         errorInvalidPhoneMsg?: string;
         paymentMethodNotAllowedMsg?: string;
         invoiceLookupNotFoundText?: string;
+        errorValidationTitleMsg?: string;
+        errorValidationDenialOrderBlockingMsg?: string;
+        errorValidationBlockingOffersMsg?: string;
     };
 };
 
