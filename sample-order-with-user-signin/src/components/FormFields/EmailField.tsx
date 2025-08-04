@@ -25,7 +25,7 @@ const EmailField: FC<Props> = ({ required = false, errors }) => {
                 {...register('email', {
                     required: required ? 'This field is required!' : false,
                     pattern: {
-                        value: /^[-!#-'*+/-9=?^-~]+(?:\.[-!#-'*+/-9=?^-~]+)*@[-!#-'*+/-9=?^-~]+(?:\.[-!#-'*+/-9=?^-~]{2,20})+$/i,
+                        value: /^[!#-'*+\/0-9=?^-~\-]+(?:\.[!#-'*+\/0-9=?^-~\-]+)*@[!#-'*+\/0-9=?^-~\-]+(?:\.[!#-'*+\/0-9=?^-~\-]{2,20})+$/i,
                         message: 'Invalid email address!',
                     },
                 })}
