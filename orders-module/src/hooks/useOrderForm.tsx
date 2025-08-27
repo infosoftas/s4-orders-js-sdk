@@ -96,6 +96,13 @@ const useOrderForm = ({
                 });
             }
 
+            userActionCallback?.(UserActionEnum.SEARCH_ORGANIZATION_NUMBER, {
+                organizationNumber: data.organizationNumber,
+                cvr: data.cvr,
+                gln: data.gln,
+                result: !invoiceResponse?.recievesInvoice
+            });
+
             if (invoiceResponse && !invoiceResponse?.recievesInvoice) {
                 setLoading(false);
                 const value =

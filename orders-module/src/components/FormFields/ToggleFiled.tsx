@@ -14,6 +14,7 @@ type Props = {
             message?: string;
         };
     };
+    toggleCallback: (value: boolean) => void;
 };
 
 const ToggleField: FC<Props> = ({
@@ -23,6 +24,7 @@ const ToggleField: FC<Props> = ({
     label = '',
     errorReqMsg = 'This field is required!',
     errors,
+    toggleCallback
 }) => {
     const { register } = useFormContext();
     const id = uuidv4();
@@ -44,6 +46,7 @@ const ToggleField: FC<Props> = ({
                         {...register(name, {
                             required: required ? errorReqMsg : false,
                         })}
+                        onChange={(e) => toggleCallback?.(e.target.checked)}
                     />
                     <span className="slider round"></span>
                 </label>
