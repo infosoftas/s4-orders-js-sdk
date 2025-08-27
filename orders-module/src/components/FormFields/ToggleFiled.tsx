@@ -14,7 +14,7 @@ type Props = {
             message?: string;
         };
     };
-    toggleCallback: (value: boolean) => void;
+    toggleCallback?: (value: boolean) => void;
 };
 
 const ToggleField: FC<Props> = ({
