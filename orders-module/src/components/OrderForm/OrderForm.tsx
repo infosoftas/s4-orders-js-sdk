@@ -301,6 +301,7 @@ const OrderForm: FC<Props> = ({
                         label={
                             invoiceAddressSelection?.label ?? 'Invoice Address'
                         }
+                        toggleCallback={e => userActionCallback?.(UserActionEnum.TOGGLE_INVOICE_ADDRESS, { value: e })}
                     />
                 )}
                 {showInvoiceFields && (
