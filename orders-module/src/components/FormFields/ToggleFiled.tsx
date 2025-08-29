@@ -46,7 +46,7 @@ const ToggleField: FC<Props> = ({
                         {...register(name, {
                             required: required ? errorReqMsg : false,
                         })}
-                        onClick={(e) => toggleCallback?.(e.currentTarget.checked)}
+                        onChange={(e) => toggleCallback?.(e.target.checked)}
                     />
                     <span className="slider round"></span>
                 </label>
