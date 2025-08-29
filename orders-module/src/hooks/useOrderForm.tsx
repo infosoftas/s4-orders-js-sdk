@@ -96,14 +96,17 @@ const useOrderForm = ({
                 });
             }
 
+            // TODO: "recievesInvoice" should be deleted in the future
+            const receivesInvoice = invoiceResponse?.receivesInvoice || invoiceResponse?.recievesInvoice;
+
             userActionCallback?.(UserActionEnum.SEARCH_ORGANIZATION_NUMBER, {
                 organizationNumber: data.organizationNumber,
                 cvr: data.cvr,
                 gln: data.gln,
-                result: !invoiceResponse?.recievesInvoice
+                result: !!receivesInvoice
             });
 
-            if (invoiceResponse && !invoiceResponse?.recievesInvoice) {
+            if (invoiceResponse && !receivesInvoice) {
                 setLoading(false);
                 const value =
                     data.paymentMethod === PaymentMethodEnum.OIO

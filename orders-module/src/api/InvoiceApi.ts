@@ -6,7 +6,8 @@ type RequestInvoiceLookupType = {
 };
 
 type InvoiceLookupResponseType = {
-    recievesInvoice: boolean;
+    receivesInvoice: boolean;
+    recievesInvoice: boolean; // TODO: Should be deleted in the future (misspelled), use "receivesInvoice" instead of this.
 };
 
 export const invoiceLookup = (
