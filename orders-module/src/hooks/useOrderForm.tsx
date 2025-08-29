@@ -96,7 +96,7 @@ const useOrderForm = ({
                 });
             }
 
-             // TODO: "recievesInvoice" should be deleted in the future
+            // TODO: "recievesInvoice" should be deleted in the future
             const receivesInvoice = invoiceResponse?.receivesInvoice || invoiceResponse?.recievesInvoice;
 
             userActionCallback?.(UserActionEnum.SEARCH_ORGANIZATION_NUMBER, {
