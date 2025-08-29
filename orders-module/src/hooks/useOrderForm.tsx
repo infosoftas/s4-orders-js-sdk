@@ -103,7 +103,7 @@ const useOrderForm = ({
                 organizationNumber: data.organizationNumber,
                 cvr: data.cvr,
                 gln: data.gln,
-                result: !!receivesInvoice
+                found: !!receivesInvoice
             });
 
             if (invoiceResponse && !receivesInvoice) {
