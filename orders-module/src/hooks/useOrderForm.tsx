@@ -99,12 +99,14 @@ const useOrderForm = ({
             // TODO: "recievesInvoice" should be deleted in the future
             const receivesInvoice = invoiceResponse?.receivesInvoice || invoiceResponse?.recievesInvoice;
 
-            userActionCallback?.(UserActionEnum.SEARCH_ORGANIZATION_NUMBER, {
-                organizationNumber: data.organizationNumber,
-                cvr: data.cvr,
-                gln: data.gln,
-                found: !!receivesInvoice
-            });
+            if (invoiceResponse) {
+                userActionCallback?.(UserActionEnum.SEARCH_ORGANIZATION_NUMBER, {
+                    organizationNumber: data.organizationNumber,
+                    cvr: data.cvr,
+                    gln: data.gln,
+                    found: !!receivesInvoice
+                });
+            }
 
             if (invoiceResponse && !receivesInvoice) {
                 setLoading(false);
