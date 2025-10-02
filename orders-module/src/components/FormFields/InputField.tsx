@@ -37,6 +37,7 @@ const NameField: FC<Props> = ({
                 {...register(name, {
                     required: required ? errorReqMsg : false,
                 })}
+                {...(required ? { pattern: ".*\S.*" } : '')}
             />
             <label className="label-control" htmlFor={id}>
                 {label} {required && <span className="text-error">*</span>}
