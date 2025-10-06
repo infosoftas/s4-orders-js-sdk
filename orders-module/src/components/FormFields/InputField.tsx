@@ -2,6 +2,7 @@ import { FC } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import { uuidv4 } from '../../utils/helper';
+import { REQUIRED_VALIDATION_REGEXP } from '../../constants/index';
 
 type Props = {
     name: string;
@@ -37,7 +38,7 @@ const NameField: FC<Props> = ({
                 {...register(name, {
                     required: required ? errorReqMsg : false,
                 })}
-                {...(required ? { pattern: '.*\\S.*' } : '')}
+                {...(required ? { pattern: REQUIRED_VALIDATION_REGEXP } : '')}
             />
             <label className="label-control" htmlFor={id}>
                 {label} {required && <span className="text-error">*</span>}
