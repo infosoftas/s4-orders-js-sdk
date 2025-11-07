@@ -43,7 +43,7 @@ const AddressField: FC<Props> = ({
                 {...(required ? {
                     value: value || '',
                     onBlur: () => {
-                        const newValue = value.trim();
+                        const newValue = value?.trim() || '';
                         setValue(name, newValue);
                     },
                 } : '')}
