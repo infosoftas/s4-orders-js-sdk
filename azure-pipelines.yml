@@ -27,6 +27,9 @@ steps:
     OutputVersion: 'OutputedVersion'
 
 - script: |
+    echo "Before: corepack version => $(corepack --version || echo 'not installed')"
+    npm install -g corepack@latest
+    echo "After : corepack version => $(corepack --version)"
     corepack enable
     corepack prepare pnpm@latest-9 --activate
     pnpm config set store-dir $(pnpm_config_cache)
