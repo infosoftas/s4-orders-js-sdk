@@ -29,6 +29,7 @@ import './App.scss';
 const App: FC<ConfigType> = ({
     submitStartCallback,
     userActionCallback,
+    updateSubscriberCallback,
     moduleTitle,
     apiKey,
     apiUrl,
@@ -343,6 +344,7 @@ const App: FC<ConfigType> = ({
                                     settings?.invoiceLookupNotFoundText
                                 }
                                 userActionCallback={userActionCallback}
+                                updateSubscriberCallback={updateSubscriberCallback}
                                 errorValidationTitleMsg={settings?.errorValidationTitleMsg}
                                 errorValidationDenialOrderBlockingMsg={settings?.errorValidationDenialOrderBlockingMsg}
                                 errorValidationBlockingOffersMsg={settings?.errorValidationBlockingOffersMsg}
@@ -378,6 +380,7 @@ const App: FC<ConfigType> = ({
                                     settings?.invoiceLookupNotFoundText
                                 }
                                 userActionCallback={userActionCallback}
+                                updateSubscriberCallback={updateSubscriberCallback}
                                 errorValidationTitleMsg={settings?.errorValidationTitleMsg}
                                 errorValidationDenialOrderBlockingMsg={settings?.errorValidationDenialOrderBlockingMsg}
                                 errorValidationBlockingOffersMsg={settings?.errorValidationBlockingOffersMsg}
@@ -426,6 +429,7 @@ const App: FC<ConfigType> = ({
                                         invoiceAddressSelection
                                     }
                                     userActionCallback={userActionCallback}
+                                    updateSubscriberCallback={updateSubscriberCallback}
                                     errorValidationTitleMsg={settings?.errorValidationTitleMsg}
                                     errorValidationDenialOrderBlockingMsg={settings?.errorValidationDenialOrderBlockingMsg}
                                     errorValidationBlockingOffersMsg={settings?.errorValidationBlockingOffersMsg}

@@ -26,6 +26,7 @@ type Props = {
     updateFormData: (data: OrderFormInputsType) => void;
     submitStartCallback?: (id: string) => void;
     userActionCallback?: (action: UserActionEnum, args: object | null | undefined) => void;
+    updateSubscriberCallback?: (subscriberInfo: object) => void;
     templatePackageId: string;
     subscriberId?: string;
     userId?: string;
@@ -74,6 +75,7 @@ const OrderForm: FC<Props> = ({
     updateFormData,
     submitStartCallback,
     userActionCallback,
+    updateSubscriberCallback,
     templatePackageId,
     subscriberId,
     userId,
@@ -162,6 +164,7 @@ const OrderForm: FC<Props> = ({
         callback,
         submitStartCallback,
         userActionCallback,
+        updateSubscriberCallback,
         organizationId,
         subscriberId,
         userId,
