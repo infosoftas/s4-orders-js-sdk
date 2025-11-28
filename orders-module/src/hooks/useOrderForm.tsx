@@ -11,6 +11,7 @@ import {
     ErrorsMsg,
     OrderFormFiledType,
     PaymentMethodOptionsType,
+    ContactRequestType,
 } from '../types/general';
 import {
     prepareAgreementModel,
@@ -27,6 +28,7 @@ type Props = {
     callback: (url: string | null, orderInfo?: OrderInfoType | null) => void;
     submitStartCallback?: (id: string) => void;
     userActionCallback?: (action: UserActionEnum, args: object | null | undefined) => void;
+    setContactCallback?: (contactInfo: ContactRequestType) => void;
     templatePackageId: string;
     subscriberId?: string;
     userId?: string;
@@ -50,6 +52,7 @@ const useOrderForm = ({
     callback,
     submitStartCallback,
     userActionCallback,
+    setContactCallback,
     organizationId,
     subscriberId,
     userId,
@@ -143,6 +146,10 @@ const useOrderForm = ({
                         return;
                     }
                 }
+            }
+
+            if (setContactCallback) {
+                setContactCallback(contactModel);
             }
 
             submitStartCallback?.(id as string);

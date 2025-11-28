@@ -23,9 +23,21 @@ export type PaymentMethodOptionsType = {
     };
 };
 
+export type ContactRequestType = {
+    addressLines?: Array<string> | undefined;
+    name?: string;
+    email?: string;
+    phone?: string;
+    country?: string;
+    city?: string;
+    zip?: string;
+    careOf?: string;
+};
+
 export type ConfigType = {
     submitStartCallback?: (subscriberId: string) => void;
     userActionCallback?: (action: UserActionEnum, args: object | null | undefined) => void;
+    setContactCallback?: (contactInfo: ContactRequestType) => void;
     domElementId: string;
     moduleTitle?: string;
     templatePackageId: string;

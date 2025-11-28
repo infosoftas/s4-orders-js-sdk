@@ -8,6 +8,7 @@ import { PaymentMethodEnum, UserActionEnum } from '../../enums/general';
 import {
     OrderFormFiledType,
     PaymentMethodOptionsType,
+    ContactRequestType,
 } from '../../types/general';
 import { OrderFormInputsType, OrderInfoType } from '../../types/order';
 import { orderInvoiceContactFields } from '../../utils/order.helper';
@@ -19,6 +20,7 @@ type Props = {
     onBack: () => void;
     submitStartCallback?: (id: string) => void;
     userActionCallback?: (action: UserActionEnum, args: object | null | undefined) => void;
+    setContactCallback?: (contactInfo: ContactRequestType) => void;
     className?: string;
     backButtonText?: string;
     verifyButtonText?: string;
@@ -61,6 +63,7 @@ const EHFForm: FC<Props> = ({
     onBack,
     submitStartCallback,
     userActionCallback,
+    setContactCallback,
     className = '',
     backButtonText = '',
     verifyButtonText = '',
@@ -106,6 +109,7 @@ const EHFForm: FC<Props> = ({
         callback,
         submitStartCallback,
         userActionCallback,
+        setContactCallback,
         organizationId,
         subscriberId,
         userId,
