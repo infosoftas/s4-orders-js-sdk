@@ -20,7 +20,7 @@ type Props = {
     onBack: () => void;
     submitStartCallback?: (id: string) => void;
     userActionCallback?: (action: UserActionEnum, args: object | null | undefined) => void;
-    updateSubscriberCallback?: (subscriberInfo: object) => void;
+    setContactCallback?: (contactInfo: object) => void;
     className?: string;
     backButtonText?: string;
     verifyButtonText?: string;
@@ -65,7 +65,7 @@ const EHFForm: FC<Props> = ({
     onBack,
     submitStartCallback,
     userActionCallback,
-    updateSubscriberCallback,
+    setContactCallback,
     className = '',
     backButtonText = '',
     verifyButtonText = '',
@@ -116,7 +116,7 @@ const EHFForm: FC<Props> = ({
         callback,
         submitStartCallback,
         userActionCallback,
-        updateSubscriberCallback,
+        setContactCallback,
         organizationId,
         subscriberId,
         userId,

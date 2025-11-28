@@ -26,7 +26,7 @@ export type PaymentMethodOptionsType = {
 export type ConfigType = {
     submitStartCallback?: (subscriberId: string) => void;
     userActionCallback?: (action: UserActionEnum, args: object | null | undefined) => void;
-    updateSubscriberCallback?: (subscriberInfo: object) => void;
+    setContactCallback?: (contactInfo: object) => void;
     domElementId: string;
     moduleTitle?: string;
     templatePackageId: string;

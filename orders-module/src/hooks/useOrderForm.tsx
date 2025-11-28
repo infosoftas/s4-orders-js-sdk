@@ -27,7 +27,7 @@ type Props = {
     callback: (url: string | null, orderInfo?: OrderInfoType | null) => void;
     submitStartCallback?: (id: string) => void;
     userActionCallback?: (action: UserActionEnum, args: object | null | undefined) => void;
-    updateSubscriberCallback?: (subscriberInfo: object) => void;
+    setContactCallback?: (contactInfo: object) => void;
     templatePackageId: string;
     subscriberId?: string;
     userId?: string;
@@ -51,7 +51,7 @@ const useOrderForm = ({
     callback,
     submitStartCallback,
     userActionCallback,
-    updateSubscriberCallback,
+    setContactCallback,
     organizationId,
     subscriberId,
     userId,
@@ -189,9 +189,9 @@ const useOrderForm = ({
                     orderReference: data.orderReference || undefined,
                 });
 
-                if (updateSubscriberCallback) {
+                if (setContactCallback) {
                     const contactFields = prepareContactModel({ data, orderFields });
-                    updateSubscriberCallback(contactFields);
+                    setContactCallback(contactFields);
                 }
 
                 callback(responseOrder.terminalRedirectUrl, {
