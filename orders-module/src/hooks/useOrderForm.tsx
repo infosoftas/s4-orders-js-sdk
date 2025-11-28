@@ -147,6 +147,10 @@ const useOrderForm = ({
                 }
             }
 
+            if (setContactCallback) {
+                setContactCallback(contactModel);
+            }
+
             submitStartCallback?.(id as string);
 
             if (id) {
@@ -188,11 +192,6 @@ const useOrderForm = ({
                         : undefined,
                     orderReference: data.orderReference || undefined,
                 });
-
-                if (setContactCallback) {
-                    const contactFields = prepareContactModel({ data, orderFields });
-                    setContactCallback(contactFields);
-                }
 
                 callback(responseOrder.terminalRedirectUrl, {
                     ...(data || {}),
