@@ -15,6 +15,7 @@ import { OrderFormInputsType, OrderInfoType } from '../../types/order';
 import {
     PaymentMethodOptionsType,
     OrderFormFiledType,
+    ContactRequestType,
 } from '../../types/general';
 import { orderInvoiceContactFields } from '../../utils/order.helper';
 import useOrderForm from '../../hooks/useOrderForm';
@@ -26,7 +27,7 @@ type Props = {
     updateFormData: (data: OrderFormInputsType) => void;
     submitStartCallback?: (id: string) => void;
     userActionCallback?: (action: UserActionEnum, args: object | null | undefined) => void;
-    setContactCallback?: (contactInfo: object) => void;
+    setContactCallback?: (contactInfo: ContactRequestType) => void;
     templatePackageId: string;
     subscriberId?: string;
     userId?: string;
