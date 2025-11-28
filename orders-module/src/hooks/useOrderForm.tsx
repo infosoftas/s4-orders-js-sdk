@@ -149,7 +149,6 @@ const useOrderForm = ({
             }
 
             if (setContactCallback) {
-                console.table(contactModel);
                 setContactCallback(contactModel);
             }
 
