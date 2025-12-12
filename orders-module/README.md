@@ -75,6 +75,7 @@ type ConfigType = {
     moduleTitle?: string;
     submitStartCallback?: (subscriberId: string) => void;
     userActionCallback?: (action: UserActionEnum, args: object | null | undefined) => void;
+    setContactCallback?: (contactInfo: contactRequestType) => void;
     apiKey: string;
     apiUrl: string;
     templatePackageId: string;
