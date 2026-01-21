@@ -4,6 +4,8 @@ Creating release is partially a manual process right now.
 
 Backed by the npm package `release-it` the process is as follows:
 
+1. Create branch with the following name pattern: 'release/r0.0.0'
+1. Make sure that your branch is pushed (local branch is not enough).
 1. Make sure you have a version you want to release.
 1. Make sure you have permissions to this github repository as well as the npm registry.
 1. Execute `npm run release`.
