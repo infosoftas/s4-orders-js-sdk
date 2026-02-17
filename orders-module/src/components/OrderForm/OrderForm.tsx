@@ -1,4 +1,4 @@
-import { FC, ChangeEvent, Suspense, useState, useMemo } from 'react';
+import { FC, ChangeEvent, Suspense, useState, useMemo, useEffect } from 'react';
 import { FormProvider, useForm, SubmitHandler } from 'react-hook-form';
 
 import { PaymentMethodEnum, UserActionEnum } from '../../enums/general';
@@ -147,6 +147,12 @@ const OrderForm: FC<Props> = ({
         watch,
         formState: { errors },
     } = methods;
+
+    useEffect(() => {
+        userActionCallback?.(UserActionEnum.SELECT_PAYMENT_METHOD, {
+            paymentMethod: methods.getValues('paymentMethod'),
+        });
+    }, []);
 
     const invoiceAddressToggle = watch('invoiceAddressSelection');
     const paymentMethodInput = watch('paymentMethod');
