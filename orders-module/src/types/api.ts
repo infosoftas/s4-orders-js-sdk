@@ -23,4 +23,6 @@ export type CreateSubscriberRequestType = {
     buyerReference?: string;
     gln?: string;
     organizationNumber?: string;
+    identityProviderId?: string;
+    userId?: string;
 };
