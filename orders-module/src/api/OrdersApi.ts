@@ -15,8 +15,8 @@ type RequestOrderStartType = {
 
 type OrderCompleteRequestType = { 
     userId: string; 
-    identityProviderId: string 
-} | undefined;
+    identityProviderId: string;
+};
 
 type OrderResponseType = {
     terminalRedirectUrl: string;
