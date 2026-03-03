@@ -16,7 +16,7 @@ type RequestOrderStartType = {
 type OrderCompleteRequestType = {
     userId?: string;
     identityProviderId?: string;
-}
+};
 
 type OrderResponseType = {
     terminalRedirectUrl: string;
@@ -36,7 +36,7 @@ export const orderStart = (
         body,
     }) as Promise<OrderResponseType>;
 
-export const orderComplete = (id: string, body: OrderCompleteRequestType): Promise<OrderResponseType> =>
+export const orderComplete = (id: string, body: OrderCompleteRequestType = {}): Promise<OrderResponseType> =>
     fetcher<OrderResponseType, OrderCompleteRequestType>({
         method: 'POST',
         url: `/order/${id}/complete`,
