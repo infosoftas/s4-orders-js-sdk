@@ -13,10 +13,10 @@ type RequestOrderStartType = {
     orderReference?: string;
 };
 
-type OrderCompleteRequestType = {
-    userId?: string;
-    identityProviderId?: string;
-};
+type OrderCompleteRequestType = { 
+    userId: string; 
+    identityProviderId: string 
+} | undefined;
 
 type OrderResponseType = {
     terminalRedirectUrl: string;

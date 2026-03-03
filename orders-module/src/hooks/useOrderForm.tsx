@@ -130,8 +130,8 @@ const useOrderForm = ({
                         data.paymentMethod === PaymentMethodEnum.OIO
                             ? data?.cvr
                             : data.organizationNumber || undefined,
-                    userId: userId,
-                    identityProviderId: identityProviderId,
+                    ...(userId &&
+                        identityProviderId && { userId, identityProviderId }),
                 });
                 id = response.id;
 
