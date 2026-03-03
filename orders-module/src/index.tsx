@@ -2,7 +2,7 @@ import { createRoot, Root } from 'react-dom/client';
 import { createElement } from 'react';
 
 import { ConfigType } from './types/general';
-import { createSubscriber, mapSubscriberToUser } from './api/SubscribeApi';
+import { createSubscriber } from './api/SubscribeApi';
 import App from './App';
 
 export const orderComponent = {
@@ -28,5 +28,4 @@ export const orderComponent = {
         (orderComponent.root as Root)?.unmount();
     },
     createSubscriber,
-    mapSubscriberToUser,
 };

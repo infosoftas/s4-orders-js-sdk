@@ -13,6 +13,11 @@ type RequestOrderStartType = {
     orderReference?: string;
 };
 
+type OrderCompleteRequestType = { 
+    userId: string; 
+    identityProviderId: string;
+};
+
 type OrderResponseType = {
     terminalRedirectUrl: string;
     id: string;
@@ -31,15 +36,15 @@ export const orderStart = (
         body,
     }) as Promise<OrderResponseType>;
 
-export const orderComplete = (id: string): Promise<OrderResponseType> =>
-    fetcher<OrderResponseType, null>({
+export const orderComplete = (id: string, body?: OrderCompleteRequestType): Promise<OrderResponseType> =>
+    fetcher<OrderResponseType, OrderCompleteRequestType | null>({
         method: 'POST',
         url: `/order/${id}/complete`,
         headers: {
             'S4-ORDERS-API-KEY':
                 sessionStorage.getItem('sdk_api_key') || '',
         },
-        body: null,
+        body: body || null,
     }) as Promise<OrderResponseType>;
 
 export const orderDelete = (id: string): Promise<OrderResponseType> =>
