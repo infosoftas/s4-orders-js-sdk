@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 
-import { createSubscriber, mapSubscriberToUser } from '../api/SubscribeApi';
+import { createSubscriber } from '../api/SubscribeApi';
 import { orderStart } from '../api/OrdersApi';
 import { invoiceLookup } from '../api/InvoiceApi';
 import { InvoiceLookupNetworkEnum, PaymentMethodEnum, UserActionEnum } from '../enums/general';
@@ -127,25 +127,15 @@ const useOrderForm = ({
                     ...contactModel,
                     gln: data?.gln,
                     organizationNumber:
-                        data.paymentMethod === PaymentMethodEnum.OIO
-                            ? data?.cvr
-                            : data.organizationNumber || undefined,
+                    data.paymentMethod === PaymentMethodEnum.OIO
+                    ? data?.cvr
+                    : data.organizationNumber || undefined,
+                    userId: userId,
+                    identityProviderId: identityProviderId,
                 });
                 id = response.id;
 
                 sessionStorage.setItem('subscriberId', id); // For avoiding attempt of creating subscriber again
-
-                if (userId && identityProviderId) {
-                    const mapResponse = await mapSubscriberToUser(id, {
-                        userId: userId,
-                        identityProviderId: identityProviderId,
-                    });
-
-                    if (!mapResponse.id) {
-                        setErrorsMsg([WRONG_MSG]);
-                        return;
-                    }
-                }
             }
 
             if (setContactCallback) {
