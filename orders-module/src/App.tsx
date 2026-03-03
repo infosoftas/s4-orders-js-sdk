@@ -112,7 +112,7 @@ const App: FC<ConfigType> = ({
             // Completing an order for cancelled payment is fine. The backend handles it correctly.
             await orderComplete(
                 orderId || data.orderId || '', 
-        {
+            {
                 userId: userId,
                 identityProviderId: identityProviderId,
             });

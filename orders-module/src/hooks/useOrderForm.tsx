@@ -127,9 +127,9 @@ const useOrderForm = ({
                     ...contactModel,
                     gln: data?.gln,
                     organizationNumber:
-                    data.paymentMethod === PaymentMethodEnum.OIO
-                    ? data?.cvr
-                    : data.organizationNumber || undefined,
+                        data.paymentMethod === PaymentMethodEnum.OIO
+                            ? data?.cvr
+                            : data.organizationNumber || undefined,
                     userId: userId,
                     identityProviderId: identityProviderId,
                 });
