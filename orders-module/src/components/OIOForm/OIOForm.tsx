@@ -20,7 +20,10 @@ type Props = {
     callback: (url: string | null, orderInfo?: OrderInfoType | null) => void;
     onBack: () => void;
     submitStartCallback?: (id: string) => void;
-    userActionCallback?: (action: UserActionEnum, args: object | null | undefined) => void;
+    userActionCallback?: (
+        action: UserActionEnum,
+        args: object | null | undefined
+    ) => void;
     setContactCallback?: (contactInfo: ContactRequestType) => void;
     className?: string;
     backButtonText?: string;
@@ -46,9 +49,9 @@ type Props = {
         paymentMethods?: PaymentMethodEnum[];
     };
     invoiceLookupNotFoundText?: string;
-    errorValidationTitleMsg?: string,
-    errorValidationDenialOrderBlockingMsg?: string,
-    errorValidationBlockingOffersMsg?: string,
+    errorValidationTitleMsg?: string;
+    errorValidationDenialOrderBlockingMsg?: string;
+    errorValidationBlockingOffersMsg?: string;
 };
 
 type OIOFormInputsType = {
@@ -88,7 +91,7 @@ const EHFForm: FC<Props> = ({
     invoiceLookupNotFoundText,
     errorValidationTitleMsg,
     errorValidationDenialOrderBlockingMsg,
-    errorValidationBlockingOffersMsg
+    errorValidationBlockingOffersMsg,
 }) => {
     const methods = useForm<OIOFormInputsType>({
         defaultValues: {
@@ -134,7 +137,7 @@ const EHFForm: FC<Props> = ({
         invoiceLookupNotFoundText,
         errorValidationTitleMsg,
         errorValidationDenialOrderBlockingMsg,
-        errorValidationBlockingOffersMsg
+        errorValidationBlockingOffersMsg,
     });
 
     const onSubmit: SubmitHandler<OIOFormInputsType> = async (

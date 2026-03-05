@@ -62,8 +62,10 @@ const App: FC<ConfigType> = ({
         errorInvalidEmailMsg: '',
         errorInvalidPhoneMsg: '',
         errorValidationTitleMsg: 'One or more validation errors occurred.',
-        errorValidationDenialOrderBlockingMsg: 'The order/subscription will not be created because the subscriber has a denial order blocking all.',
-        errorValidationBlockingOffersMsg: 'The order/subscription will not be created because the subscriber has a denial order blocking offers.',
+        errorValidationDenialOrderBlockingMsg:
+            'The order/subscription will not be created because the subscriber has a denial order blocking all.',
+        errorValidationBlockingOffersMsg:
+            'The order/subscription will not be created because the subscriber has a denial order blocking offers.',
         paymentMethodNotAllowedMsg: '',
         invoiceLookupNotFoundText:
             'There was no recipient found for the given information',
@@ -110,13 +112,15 @@ const App: FC<ConfigType> = ({
         try {
             // There is no way to detect the difference between "cancelled" and "accepted" payment for Vipps via UI
             // Completing an order for cancelled payment is fine. The backend handles it correctly.
-            await orderComplete(orderId || data.orderId || '',
+            await orderComplete(
+                orderId || data.orderId || '',
                 userId && identityProviderId
                     ? {
-                        userId,
-                        identityProviderId,
-                    }
-                    : undefined);
+                          userId,
+                          identityProviderId,
+                      }
+                    : undefined
+            );
             setIsConfirmed(true);
             setLoading(false);
             if (window === top) {
@@ -156,7 +160,9 @@ const App: FC<ConfigType> = ({
             setLoading(false);
             setShowOrderForm(true);
             setFormType(FormTypeEnum.ORDER);
-            userActionCallback?.(UserActionEnum.SELECT_FORM, { form: FormTypeEnum.ORDER });
+            userActionCallback?.(UserActionEnum.SELECT_FORM, {
+                form: FormTypeEnum.ORDER,
+            });
         }
     };
 
@@ -250,10 +256,14 @@ const App: FC<ConfigType> = ({
             });
         } else if (data?.paymentMethod === PaymentMethodEnum.EHF) {
             setFormType(FormTypeEnum.EHF);
-            userActionCallback?.(UserActionEnum.SELECT_FORM, { form: FormTypeEnum.EHF });
+            userActionCallback?.(UserActionEnum.SELECT_FORM, {
+                form: FormTypeEnum.EHF,
+            });
         } else if (data?.paymentMethod === PaymentMethodEnum.OIO) {
             setFormType(FormTypeEnum.OIO);
-            userActionCallback?.(UserActionEnum.SELECT_FORM, { form: FormTypeEnum.OIO });
+            userActionCallback?.(UserActionEnum.SELECT_FORM, {
+                form: FormTypeEnum.OIO,
+            });
         } else if (url) {
             if (
                 showIframe &&
@@ -275,13 +285,17 @@ const App: FC<ConfigType> = ({
 
     const handleInvoiceBack = () => {
         setFormType(FormTypeEnum.ORDER);
-        userActionCallback?.(UserActionEnum.SELECT_FORM, { form: FormTypeEnum.ORDER });
+        userActionCallback?.(UserActionEnum.SELECT_FORM, {
+            form: FormTypeEnum.ORDER,
+        });
     };
 
     const updateFormData = (data: OrderFormInputsType) => {
         setOrderFormValues(data);
         setFormType(data.paymentMethod as unknown as FormTypeEnum);
-        userActionCallback?.(UserActionEnum.SELECT_FORM, { form: data.paymentMethod });
+        userActionCallback?.(UserActionEnum.SELECT_FORM, {
+            form: data.paymentMethod,
+        });
     };
 
     const handleInvoiceForm = async (
@@ -350,9 +364,15 @@ const App: FC<ConfigType> = ({
                                 }
                                 userActionCallback={userActionCallback}
                                 setContactCallback={setContactCallback}
-                                errorValidationTitleMsg={settings?.errorValidationTitleMsg}
-                                errorValidationDenialOrderBlockingMsg={settings?.errorValidationDenialOrderBlockingMsg}
-                                errorValidationBlockingOffersMsg={settings?.errorValidationBlockingOffersMsg}
+                                errorValidationTitleMsg={
+                                    settings?.errorValidationTitleMsg
+                                }
+                                errorValidationDenialOrderBlockingMsg={
+                                    settings?.errorValidationDenialOrderBlockingMsg
+                                }
+                                errorValidationBlockingOffersMsg={
+                                    settings?.errorValidationBlockingOffersMsg
+                                }
                             />
                         )}
                         {formType === FormTypeEnum.EHF && (
@@ -386,13 +406,20 @@ const App: FC<ConfigType> = ({
                                 }
                                 userActionCallback={userActionCallback}
                                 setContactCallback={setContactCallback}
-                                errorValidationTitleMsg={settings?.errorValidationTitleMsg}
-                                errorValidationDenialOrderBlockingMsg={settings?.errorValidationDenialOrderBlockingMsg}
-                                errorValidationBlockingOffersMsg={settings?.errorValidationBlockingOffersMsg}
+                                errorValidationTitleMsg={
+                                    settings?.errorValidationTitleMsg
+                                }
+                                errorValidationDenialOrderBlockingMsg={
+                                    settings?.errorValidationDenialOrderBlockingMsg
+                                }
+                                errorValidationBlockingOffersMsg={
+                                    settings?.errorValidationBlockingOffersMsg
+                                }
                             />
                         )}
                         {formType !== FormTypeEnum.OIO &&
-                            formType !== FormTypeEnum.EHF && templatePackageId && (
+                            formType !== FormTypeEnum.EHF &&
+                            templatePackageId && (
                                 <OrderForm
                                     callback={handleForm}
                                     updateFormData={updateFormData}
@@ -435,9 +462,15 @@ const App: FC<ConfigType> = ({
                                     }
                                     userActionCallback={userActionCallback}
                                     setContactCallback={setContactCallback}
-                                    errorValidationTitleMsg={settings?.errorValidationTitleMsg}
-                                    errorValidationDenialOrderBlockingMsg={settings?.errorValidationDenialOrderBlockingMsg}
-                                    errorValidationBlockingOffersMsg={settings?.errorValidationBlockingOffersMsg}
+                                    errorValidationTitleMsg={
+                                        settings?.errorValidationTitleMsg
+                                    }
+                                    errorValidationDenialOrderBlockingMsg={
+                                        settings?.errorValidationDenialOrderBlockingMsg
+                                    }
+                                    errorValidationBlockingOffersMsg={
+                                        settings?.errorValidationBlockingOffersMsg
+                                    }
                                 />
                             )}
                     </>

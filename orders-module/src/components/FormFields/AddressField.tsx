@@ -40,12 +40,14 @@ const AddressField: FC<Props> = ({
                 {...register(name, {
                     required: required ? errorReqMsg : false,
                 })}
-                {...(required ? {
-                    onBlur: () => {
-                        const newValue = value?.trim() || '';
-                        setValue(name, newValue);
-                    },
-                } : '')}
+                {...(required
+                    ? {
+                          onBlur: () => {
+                              const newValue = value?.trim() || '';
+                              setValue(name, newValue);
+                          },
+                      }
+                    : '')}
             />
             <label className="label-control" htmlFor={id}>
                 {label} {required && <span className="text-error">*</span>}
