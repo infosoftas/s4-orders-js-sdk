@@ -1,10 +1,15 @@
+
 import { useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 
 import { createSubscriber } from '../api/SubscribeApi';
 import { orderStart } from '../api/OrdersApi';
 import { invoiceLookup } from '../api/InvoiceApi';
-import { InvoiceLookupNetworkEnum, PaymentMethodEnum, UserActionEnum } from '../enums/general';
+import {
+    InvoiceLookupNetworkEnum,
+    PaymentMethodEnum,
+    UserActionEnum,
+} from '../enums/general';
 import { WRONG_MSG, PAYMENT_METHOD_DEFAULT } from '../constants/index';
 import { OrderFormInputsType, OrderInfoType } from '../types/order';
 import {
@@ -26,9 +31,14 @@ import {
 
 type Props = {
     callback: (url: string | null, orderInfo?: OrderInfoType | null) => void;
-    submitStartCallback?: (id: string) => void;
-    userActionCallback?: (action: UserActionEnum, args: object | null | undefined) => void;
-    setContactCallback?: (contactInfo: ContactRequestType) => void;
+    submitStartCallback?: (id: string) => Promise<void> | void;
+    userActionCallback?: (
+        action: UserActionEnum,
+        args: object | null | undefined
+    ) => void;
+    setContactCallback?: (
+        contactInfo: ContactRequestType
+    ) => Promise<void> | void;
     templatePackageId: string;
     subscriberId?: string;
     userId?: string;
@@ -43,9 +53,9 @@ type Props = {
     invoiceAddressToggle?: boolean;
     invoiceOrderFields: OrderFormFiledType[];
     invoiceLookupNotFoundText?: string;
-    errorValidationTitleMsg?: string,
-    errorValidationDenialOrderBlockingMsg?: string,
-    errorValidationBlockingOffersMsg?: string
+    errorValidationTitleMsg?: string;
+    errorValidationDenialOrderBlockingMsg?: string;
+    errorValidationBlockingOffersMsg?: string;
 };
 
 const useOrderForm = ({
@@ -69,7 +79,7 @@ const useOrderForm = ({
     invoiceLookupNotFoundText,
     errorValidationTitleMsg,
     errorValidationDenialOrderBlockingMsg,
-    errorValidationBlockingOffersMsg
+    errorValidationBlockingOffersMsg,
 }: Props) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [apiErrorMsg, setApiErrorMsg] = useState<string>('');
@@ -100,15 +110,20 @@ const useOrderForm = ({
             }
 
             // TODO: "recievesInvoice" should be deleted in the future
-            const receivesInvoice = invoiceResponse?.receivesInvoice || invoiceResponse?.recievesInvoice;
+            const receivesInvoice =
+                invoiceResponse?.receivesInvoice ||
+                invoiceResponse?.recievesInvoice;
 
             if (invoiceResponse) {
-                userActionCallback?.(UserActionEnum.SEARCH_ORGANIZATION_NUMBER, {
-                    organizationNumber: data.organizationNumber,
-                    cvr: data.cvr,
-                    gln: data.gln,
-                    found: !!receivesInvoice
-                });
+                userActionCallback?.(
+                    UserActionEnum.SEARCH_ORGANIZATION_NUMBER,
+                    {
+                        organizationNumber: data.organizationNumber,
+                        cvr: data.cvr,
+                        gln: data.gln,
+                        found: !!receivesInvoice,
+                    }
+                );
             }
 
             if (invoiceResponse && !receivesInvoice) {
@@ -139,10 +154,12 @@ const useOrderForm = ({
             }
 
             if (setContactCallback) {
-                setContactCallback(contactModel);
+                await setContactCallback(contactModel);
             }
 
-            submitStartCallback?.(id as string);
+            if (submitStartCallback) {
+                await submitStartCallback(id as string);
+            }
 
             if (id) {
                 const paymentMethod =
@@ -184,6 +201,8 @@ const useOrderForm = ({
                     orderReference: data.orderReference || undefined,
                 });
 
+                window.onbeforeunload = null;
+
                 callback(responseOrder.terminalRedirectUrl, {
                     ...(data || {}),
                     orderId: responseOrder.id,
@@ -196,15 +215,16 @@ const useOrderForm = ({
             setApiErrorMsg(WRONG_MSG);
             setErrorsMsg([]);
         } catch (error) {
-
             const translations = {
                 errorValidationTitleMsg,
                 errorValidationBlockingOffersMsg,
-                errorValidationDenialOrderBlockingMsg
+                errorValidationDenialOrderBlockingMsg,
             } as ErrorMessages;
 
             console.error(error);
-            setApiErrorMsg(prepareErrorMessage(error as Error, undefined, translations));
+            setApiErrorMsg(
+                prepareErrorMessage(error as Error, undefined, translations)
+            );
             setErrorsMsg(
                 prepareErrorsArrayMessage(
                     (
