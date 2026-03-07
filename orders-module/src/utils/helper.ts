@@ -1,7 +1,11 @@
 import { WRONG_MSG } from '../constants/index';
 import { ErrorsMsg } from '../types/general';
 
-export const prepareErrorMessage = (error: Error, defaultMsg?: string, translations?: ErrorMessages) => {
+export const prepareErrorMessage = (
+    error: Error,
+    defaultMsg?: string,
+    translations?: ErrorMessages
+) => {
     if (typeof error === 'string') {
         try {
             const parsedError = JSON.parse(error);
@@ -10,12 +14,20 @@ export const prepareErrorMessage = (error: Error, defaultMsg?: string, translati
             return translateError(error, translations);
         }
     } else {
-        const serverErrorMsg = (error as { message: string })?.message as string;
-        return translateError(serverErrorMsg, translations) || defaultMsg || WRONG_MSG;
+        const serverErrorMsg = (error as { message: string })
+            ?.message as string;
+        return (
+            translateError(serverErrorMsg, translations) ||
+            defaultMsg ||
+            WRONG_MSG
+        );
     }
 };
 
-export const prepareErrorsArrayMessage = (errors: ErrorsMsg | null, translations?: ErrorMessages) => {
+export const prepareErrorsArrayMessage = (
+    errors: ErrorsMsg | null,
+    translations?: ErrorMessages
+) => {
     const msg: string[] = [];
 
     if (errors) {
@@ -43,9 +55,9 @@ export function uuidv4() {
 }
 
 export type ErrorMessages = {
-    errorValidationTitleMsg: string,
-    errorValidationBlockingOffersMsg: string,
-    errorValidationDenialOrderBlockingMsg: string,
+    errorValidationTitleMsg: string;
+    errorValidationBlockingOffersMsg: string;
+    errorValidationDenialOrderBlockingMsg: string;
 };
 
 const translateError = (errorMsg: string, translations?: ErrorMessages) => {
@@ -53,8 +65,7 @@ const translateError = (errorMsg: string, translations?: ErrorMessages) => {
         return errorMsg;
     }
 
-    switch(errorMsg)
-    {
+    switch (errorMsg) {
         case 'One or more validation errors occurred.':
             return translations?.errorValidationTitleMsg;
         case 'The order/subscription will not be created because the subscriber has a denial order blocking offers.':
@@ -62,6 +73,6 @@ const translateError = (errorMsg: string, translations?: ErrorMessages) => {
         case 'The order/subscription will not be created because the subscriber has a denial order blocking all.':
             return translations?.errorValidationDenialOrderBlockingMsg;
         default:
-           return errorMsg; 
+            return errorMsg;
     }
-}
+};

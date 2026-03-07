@@ -1,27 +1,27 @@
 @import '../../assets/styles/variables.scss';
 
 .sdk-loader {
-    border       : 2px solid $light-gray;
-    border-top   : 2px solid transparent;
+    border: 2px solid $light-gray;
+    border-top: 2px solid transparent;
     border-radius: 50%;
-    width        : 16px;
-    height       : 16px;
-    animation    : spin 2s linear infinite;
+    width: 16px;
+    height: 16px;
+    animation: spin 2s linear infinite;
 
     &.size-md {
         border-width: 4px;
-        width       : 32px;
-        height      : 32px;
+        width: 32px;
+        height: 32px;
     }
 
     &.size-lg {
         border-width: 8px;
-        width       : 64px;
-        height      : 64px;
+        width: 64px;
+        height: 64px;
     }
 
     &.dark-color {
-        border-color    : $dark-gray;
+        border-color: $dark-gray;
         border-top-color: transparent;
     }
 }
