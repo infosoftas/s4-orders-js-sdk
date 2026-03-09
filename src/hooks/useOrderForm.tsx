@@ -166,6 +166,8 @@ const useOrderForm = ({
             if (id) {
                 const paymentMethod =
                     data.paymentMethod || PAYMENT_METHOD_DEFAULT;
+                    
+                    console.log("Redirect URL er:", redirectUrl);
 
                 const agreements = prepareAgreementModel({
                     paymentMethod,
@@ -202,8 +204,6 @@ const useOrderForm = ({
                         : undefined,
                     orderReference: data.orderReference || undefined,
                 });
-
-                window.onbeforeunload = null;
 
                 callback(responseOrder.terminalRedirectUrl, {
                     ...(data || {}),
