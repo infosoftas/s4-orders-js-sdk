@@ -36,7 +36,10 @@ export type ContactRequestType = {
 
 export type ConfigType = {
     submitStartCallback?: (subscriberId: string) => void;
-    userActionCallback?: (action: UserActionEnum, args: object | null | undefined) => void;
+    userActionCallback?: (
+        action: UserActionEnum,
+        args: object | null | undefined
+    ) => void;
     setContactCallback?: (contactInfo: ContactRequestType) => void;
     domElementId: string;
     moduleTitle?: string;

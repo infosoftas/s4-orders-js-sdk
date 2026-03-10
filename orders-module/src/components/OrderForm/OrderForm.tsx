@@ -26,7 +26,10 @@ type Props = {
     callback: (url: string | null, orderInfo?: OrderInfoType | null) => void;
     updateFormData: (data: OrderFormInputsType) => void;
     submitStartCallback?: (id: string) => void;
-    userActionCallback?: (action: UserActionEnum, args: object | null | undefined) => void;
+    userActionCallback?: (
+        action: UserActionEnum,
+        args: object | null | undefined
+    ) => void;
     setContactCallback?: (contactInfo: ContactRequestType) => void;
     templatePackageId: string;
     subscriberId?: string;
@@ -53,9 +56,9 @@ type Props = {
         fields?: OrderFormFiledType[];
         paymentMethods?: PaymentMethodEnum[];
     };
-    errorValidationTitleMsg?: string,
-    errorValidationDenialOrderBlockingMsg?: string,
-    errorValidationBlockingOffersMsg?: string,
+    errorValidationTitleMsg?: string;
+    errorValidationDenialOrderBlockingMsg?: string;
+    errorValidationBlockingOffersMsg?: string;
 };
 
 const initialData = {
@@ -99,15 +102,14 @@ const OrderForm: FC<Props> = ({
     errorInvalidPhoneMsg = '',
     errorValidationTitleMsg,
     errorValidationDenialOrderBlockingMsg,
-    errorValidationBlockingOffersMsg
+    errorValidationBlockingOffersMsg,
 }) => {
-
     if (!templatePackageId) {
-        console.error('"templatePackageId" should be set' );
+        console.error('"templatePackageId" should be set');
     }
 
     if (!organizationId) {
-        console.error('"organizationId" should be set' );
+        console.error('"organizationId" should be set');
     }
 
     if (!subscriberId) {
@@ -118,11 +120,11 @@ const OrderForm: FC<Props> = ({
     }
 
     if (!userId) {
-        console.error('"userId" should be set' );
+        console.error('"userId" should be set');
     }
 
     if (!identityProviderId) {
-        console.error('"identityProviderId" should be set' );
+        console.error('"identityProviderId" should be set');
     }
 
     const [orderFields, setOrderFields] = useState<OrderFormFiledType[]>(
@@ -187,7 +189,7 @@ const OrderForm: FC<Props> = ({
         invoiceOrderFields,
         errorValidationTitleMsg,
         errorValidationDenialOrderBlockingMsg,
-        errorValidationBlockingOffersMsg
+        errorValidationBlockingOffersMsg,
     });
 
     const onSubmit: SubmitHandler<OrderFormInputsType> = async (
@@ -215,7 +217,9 @@ const OrderForm: FC<Props> = ({
             setValue('invoiceAddressSelection', false);
         }
 
-        userActionCallback?.(UserActionEnum.SELECT_PAYMENT_METHOD, { paymentMethod: e.target.value });
+        userActionCallback?.(UserActionEnum.SELECT_PAYMENT_METHOD, {
+            paymentMethod: e.target.value,
+        });
     };
 
     const allowPaymentMethod = useMemo(() => {
@@ -311,7 +315,12 @@ const OrderForm: FC<Props> = ({
                         label={
                             invoiceAddressSelection?.label ?? 'Invoice Address'
                         }
-                        toggleCallback={e => userActionCallback?.(UserActionEnum.TOGGLE_INVOICE_ADDRESS, { value: e })}
+                        toggleCallback={(e) =>
+                            userActionCallback?.(
+                                UserActionEnum.TOGGLE_INVOICE_ADDRESS,
+                                { value: e }
+                            )
+                        }
                     />
                 )}
                 {showInvoiceFields && (
