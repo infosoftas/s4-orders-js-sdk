@@ -22,6 +22,9 @@ export const orderComponent = {
             domNode || document.createElement('div')
         );
         const reactElement = createElement(App, config);
+
+        console.log("Rendering App with config:", config);
+
         orderComponent.root.render(reactElement);
     },
     remove: function () {

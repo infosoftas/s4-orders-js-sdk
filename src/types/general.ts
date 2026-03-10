@@ -38,6 +38,7 @@ export type ConfigType = {
     submitStartCallback?: (subscriberId: string) => void;
     userActionCallback?: (action: UserActionEnum, args: object | null | undefined) => void;
     setContactCallback?: (contactInfo: ContactRequestType) => void;
+    cancelVippsCallback: () => void;
     domElementId: string;
     moduleTitle?: string;
     templatePackageId: string;

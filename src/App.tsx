@@ -30,6 +30,7 @@ const App: FC<ConfigType> = ({
     submitStartCallback,
     userActionCallback,
     setContactCallback,
+    cancelVippsCallback,
     moduleTitle,
     apiKey,
     apiUrl,
@@ -136,6 +137,8 @@ const App: FC<ConfigType> = ({
                 (data.paymentMethod === PaymentMethodEnum.Vipps ||
                     data.paymentMethod === PaymentMethodEnum.MobilePay)
             ) {
+                console.log("cancelVippsCallback:", cancelVippsCallback?.());
+                cancelVippsCallback?.();
                 handleOrderDelete(orderId || data.orderId);
                 return;
             }
