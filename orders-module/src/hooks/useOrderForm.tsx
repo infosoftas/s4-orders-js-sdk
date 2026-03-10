@@ -35,7 +35,9 @@ type Props = {
         action: UserActionEnum,
         args: object | null | undefined
     ) => void;
-    setContactCallback?: (contactInfo: ContactRequestType) => void;
+    setContactCallback?: (
+        contactInfo: ContactRequestType
+    ) => void;
     templatePackageId: string;
     subscriberId?: string;
     userId?: string;
@@ -149,6 +151,8 @@ const useOrderForm = ({
 
                 sessionStorage.setItem('subscriberId', id); // For avoiding attempt of creating subscriber again
             }
+
+            console.log('Dette er en ny testversjon av OSDK');
 
             if (setContactCallback) {
                 setContactCallback(contactModel);
