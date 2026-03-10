@@ -1,0 +1,164 @@
+@import './variables.scss';
+
+.field-label {
+    display      : block;
+    margin-bottom: 0.375em;
+    font-weight  : 500;
+    text-align   : left;
+}
+
+.field-wrapper {
+    display       : flex;
+    flex-direction: column;
+    width         : 100%;
+    margin-bottom : 20px;
+
+    label {
+        display      : block;
+        order        : 1;
+        margin-bottom: 0.375em;
+        font-weight  : 500;
+        text-align   : left;
+    }
+
+    .caption {
+        order: 3;
+    }
+
+    .input-control {
+        order: 2;
+    }
+}
+
+.input-control {
+    width           : 100%;
+    padding         : 0.25em 0.5em;
+    border          : 2px solid $input-border-color;
+    border-radius   : 4px;
+    font-size       : 16px;
+    font-size       : max(16px, 1em);
+    font-family     : inherit;
+    background-color: $white;
+
+    &[disabled],
+    &[readonly],
+    &:read-only,
+    .disabled,
+    .red-only {
+        border-color    : $input-border-disabled-color;
+        background-color: $input-border-disabled-bg-color;
+        cursor          : not-allowed;
+    }
+
+    &:focus {
+        border-color: hsl($input-focus-h, $input-focus-s, $input-focus-l);
+    }
+}
+
+.radio-button-control {
+    label {
+        display      : flex;
+        margin-bottom: 0.375em;
+        font-weight  : 500;
+        position     : relative;
+        overflow     : hidden;
+        cursor       : pointer;
+
+        input {
+            position: absolute;
+            left    : -9999px;
+
+            &:checked+span.value-block {
+                background-color: mix($white, $primary-color, 84%);
+
+                &:before {
+                    box-shadow: inset 0 0 0 0.4375em $primary-color;
+                }
+            }
+        }
+
+        span.value-block {
+            display      : flex;
+            align-items  : center;
+            padding      : 0.375em 0.75em 0.375em 0.375em;
+            border-radius: 20px;
+            transition   : 0.25s ease;
+
+            &:hover {
+                background-color: mix($white, $primary-color, 84%);
+            }
+
+            &:before {
+                content         : "";
+                display         : flex;
+                flex-shrink     : 0;
+                width           : 1.5em;
+                height          : 1.5em;
+                margin-right    : 0.375em;
+                border-radius   : 50%;
+                background-color: $white;
+                box-shadow      : inset 0 0 0 0.125em $primary-color;
+                transition      : 0.25s ease;
+            }
+        }
+    }
+}
+
+.sdk-on-off-label {
+    margin-right: 0.5rem;
+}
+
+.sdk-on-off {
+    position: relative;
+    display : inline-block;
+    width   : 60px;
+    height  : 28px;
+
+    input {
+        opacity: 0;
+        width  : 0;
+        height : 0;
+    }
+
+    input:checked+.slider:before {
+        -webkit-transform: translateX(32px);
+        -ms-transform    : translateX(32px);
+        transform        : translateX(32px);
+    }
+
+    input:checked+.slider {
+        background-color: $primary-color;
+    }
+
+    .slider {
+        position          : absolute;
+        cursor            : pointer;
+        top               : 0;
+        left              : 0;
+        right             : 0;
+        bottom            : 0;
+        background-color  : $input-border-disabled-color;
+        -webkit-transition: .4s;
+        transition        : .4s;
+
+        &:before {
+            position          : absolute;
+            content           : "";
+            height            : 24px;
+            width             : 24px;
+            left              : 2px;
+            bottom            : 2px;
+            background-color  : white;
+            -webkit-transition: .4s;
+            transition        : .4s;
+        }
+
+        &.round {
+            border-radius: 28px;
+
+            &:before {
+                border-radius: 50%;
+            }
+        }
+    }
+}
