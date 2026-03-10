@@ -30,12 +30,14 @@ import {
 
 type Props = {
     callback: (url: string | null, orderInfo?: OrderInfoType | null) => void;
-    submitStartCallback?: (id: string) => void;
+    submitStartCallback?: (id: string) => Promise<void> | void;
     userActionCallback?: (
         action: UserActionEnum,
         args: object | null | undefined
     ) => void;
-    setContactCallback?: (contactInfo: ContactRequestType) => void;
+    setContactCallback?: (
+        contactInfo: ContactRequestType
+    ) => Promise<void> | void;
     templatePackageId: string;
     subscriberId?: string;
     userId?: string;
@@ -149,6 +151,8 @@ const useOrderForm = ({
 
                 sessionStorage.setItem('subscriberId', id); // For avoiding attempt of creating subscriber again
             }
+
+            console.log('Dette er en ny testversjon av OSDK');
 
             if (setContactCallback) {
                 setContactCallback(contactModel);
