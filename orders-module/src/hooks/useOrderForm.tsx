@@ -30,14 +30,14 @@ import {
 
 type Props = {
     callback: (url: string | null, orderInfo?: OrderInfoType | null) => void;
-    submitStartCallback?: (id: string) => Promise<void> | void;
+    submitStartCallback?: (id: string) => void;
     userActionCallback?: (
         action: UserActionEnum,
         args: object | null | undefined
     ) => void;
     setContactCallback?: (
         contactInfo: ContactRequestType
-    ) => Promise<void> | void;
+    ) => void;
     templatePackageId: string;
     subscriberId?: string;
     userId?: string;

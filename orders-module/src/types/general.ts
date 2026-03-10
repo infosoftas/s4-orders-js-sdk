@@ -41,7 +41,7 @@ export type ConfigType = {
         args: object | null | undefined
     ) => void;
     setContactCallback?: (contactInfo: ContactRequestType) => void;
-    cancelVippsCallback: () => void;
+    cancelVippsCallback?: () => void;
     domElementId: string;
     moduleTitle?: string;
     templatePackageId: string;
