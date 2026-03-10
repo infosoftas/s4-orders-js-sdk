@@ -156,12 +156,11 @@ const useOrderForm = ({
             console.log("Dette er en testversjon av OSDK")
             
             if (setContactCallback) {
-                await setContactCallback(contactModel);
+                setContactCallback(contactModel);
             }
 
-            if (submitStartCallback) {
-                await submitStartCallback(id as string);
-            }
+            submitStartCallback?.(id as string);
+
 
             if (id) {
                 const paymentMethod =
