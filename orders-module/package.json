@@ -3,8 +3,7 @@
     "version": "0.1.10",
     "scripts": {
         "build": "rimraf lib && webpack --mode production",
-        "release": "release-it",
-        "prepare": "npm run build"
+        "release": "release-it"
     },
     "eslintConfig": {
         "extends": [
