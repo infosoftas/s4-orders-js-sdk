@@ -1,21 +1,21 @@
 @import '../../assets/styles/variables.scss';
 
 .sdk-alert {
-    position     : relative;
-    padding      : .75rem 1.25rem;
+    position: relative;
+    padding: 0.75rem 1.25rem;
     margin-bottom: 1rem;
-    border       : 1px solid transparent;
-    border-radius: .25rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
 
     &.danger {
-        color           : $danger-color;
+        color: $danger-color;
         background-color: $danger-bg-color;
-        border-color    : $danger-border-color;
+        border-color: $danger-border-color;
     }
 
     &.success {
-        color           : $success-color;
+        color: $success-color;
         background-color: $success-bg-color;
-        border-color    : $success-border-color;
+        border-color: $success-border-color;
     }
 }
