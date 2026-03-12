@@ -21,6 +21,7 @@ export const FIELD_TYPES = {
     INVOICE_EMAIL: 'invoiceEmail',
     INVOICE_CARE_OF: 'invoiceCareOf',
     INVOICE_BUYER_REFERENCE: 'invoiceBuyerReference',
+    TERMS_CHECKBOX: 'termsCheckbox',
 };
 
 export const DEFAULT_ORDER_FORM_FIELDS: OrderFormFiledType[] = [

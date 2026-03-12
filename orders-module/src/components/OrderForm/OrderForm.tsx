@@ -21,6 +21,7 @@ import { orderInvoiceContactFields } from '../../utils/order.helper';
 import useOrderForm from '../../hooks/useOrderForm';
 
 import './orderForm.scss';
+import TermsCheckbox from "components/FormFields/TermsCheckbox";
 
 type Props = {
     callback: (url: string | null, orderInfo?: OrderInfoType | null) => void;
@@ -56,6 +57,7 @@ type Props = {
         fields?: OrderFormFiledType[];
         paymentMethods?: PaymentMethodEnum[];
     };
+    requireTermsAcceptance?: boolean;
     errorValidationTitleMsg?: string;
     errorValidationDenialOrderBlockingMsg?: string;
     errorValidationBlockingOffersMsg?: string;
@@ -103,6 +105,7 @@ const OrderForm: FC<Props> = ({
     errorValidationTitleMsg,
     errorValidationDenialOrderBlockingMsg,
     errorValidationBlockingOffersMsg,
+    requireTermsAcceptance,
 }) => {
     if (!templatePackageId) {
         console.error('"templatePackageId" should be set');
