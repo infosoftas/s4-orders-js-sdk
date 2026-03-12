@@ -21,7 +21,7 @@ import { orderInvoiceContactFields } from '../../utils/order.helper';
 import useOrderForm from '../../hooks/useOrderForm';
 
 import './orderForm.scss';
-import TermsCheckbox from "components/FormFields/TermsCheckbox";
+import TermsCheckbox from '../FormFields/TermsCheckbox';
 
 type Props = {
     callback: (url: string | null, orderInfo?: OrderInfoType | null) => void;
@@ -61,6 +61,8 @@ type Props = {
     errorValidationTitleMsg?: string;
     errorValidationDenialOrderBlockingMsg?: string;
     errorValidationBlockingOffersMsg?: string;
+    termsUrl?: string;
+    termsAndConditionsText?: string;
 };
 
 const initialData = {
@@ -106,6 +108,8 @@ const OrderForm: FC<Props> = ({
     errorValidationDenialOrderBlockingMsg,
     errorValidationBlockingOffersMsg,
     requireTermsAcceptance,
+    termsUrl,
+    termsAndConditionsText,
 }) => {
     if (!templatePackageId) {
         console.error('"templatePackageId" should be set');
@@ -198,6 +202,7 @@ const OrderForm: FC<Props> = ({
     const onSubmit: SubmitHandler<OrderFormInputsType> = async (
         data
     ): Promise<void> => {
+
         if (
             paymentMethodInput === PaymentMethodEnum.EHF ||
             paymentMethodInput === PaymentMethodEnum.OIO
@@ -352,6 +357,15 @@ const OrderForm: FC<Props> = ({
                         type="submit"
                         loading={loading}
                         buttonText={submitButtonText}
+                    />
+                )}
+                {requireTermsAcceptance && (
+                    <TermsCheckbox
+                        name="termsAccepted"
+                        label={termsAndConditionsText}
+                        termsUrl={termsUrl}
+                        required={true}
+                        errors={errors}
                     />
                 )}
                 <Alert

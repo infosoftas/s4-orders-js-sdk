@@ -70,6 +70,7 @@ const App: FC<ConfigType> = ({
         paymentMethodNotAllowedMsg: '',
         invoiceLookupNotFoundText:
             'There was no recipient found for the given information',
+        termsAndConditionsText: '',
     },
 }) => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -472,6 +473,9 @@ const App: FC<ConfigType> = ({
                                     }
                                     errorValidationBlockingOffersMsg={
                                         settings?.errorValidationBlockingOffersMsg
+                                    }
+                                    termsAndConditionsText={
+                                        settings?.termsAndConditionsText
                                     }
                                 />
                             )}

@@ -82,6 +82,7 @@ export type ConfigType = {
         errorValidationTitleMsg?: string;
         errorValidationDenialOrderBlockingMsg?: string;
         errorValidationBlockingOffersMsg?: string;
+        termsAndConditionsText?: string;
     };
 };
 
