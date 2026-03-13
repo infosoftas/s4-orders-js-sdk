@@ -478,7 +478,9 @@ const App: FC<ConfigType> = ({
                                     termsAndConditionsText={
                                         settings?.termsAndConditionsText
                                     }
-                                    requireTermsAcceptance={requireTermsAcceptance}
+                                    requireTermsAcceptance={
+                                        requireTermsAcceptance
+                                    }
                                 />
                             )}
                     </>
