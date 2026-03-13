@@ -4,9 +4,9 @@ import { useFormContext } from 'react-hook-form';
 import { uuidv4 } from '../../utils/helper';
 
 type Props = {
-    name?: string;
-    required?: boolean;
-    disabled?: boolean;
+    name: string;
+    required: boolean;
+    disabled: boolean;
     label?: string | ReactNode;
     errorReqMsg?: string;
     errors?: {
@@ -17,7 +17,7 @@ type Props = {
 };
 
 const TermsCheckbox: FC<Props> = ({
-    name = 'terms',
+    name,
     required = true,
     disabled = false,
     label = 'I accept the terms and conditions',
