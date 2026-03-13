@@ -56,6 +56,7 @@ export type ConfigType = {
     availablePaymentMethods?: { label: string; value: PaymentMethodEnum }[];
     allowedPaymentMethods?: PaymentMethodEnum[];
     paymentMethodsOptions?: PaymentMethodOptionsType;
+    requireTermsAcceptance?: boolean;
     language?: string;
     merchantAgreementUrl?: string;
     invoiceAddressSelection?: {
@@ -82,6 +83,7 @@ export type ConfigType = {
         errorValidationTitleMsg?: string;
         errorValidationDenialOrderBlockingMsg?: string;
         errorValidationBlockingOffersMsg?: string;
+        termsAndConditionsText?: string;
     };
 };
 
