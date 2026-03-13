@@ -4,7 +4,7 @@ import { useFormContext } from 'react-hook-form';
 import { uuidv4 } from '../../utils/helper';
 
 type Props = {
-    name: string;
+    name?: string;
     required?: boolean;
     disabled?: boolean;
     label?: string | ReactNode;
@@ -24,15 +24,13 @@ const TermsCheckbox: FC<Props> = ({
     label = 'I accept the terms and conditions',
     errorReqMsg = 'You must accept the terms and conditions to proceed.',
     errors,
-    termsUrl,
 }) => {
     const { register } = useFormContext();
     const id = uuidv4();
 
-
     return (
-        <div className="field-wrapper" data-testid={`sdk-${name}-field-id`}>
-            <div>
+        <div className="checkbox-wrapper" data-testid={`sdk-${name}-field-id`}>
+            <>
                 <input
                     id={id}
                     type="checkbox"
@@ -43,13 +41,13 @@ const TermsCheckbox: FC<Props> = ({
                     })}
                 />
                 <label
-                    className="label-control"
+                    className="checkbox-label"
                     htmlFor={id}
                     style={{ cursor: disabled ? 'not-allowed' : 'pointer' }}
                 >
                     {label} {required && <span className="text-error">*</span>}
                 </label>
-            </div>
+            </>
 
             {errors && errors[name] && (
                 <div className="text-error caption">{errors[name].message}</div>

@@ -45,6 +45,7 @@ const App: FC<ConfigType> = ({
     invoiceAddressSelection,
     availablePaymentMethods = [],
     allowedPaymentMethods,
+    requireTermsAcceptance,
     language = 'en-US',
     merchantAgreementUrl = '',
     settings = {
@@ -477,6 +478,7 @@ const App: FC<ConfigType> = ({
                                     termsAndConditionsText={
                                         settings?.termsAndConditionsText
                                     }
+                                    requireTermsAcceptance={requireTermsAcceptance}
                                 />
                             )}
                     </>

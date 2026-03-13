@@ -56,6 +56,7 @@ export type ConfigType = {
     availablePaymentMethods?: { label: string; value: PaymentMethodEnum }[];
     allowedPaymentMethods?: PaymentMethodEnum[];
     paymentMethodsOptions?: PaymentMethodOptionsType;
+    requireTermsAcceptance?: boolean;
     language?: string;
     merchantAgreementUrl?: string;
     invoiceAddressSelection?: {

@@ -165,6 +165,7 @@ const OrderForm: FC<Props> = ({
 
     const invoiceAddressToggle = watch('invoiceAddressSelection');
     const paymentMethodInput = watch('paymentMethod');
+    const isTermsAccepted = watch('termsAccept', false);
 
     const invoiceOrderFields =
         paymentMethodsOptions?.[paymentMethodInput || PAYMENT_METHOD_DEFAULT]
@@ -202,7 +203,6 @@ const OrderForm: FC<Props> = ({
     const onSubmit: SubmitHandler<OrderFormInputsType> = async (
         data
     ): Promise<void> => {
-
         if (
             paymentMethodInput === PaymentMethodEnum.EHF ||
             paymentMethodInput === PaymentMethodEnum.OIO
@@ -255,6 +255,10 @@ const OrderForm: FC<Props> = ({
         invoiceAddressSelection?.enabled &&
         allowPaymentMethod &&
         invoicePaymentMethods.includes(paymentMethodInput as PaymentMethodEnum);
+
+    const isSubmitButtonDisabled = requireTermsAcceptance
+        ? !isTermsAccepted
+        : false;
 
     return (
         <FormProvider {...methods}>
@@ -352,20 +356,21 @@ const OrderForm: FC<Props> = ({
                         })}
                     </Suspense>
                 )}
+                {requireTermsAcceptance && (
+                    <TermsCheckbox
+                        name="termsAccept"
+                        label={termsAndConditionsText}
+                        termsUrl={termsUrl}
+                        required
+                        errors={errors}
+                    />
+                )}
                 {allowPaymentMethod && (
                     <Button
                         type="submit"
                         loading={loading}
                         buttonText={submitButtonText}
-                    />
-                )}
-                {requireTermsAcceptance && (
-                    <TermsCheckbox
-                        name="termsAccepted"
-                        label={termsAndConditionsText}
-                        termsUrl={termsUrl}
-                        required={true}
-                        errors={errors}
+                        disable={isSubmitButtonDisabled}
                     />
                 )}
                 <Alert
