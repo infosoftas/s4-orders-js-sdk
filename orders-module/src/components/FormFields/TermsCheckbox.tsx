@@ -8,7 +8,6 @@ type Props = {
     required?: boolean;
     disabled?: boolean;
     label?: string | ReactNode;
-    termsUrl?: string;
     errorReqMsg?: string;
     errors?: {
         [key: string]: {

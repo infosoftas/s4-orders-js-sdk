@@ -61,7 +61,6 @@ type Props = {
     errorValidationTitleMsg?: string;
     errorValidationDenialOrderBlockingMsg?: string;
     errorValidationBlockingOffersMsg?: string;
-    termsUrl?: string;
     termsAndConditionsText?: string;
 };
 
@@ -108,7 +107,6 @@ const OrderForm: FC<Props> = ({
     errorValidationDenialOrderBlockingMsg,
     errorValidationBlockingOffersMsg,
     requireTermsAcceptance,
-    termsUrl,
     termsAndConditionsText,
 }) => {
     if (!templatePackageId) {
@@ -360,7 +358,6 @@ const OrderForm: FC<Props> = ({
                     <TermsCheckbox
                         name="termsAccept"
                         label={termsAndConditionsText}
-                        termsUrl={termsUrl}
                         required
                         errors={errors}
                     />
