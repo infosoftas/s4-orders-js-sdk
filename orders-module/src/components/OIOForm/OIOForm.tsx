@@ -8,7 +8,7 @@ import { DEFAULT_ORDER_FORM_FIELDS } from '../FormFields/FormFields.helper';
 
 import { PaymentMethodEnum, UserActionEnum } from '../../enums/general';
 import {
-    OrderFormFiledType,
+    OrderFormFieldType,
     PaymentMethodOptionsType,
     ContactRequestType,
 } from '../../types/general';
@@ -45,7 +45,7 @@ type Props = {
     invoiceAddressSelection?: {
         enabled?: boolean;
         label?: string;
-        fields?: OrderFormFiledType[];
+        fields?: OrderFormFieldType[];
         paymentMethods?: PaymentMethodEnum[];
     };
     invoiceLookupNotFoundText?: string;

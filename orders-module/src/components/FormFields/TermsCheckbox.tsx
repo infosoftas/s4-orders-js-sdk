@@ -6,7 +6,7 @@ import { uuidv4 } from '../../utils/helper';
 type Props = {
     name: string;
     required: boolean;
-    disabled: boolean;
+    disabled?: boolean;
     label?: string | ReactNode;
     errorReqMsg?: string;
     errors?: {
