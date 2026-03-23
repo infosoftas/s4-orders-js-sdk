@@ -28,7 +28,7 @@ export type PaymentMethodOptionsType = {
     [key in PaymentMethodEnum]: {
         generateSubscriberContact?: boolean;
         accountId?: string;
-        orderFormFields?: OrderFormFieldType[] | never[];
+        orderFormFields?: OrderFormFieldType[];
     };
 };
 
@@ -51,7 +51,7 @@ export type ConfigType = {
     invoiceAddressSelection?: {
         enabled?: boolean;
         label?: string;
-        fields?: OrderFormFieldType[] | never[];
+        fields?: OrderFormFieldType[];
     };
     settings?: {
         successText?: string;
