@@ -14,7 +14,7 @@ import { DEFAULT_ORDER_FORM_FIELDS } from '../FormFields/FormFields.helper';
 import { OrderFormInputsType, OrderInfoType } from '../../types/order';
 import {
     PaymentMethodOptionsType,
-    OrderFormFiledType,
+    OrderFormFieldType,
     ContactRequestType,
 } from '../../types/general';
 import { orderInvoiceContactFields } from '../../utils/order.helper';
@@ -54,7 +54,7 @@ type Props = {
     invoiceAddressSelection?: {
         enabled?: boolean;
         label?: string;
-        fields?: OrderFormFiledType[];
+        fields?: OrderFormFieldType[];
         paymentMethods?: PaymentMethodEnum[];
     };
     requireTermsAcceptance?: boolean;
@@ -132,7 +132,7 @@ const OrderForm: FC<Props> = ({
         console.error('"identityProviderId" should be set');
     }
 
-    const [orderFields, setOrderFields] = useState<OrderFormFiledType[]>(
+    const [orderFields, setOrderFields] = useState<OrderFormFieldType[]>(
         paymentMethodsOptions?.[
             defaultValues?.paymentMethod || PAYMENT_METHOD_DEFAULT
         ]?.orderFormFields ?? DEFAULT_ORDER_FORM_FIELDS

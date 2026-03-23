@@ -7,7 +7,7 @@ declare global {
     }
 }
 
-export type OrderFormFiledType = {
+export type OrderFormFieldType = {
     name: string;
     required?: boolean;
     readOnly?: boolean;
@@ -18,8 +18,8 @@ export type PaymentMethodOptionsType = {
     [key in PaymentMethodEnum]: {
         generateSubscriberContact?: boolean;
         accountId?: string;
-        orderFormFields: OrderFormFiledType[];
-        paymentInvoiceFields?: OrderFormFiledType[] | never[] | null;
+        orderFormFields: OrderFormFieldType[];
+        paymentInvoiceFields?: OrderFormFieldType[] | never[] | null;
     };
 };
 
@@ -62,7 +62,7 @@ export type ConfigType = {
     invoiceAddressSelection?: {
         enabled?: boolean;
         label?: string;
-        fields?: OrderFormFiledType[];
+        fields?: OrderFormFieldType[];
     };
     settings?: {
         successText?: string;

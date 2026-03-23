@@ -39,7 +39,7 @@ enum PaymentMethodEnum {
     OIO = 'OIO',
 }
 
-type OrderFormFiledType = {
+type OrderFormFieldType = {
     name: string;
     required?: boolean;
     readOnly?: boolean;
@@ -50,8 +50,8 @@ type PaymentMethodOptionsType = {
     [key in PaymentMethodEnum]: {
         generateSubscriberContact?: boolean;
         accountId?: string;
-        orderFormFields?: OrderFormFiledType[] | never[];
-        paymentInvoiceFields?: OrderFormFiledType[] | never[] | null;
+        orderFormFields?: OrderFormFieldType[] | never[];
+        paymentInvoiceFields?: OrderFormFieldType[] | never[] | null;
     };
 }
 
@@ -97,7 +97,7 @@ type ConfigType = {
     invoiceAddressSelection?: {
         enabled?: boolean;
         label?: string;
-        fields?: OrderFormFiledType[] | never[];
+        fields?: OrderFormFieldType[] | never[];
     };
     settings?: {
         successText?: string;

@@ -1,6 +1,6 @@
 import { MessageEventTypeEnum, PaymentMethodEnum } from '../enums/general';
 import { AgreementsType, OrderFormInputsType } from '../types/order';
-import { OrderFormFiledType } from '../types/general';
+import { OrderFormFieldType } from '../types/general';
 import { FIELD_TYPES } from '../components/FormFields/FormFields.helper';
 
 type AgreementModelType = {
@@ -105,7 +105,7 @@ export const prepareAgreementModel = ({
 
 type ContactModelType = {
     data: OrderFormInputsType;
-    orderFields: OrderFormFiledType[];
+    orderFields: OrderFormFieldType[];
 };
 
 export const prepareContactModel = ({

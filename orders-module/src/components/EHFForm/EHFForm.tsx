@@ -6,7 +6,7 @@ import Button from '../Button/Button';
 import InputField from '../FormFields/InputField';
 import { PaymentMethodEnum, UserActionEnum } from '../../enums/general';
 import {
-    OrderFormFiledType,
+    OrderFormFieldType,
     PaymentMethodOptionsType,
     ContactRequestType,
 } from '../../types/general';
@@ -44,7 +44,7 @@ type Props = {
     invoiceAddressSelection?: {
         enabled?: boolean;
         label?: string;
-        fields?: OrderFormFiledType[];
+        fields?: OrderFormFieldType[];
         paymentMethods?: PaymentMethodEnum[];
     };
     invoiceLookupNotFoundText?: string;
