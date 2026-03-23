@@ -1,4 +1,4 @@
-import { OrderFormFiledType } from '../../types/general';
+import { OrderFormFieldType } from '../../types/general';
 
 export const FIELD_TYPES = {
     PHONE: 'phoneNumber',
@@ -24,7 +24,7 @@ export const FIELD_TYPES = {
     TERMS_CHECKBOX: 'termsCheckbox',
 };
 
-export const DEFAULT_ORDER_FORM_FIELDS: OrderFormFiledType[] = [
+export const DEFAULT_ORDER_FORM_FIELDS: OrderFormFieldType[] = [
     {
         name: FIELD_TYPES.PHONE,
         required: false,

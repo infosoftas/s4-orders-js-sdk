@@ -6,9 +6,11 @@ export type OrderInfoType = {
     orderId: string;
 };
 
-export type OrderFormFiledType = {
+export type OrderFormFieldType = {
     name: string;
     required?: boolean;
+    readOnly?: boolean;
+    label?: string;
 };
 
 export type OrderFormInputsType = {
@@ -26,7 +28,7 @@ export type PaymentMethodOptionsType = {
     [key in PaymentMethodEnum]: {
         generateSubscriberContact?: boolean;
         accountId?: string;
-        orderFormFields?: OrderFormFiledType[] | never[];
+        orderFormFields?: OrderFormFieldType[];
     };
 };
 
@@ -49,7 +51,7 @@ export type ConfigType = {
     invoiceAddressSelection?: {
         enabled?: boolean;
         label?: string;
-        fields?: OrderFormFiledType[] | never[];
+        fields?: OrderFormFieldType[];
     };
     settings?: {
         successText?: string;

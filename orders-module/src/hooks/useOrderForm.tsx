@@ -13,7 +13,7 @@ import { WRONG_MSG, PAYMENT_METHOD_DEFAULT } from '../constants/index';
 import { OrderFormInputsType, OrderInfoType } from '../types/order';
 import {
     ErrorsMsg,
-    OrderFormFiledType,
+    OrderFormFieldType,
     PaymentMethodOptionsType,
     ContactRequestType,
 } from '../types/general';
@@ -48,9 +48,9 @@ type Props = {
     language: string;
     merchantAgreementUrl: string;
     paymentMethodsOptions?: PaymentMethodOptionsType;
-    orderFields: OrderFormFiledType[];
+    orderFields: OrderFormFieldType[];
     invoiceAddressToggle?: boolean;
-    invoiceOrderFields: OrderFormFiledType[];
+    invoiceOrderFields: OrderFormFieldType[];
     invoiceLookupNotFoundText?: string;
     errorValidationTitleMsg?: string;
     errorValidationDenialOrderBlockingMsg?: string;

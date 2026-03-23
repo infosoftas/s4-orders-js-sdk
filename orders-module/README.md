@@ -39,17 +39,19 @@ enum PaymentMethodEnum {
     OIO = 'OIO',
 }
 
-type OrderFormFiledType = {
+type OrderFormFieldType = {
     name: string;
     required?: boolean;
+    readOnly?: boolean;
+    label?: string;
 };
 
 type PaymentMethodOptionsType = {
     [key in PaymentMethodEnum]: {
         generateSubscriberContact?: boolean;
         accountId?: string;
-        orderFormFields?: OrderFormFiledType[] | never[];
-        paymentInvoiceFields?: OrderFormFiledType[] | never[] | null;
+        orderFormFields: OrderFormFieldType[];
+        paymentInvoiceFields?: OrderFormFieldType[] | never[] | null;
     };
 }
 
@@ -75,9 +77,10 @@ type ConfigType = {
     moduleTitle?: string;
     submitStartCallback?: (subscriberId: string) => void;
     userActionCallback?: (action: UserActionEnum, args: object | null | undefined) => void;
-    setContactCallback?: (contactInfo: contactRequestType) => void;
-    apiKey: string;
-    apiUrl: string;
+    setContactCallback?: (contactInfo: ContactRequestType) => void;
+    cancelVippsCallback?: () => void;
+    apiKey?: string;
+    apiUrl?: string;
     templatePackageId: string;
     subscriberId: string;
     userId: string;
@@ -85,14 +88,31 @@ type ConfigType = {
     organizationId: string;
     redirectUrl?: string;
     showIframe?: boolean;
+    /**
+     * The full list of payment methods displayed in the UI, each with a display label and value.
+     * Controls what the user sees in the payment method selector.
+     * @example [{ label: 'Credit Card', value: 'SwedbankPay' }, { label: 'Invoice', value: 'Invoice' }]
+     */
     availablePaymentMethods?: { label: string; value: PaymentMethodEnum }[];
+    /**
+     * Whitelist of payment methods the subscriber is permitted to use.
+     * If a method is in availablePaymentMethods but not here, it will be shown but blocked.
+     * @example ['SwedbankPay', 'Invoice']
+     */
+    allowedPaymentMethods?: PaymentMethodEnum[];
+    /**
+     * Per-payment-method form field configuration.
+     * Controls which input fields are shown in the order form for each payment method.
+     * Use accountId on SwedbankPay to set your Swedbank Pay account ID.
+     */
     paymentMethodsOptions?: PaymentMethodOptionsType;
+    requireTermsAcceptance?: boolean;
     language?: string;
     merchantAgreementUrl?: string;
     invoiceAddressSelection?: {
         enabled?: boolean;
         label?: string;
-        fields?: OrderFormFiledType[] | never[];
+        fields?: OrderFormFieldType[];
     };
     settings?: {
         successText?: string;
@@ -101,6 +121,7 @@ type ConfigType = {
         backButtonText?: string;
         verifyButtonText?: string;
         organizationNumberLabel?: string;
+        cvrLabel?: string;
         glnLabel?: string;
         orderDefaultValues?: OrderFormInputsType;
         paymentMethodLabel?: string;
@@ -110,6 +131,9 @@ type ConfigType = {
         errorValidationTitleMsg?: string;
         errorValidationDenialOrderBlockingMsg?: string;
         errorValidationBlockingOffersMsg?: string;
+        paymentMethodNotAllowedMsg?: string;
+        invoiceLookupNotFoundText?: string;
+        termsAndConditionsText?: string;
     };
 }
 ```
@@ -388,8 +412,11 @@ export default OrderPlace;
 | redirectUrl           |                              window.location.href                              |               redirect url |
 | showIframe            |                                     false                                      | show credit card in iframe |
 | userActionCallback    |                                   undefined                                    | function for tracking user actions |
-| paymentMethodsOptions | orderFormFields: [{name: 'phone, required: false, readOnly: false, label: ''}] |        default form fields |
-| availablePaymentMethods | [] | available payment methods |
+| cancelVippsCallback   |                                   undefined                                    | callback invoked when a Vipps/MobilePay payment is cancelled |
+| paymentMethodsOptions | orderFormFields: [{name: 'phoneNumber', required: false, readOnly: false, label: ''}] |        default form fields |
+| availablePaymentMethods | [] | available payment methods to display |
+| allowedPaymentMethods | [] | list of payment methods the subscriber is allowed to use |
+| requireTermsAcceptance | false | when true, the user must accept terms and conditions before submitting |
 | language | 'en-US' | language |
 | merchantAgreementUrl | '' | vipps and MobilePay property |
-| settings | {successText: 'Order successful completed!',failureText: 'Something went wrong!',submitButtonText: 'Start',backButtonText: 'Back',verifyButtonText: 'Verify',organizationNumberLabel: 'CVR',glnLabel: 'GLN',paymentMethodLabel:'Select Payment Method', orderDefaultValues: 'Default order form values', paymentMethodNotAllowedMsg: 'This payment method not allowed!', invoiceLookupNotFoundText: 'There was no recipient found for the given information' } | label and text properties |
+| settings | {successText: 'Order completed successfully!', failureText: 'Something went wrong!', submitButtonText: 'Start', backButtonText: 'Back', verifyButtonText: 'Verify', organizationNumberLabel: 'Organization Number', cvrLabel: 'CVR', glnLabel: 'GLN', paymentMethodLabel: 'Select Payment Method', orderDefaultValues: 'Default order form values', errorReqMsg: '', errorInvalidEmailMsg: '', errorInvalidPhoneMsg: '', errorValidationTitleMsg: 'One or more validation errors occurred.', errorValidationDenialOrderBlockingMsg: '...', errorValidationBlockingOffersMsg: '...', paymentMethodNotAllowedMsg: 'This payment method not allowed!', invoiceLookupNotFoundText: 'There was no recipient found for the given information', termsAndConditionsText: '' } | label and text properties |
