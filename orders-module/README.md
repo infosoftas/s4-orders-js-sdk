@@ -50,7 +50,7 @@ type PaymentMethodOptionsType = {
     [key in PaymentMethodEnum]: {
         generateSubscriberContact?: boolean;
         accountId?: string;
-        orderFormFields?: OrderFormFieldType[] | never[];
+        orderFormFields: OrderFormFieldType[];
         paymentInvoiceFields?: OrderFormFieldType[] | never[] | null;
     };
 }
