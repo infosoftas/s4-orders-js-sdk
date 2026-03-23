@@ -88,8 +88,23 @@ type ConfigType = {
     organizationId: string;
     redirectUrl?: string;
     showIframe?: boolean;
+    /**
+     * The full list of payment methods displayed in the UI, each with a display label and value.
+     * Controls what the user sees in the payment method selector.
+     * @example [{ label: 'Credit Card', value: 'SwedbankPay' }, { label: 'Invoice', value: 'Invoice' }]
+     */
     availablePaymentMethods?: { label: string; value: PaymentMethodEnum }[];
+    /**
+     * Whitelist of payment methods the subscriber is permitted to use.
+     * If a method is in availablePaymentMethods but not here, it will be shown but blocked.
+     * @example ['SwedbankPay', 'Invoice']
+     */
     allowedPaymentMethods?: PaymentMethodEnum[];
+    /**
+     * Per-payment-method form field configuration.
+     * Controls which input fields are shown in the order form for each payment method.
+     * Use accountId on SwedbankPay to set your Swedbank Pay account ID.
+     */
     paymentMethodsOptions?: PaymentMethodOptionsType;
     requireTermsAcceptance?: boolean;
     language?: string;
