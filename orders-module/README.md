@@ -398,7 +398,7 @@ export default OrderPlace;
 | showIframe            |                                     false                                      | show credit card in iframe |
 | userActionCallback    |                                   undefined                                    | function for tracking user actions |
 | cancelVippsCallback   |                                   undefined                                    | callback invoked when a Vipps/MobilePay payment is cancelled |
-| paymentMethodsOptions | orderFormFields: [{name: 'phone', required: false, readOnly: false, label: ''}] |        default form fields |
+| paymentMethodsOptions | orderFormFields: [{name: 'phoneNumber', required: false, readOnly: false, label: ''}] |        default form fields |
 | availablePaymentMethods | [] | available payment methods to display |
 | allowedPaymentMethods | [] | list of payment methods the subscriber is allowed to use |
 | requireTermsAcceptance | false | when true, the user must accept terms and conditions before submitting |
