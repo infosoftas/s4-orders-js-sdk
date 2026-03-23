@@ -97,7 +97,7 @@ type ConfigType = {
     invoiceAddressSelection?: {
         enabled?: boolean;
         label?: string;
-        fields?: OrderFormFieldType[] | never[];
+        fields?: OrderFormFieldType[];
     };
     settings?: {
         successText?: string;
