@@ -79,8 +79,8 @@ type ConfigType = {
     userActionCallback?: (action: UserActionEnum, args: object | null | undefined) => void;
     setContactCallback?: (contactInfo: ContactRequestType) => void;
     cancelVippsCallback?: () => void;
-    apiKey: string;
-    apiUrl: string;
+    apiKey?: string;
+    apiUrl?: string;
     templatePackageId: string;
     subscriberId: string;
     userId: string;
