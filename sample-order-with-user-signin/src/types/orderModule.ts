@@ -9,6 +9,8 @@ export type OrderInfoType = {
 export type OrderFormFieldType = {
     name: string;
     required?: boolean;
+    readOnly?: boolean;
+    label?: string;
 };
 
 export type OrderFormInputsType = {
