@@ -42,6 +42,8 @@ enum PaymentMethodEnum {
 type OrderFormFiledType = {
     name: string;
     required?: boolean;
+    readOnly?: boolean;
+    label?: string;
 };
 
 type PaymentMethodOptionsType = {
@@ -76,6 +78,7 @@ type ConfigType = {
     submitStartCallback?: (subscriberId: string) => void;
     userActionCallback?: (action: UserActionEnum, args: object | null | undefined) => void;
     setContactCallback?: (contactInfo: contactRequestType) => void;
+    cancelVippsCallback?: () => void;
     apiKey: string;
     apiUrl: string;
     templatePackageId: string;
@@ -86,7 +89,9 @@ type ConfigType = {
     redirectUrl?: string;
     showIframe?: boolean;
     availablePaymentMethods?: { label: string; value: PaymentMethodEnum }[];
+    allowedPaymentMethods?: PaymentMethodEnum[];
     paymentMethodsOptions?: PaymentMethodOptionsType;
+    requireTermsAcceptance?: boolean;
     language?: string;
     merchantAgreementUrl?: string;
     invoiceAddressSelection?: {
@@ -101,6 +106,7 @@ type ConfigType = {
         backButtonText?: string;
         verifyButtonText?: string;
         organizationNumberLabel?: string;
+        cvrLabel?: string;
         glnLabel?: string;
         orderDefaultValues?: OrderFormInputsType;
         paymentMethodLabel?: string;
@@ -110,6 +116,9 @@ type ConfigType = {
         errorValidationTitleMsg?: string;
         errorValidationDenialOrderBlockingMsg?: string;
         errorValidationBlockingOffersMsg?: string;
+        paymentMethodNotAllowedMsg?: string;
+        invoiceLookupNotFoundText?: string;
+        termsAndConditionsText?: string;
     };
 }
 ```
@@ -388,8 +397,11 @@ export default OrderPlace;
 | redirectUrl           |                              window.location.href                              |               redirect url |
 | showIframe            |                                     false                                      | show credit card in iframe |
 | userActionCallback    |                                   undefined                                    | function for tracking user actions |
-| paymentMethodsOptions | orderFormFields: [{name: 'phone, required: false, readOnly: false, label: ''}] |        default form fields |
-| availablePaymentMethods | [] | available payment methods |
+| cancelVippsCallback   |                                   undefined                                    | callback invoked when a Vipps/MobilePay payment is cancelled |
+| paymentMethodsOptions | orderFormFields: [{name: 'phone', required: false, readOnly: false, label: ''}] |        default form fields |
+| availablePaymentMethods | [] | available payment methods to display |
+| allowedPaymentMethods | [] | list of payment methods the subscriber is allowed to use |
+| requireTermsAcceptance | false | when true, the user must accept terms and conditions before submitting |
 | language | 'en-US' | language |
 | merchantAgreementUrl | '' | vipps and MobilePay property |
-| settings | {successText: 'Order successful completed!',failureText: 'Something went wrong!',submitButtonText: 'Start',backButtonText: 'Back',verifyButtonText: 'Verify',organizationNumberLabel: 'CVR',glnLabel: 'GLN',paymentMethodLabel:'Select Payment Method', orderDefaultValues: 'Default order form values', paymentMethodNotAllowedMsg: 'This payment method not allowed!', invoiceLookupNotFoundText: 'There was no recipient found for the given information' } | label and text properties |
+| settings | {successText: 'Order successful completed!', failureText: 'Something went wrong!', submitButtonText: 'Start', backButtonText: 'Back', verifyButtonText: 'Verify', organizationNumberLabel: 'Organization Number', cvrLabel: 'CVR', glnLabel: 'GLN', paymentMethodLabel: 'Select Payment Method', orderDefaultValues: 'Default order form values', errorReqMsg: '', errorInvalidEmailMsg: '', errorInvalidPhoneMsg: '', errorValidationTitleMsg: 'One or more validation errors occurred.', errorValidationDenialOrderBlockingMsg: '...', errorValidationBlockingOffersMsg: '...', paymentMethodNotAllowedMsg: 'This payment method not allowed!', invoiceLookupNotFoundText: 'There was no recipient found for the given information', termsAndConditionsText: '' } | label and text properties |
