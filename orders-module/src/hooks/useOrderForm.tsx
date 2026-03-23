@@ -152,8 +152,6 @@ const useOrderForm = ({
                 sessionStorage.setItem('subscriberId', id); // For avoiding attempt of creating subscriber again
             }
 
-            console.log('Dette er en ny testversjon av OSDK');
-
             if (setContactCallback) {
                 setContactCallback(contactModel);
             }

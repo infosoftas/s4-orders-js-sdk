@@ -21,6 +21,7 @@ import { orderInvoiceContactFields } from '../../utils/order.helper';
 import useOrderForm from '../../hooks/useOrderForm';
 
 import './orderForm.scss';
+import TermsCheckbox from '../FormFields/TermsCheckbox';
 
 type Props = {
     callback: (url: string | null, orderInfo?: OrderInfoType | null) => void;
@@ -56,9 +57,11 @@ type Props = {
         fields?: OrderFormFiledType[];
         paymentMethods?: PaymentMethodEnum[];
     };
+    requireTermsAcceptance?: boolean;
     errorValidationTitleMsg?: string;
     errorValidationDenialOrderBlockingMsg?: string;
     errorValidationBlockingOffersMsg?: string;
+    termsAndConditionsText?: string;
 };
 
 const initialData = {
@@ -103,6 +106,8 @@ const OrderForm: FC<Props> = ({
     errorValidationTitleMsg,
     errorValidationDenialOrderBlockingMsg,
     errorValidationBlockingOffersMsg,
+    requireTermsAcceptance,
+    termsAndConditionsText,
 }) => {
     if (!templatePackageId) {
         console.error('"templatePackageId" should be set');
@@ -158,6 +163,7 @@ const OrderForm: FC<Props> = ({
 
     const invoiceAddressToggle = watch('invoiceAddressSelection');
     const paymentMethodInput = watch('paymentMethod');
+    const isTermsAccepted = watch('termsAccept', false);
 
     const invoiceOrderFields =
         paymentMethodsOptions?.[paymentMethodInput || PAYMENT_METHOD_DEFAULT]
@@ -247,6 +253,10 @@ const OrderForm: FC<Props> = ({
         invoiceAddressSelection?.enabled &&
         allowPaymentMethod &&
         invoicePaymentMethods.includes(paymentMethodInput as PaymentMethodEnum);
+
+    const isSubmitButtonDisabled = requireTermsAcceptance
+        ? !isTermsAccepted
+        : false;
 
     return (
         <FormProvider {...methods}>
@@ -344,11 +354,20 @@ const OrderForm: FC<Props> = ({
                         })}
                     </Suspense>
                 )}
+                {requireTermsAcceptance && (
+                    <TermsCheckbox
+                        name="termsAccept"
+                        label={termsAndConditionsText}
+                        required
+                        errors={errors}
+                    />
+                )}
                 {allowPaymentMethod && (
                     <Button
                         type="submit"
                         loading={loading}
                         buttonText={submitButtonText}
+                        disable={isSubmitButtonDisabled}
                     />
                 )}
                 <Alert

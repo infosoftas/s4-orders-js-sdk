@@ -3,6 +3,7 @@ import PhoneField from './PhoneField';
 import NameField from './NameField';
 import AddressField from './AddressField';
 import InputField from './InputField';
+import TermsCheckbox from './TermsCheckbox';
 
 import { FIELD_TYPES } from './FormFields.helper';
 
@@ -27,6 +28,7 @@ const formFieldsMapper = {
     [FIELD_TYPES.INVOICE_ZIP]: InputField,
     [FIELD_TYPES.INVOICE_CARE_OF]: InputField,
     [FIELD_TYPES.INVOICE_BUYER_REFERENCE]: InputField,
+    [FIELD_TYPES.TERMS_CHECKBOX]: TermsCheckbox,
 };
 
 export default formFieldsMapper;

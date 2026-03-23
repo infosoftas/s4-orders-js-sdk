@@ -24,6 +24,7 @@ export type OrderFormInputsType = {
     invoiceBuyerReference?: string;
     gln?: string;
     cvr?: string;
+    termsAccept?: boolean;
 };
 
 export type VippsMobilePay = {
