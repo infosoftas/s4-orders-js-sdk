@@ -414,9 +414,13 @@ const OrderForm: FC<Props> = ({
                 <OrderDenialModal
                     isOpen={!!orderDenialType}
                     message={orderDenialMessage}
-                    canContinue={orderDenialType === 'offer'}
+                    canContinue={
+                        orderDenialType === 'offer' &&
+                        !!orderDenialFallbackOffer?.packageId
+                    }
                     offer={
-                        orderDenialType === 'offer'
+                        orderDenialType === 'offer' &&
+                        !!orderDenialFallbackOffer?.packageId
                             ? orderDenialFallbackOffer
                             : undefined
                     }
