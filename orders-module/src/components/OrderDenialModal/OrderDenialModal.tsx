@@ -40,6 +40,7 @@ const OrderDenialModal: FC<Props> = ({
                 className="sdk-order-denial-modal"
                 role="dialog"
                 aria-modal="true"
+                aria-label="Order denial modal"
             >
                 <p className="sdk-order-denial-modal-text">
                     {message?.split('\\n').map((line, i, arr) => (
