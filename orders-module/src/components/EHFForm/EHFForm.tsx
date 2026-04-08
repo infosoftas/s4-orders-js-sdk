@@ -204,6 +204,7 @@ const EHFForm: FC<Props> = ({
                 <OrderDenialModal
                     isOpen={!!orderDenialType}
                     message={orderDenialMessage}
+                    canContinue={orderDenialType === 'offer'}
                     offer={
                         orderDenialType === 'offer'
                             ? orderDenialFallbackOffer

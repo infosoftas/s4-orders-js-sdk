@@ -409,15 +409,12 @@ const OrderForm: FC<Props> = ({
                 {errorsMsg?.length > 0 &&
                     allowPaymentMethod &&
                     errorsMsg.map((i, index) => (
-                        <Alert
-                            key={`${i}-${index}`}
-                            className="mt-2"
-                            msg={i}
-                        />
+                        <Alert key={`${i}-${index}`} className="mt-2" msg={i} />
                     ))}
                 <OrderDenialModal
                     isOpen={!!orderDenialType}
                     message={orderDenialMessage}
+                    canContinue={orderDenialType === 'offer'}
                     offer={
                         orderDenialType === 'offer'
                             ? orderDenialFallbackOffer

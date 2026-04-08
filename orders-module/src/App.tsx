@@ -530,7 +530,7 @@ const App: FC<ConfigType> = ({
                 {isFailed &&
                     errorsMsg?.length > 0 &&
                     errorsMsg.map((i, index) => (
-                        <Alert key={index} className="mt-2" msg={i} />
+                        <Alert key={`${i}-${index}`} className="mt-2" msg={i} />
                     ))}
             </div>
         </ErrorBoundary>

@@ -10,6 +10,7 @@ type Props = {
     isOpen: boolean;
     message?: string;
     offer?: OrderDenialFallbackOfferType;
+    canContinue?: boolean;
     onContinue: () => void;
     onClose: () => void;
 };
@@ -18,6 +19,7 @@ const OrderDenialModal: FC<Props> = ({
     isOpen,
     message,
     offer,
+    canContinue = true,
     onContinue,
     onClose,
 }) => {
@@ -26,25 +28,47 @@ const OrderDenialModal: FC<Props> = ({
     }
 
     return createPortal(
-        <div className="sdk-order-denial-modal-overlay" data-testid="sdk-order-denial-modal-overlay">
-            <div className="sdk-order-denial-modal" role="dialog" aria-modal="true">
+        <div
+            className="sdk-order-denial-modal-overlay"
+            data-testid="sdk-order-denial-modal-overlay"
+        >
+            <div
+                className="sdk-order-denial-modal"
+                role="dialog"
+                aria-modal="true"
+            >
                 <p className="sdk-order-denial-modal-text">{message}</p>
                 {offer?.title && (
                     <div className="sdk-order-denial-offer-box">
-                        <h4 className="sdk-order-denial-offer-title">{offer.title}</h4>
+                        <h4 className="sdk-order-denial-offer-title">
+                            {offer.title}
+                        </h4>
                         {offer.description && (
                             <p className="sdk-order-denial-offer-description">
                                 {offer.description}
                             </p>
                         )}
                         {offer.price && (
-                            <p className="sdk-order-denial-offer-meta">{offer.price}</p>
+                            <p className="sdk-order-denial-offer-meta">
+                                {offer.price}
+                            </p>
                         )}
                     </div>
                 )}
                 <div className="sdk-order-denial-modal-actions">
-                    <Button type="button" btnType="default" buttonText="Close" onClick={onClose} />
-                    <Button type="button" buttonText="Continue" onClick={onContinue} />
+                    <Button
+                        type="button"
+                        btnType="default"
+                        buttonText="Close"
+                        onClick={onClose}
+                    />
+                    {canContinue && (
+                        <Button
+                            type="button"
+                            buttonText="Continue"
+                            onClick={onContinue}
+                        />
+                    )}
                 </div>
             </div>
         </div>,

@@ -155,14 +155,11 @@ const useOrderForm = ({
     };
 
     const continueWithFallbackOffer = async () => {
-        if (!submittedOrderData) {
+        if (orderDenialType !== 'offer' || !submittedOrderData) {
             return;
         }
 
-        if (
-            orderDenialType === 'offer' &&
-            orderDenialFallbackOffer?.packageId
-        ) {
+        if (orderDenialFallbackOffer?.packageId) {
             fallbackOfferPackageIdRef.current =
                 orderDenialFallbackOffer.packageId;
             userActionCallback?.(UserActionEnum.SELECT_FALLBACK_OFFER, {
