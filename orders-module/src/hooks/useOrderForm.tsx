@@ -159,14 +159,17 @@ const useOrderForm = ({
             return;
         }
 
-        if (orderDenialFallbackOffer?.packageId) {
-            fallbackOfferPackageIdRef.current =
-                orderDenialFallbackOffer.packageId;
-            userActionCallback?.(UserActionEnum.SELECT_FALLBACK_OFFER, {
-                packageId: orderDenialFallbackOffer.packageId,
-            });
+        const fallbackPackageId = orderDenialFallbackOffer?.packageId;
+
+        if (!fallbackPackageId) {
+            dismissOrderDenial();
+            return;
         }
 
+        fallbackOfferPackageIdRef.current = fallbackPackageId;
+        userActionCallback?.(UserActionEnum.SELECT_FALLBACK_OFFER, {
+            packageId: fallbackPackageId,
+        });
         dismissOrderDenial();
         await orderSubmit(submittedOrderData);
     };
