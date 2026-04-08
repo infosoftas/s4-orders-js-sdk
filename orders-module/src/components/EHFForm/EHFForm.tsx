@@ -198,8 +198,8 @@ const EHFForm: FC<Props> = ({
 
                 {apiErrorMsg && <Alert className="mt-2" msg={apiErrorMsg} />}
                 {errorsMsg?.length > 0 &&
-                    errorsMsg.map((i) => (
-                        <Alert key={i} className="mt-2" msg={i} />
+                    errorsMsg.map((i, index) => (
+                        <Alert key={`${i}-${index}`} className="mt-2" msg={i} />
                     ))}
                 <OrderDenialModal
                     isOpen={!!orderDenialType}
