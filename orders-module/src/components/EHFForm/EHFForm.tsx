@@ -3,12 +3,14 @@ import { FormProvider, useForm, SubmitHandler } from 'react-hook-form';
 
 import Alert from '../Alert/Alert';
 import Button from '../Button/Button';
+import OrderDenialModal from '../OrderDenialModal/OrderDenialModal';
 import InputField from '../FormFields/InputField';
 import { PaymentMethodEnum, UserActionEnum } from '../../enums/general';
 import {
     OrderFormFieldType,
     PaymentMethodOptionsType,
     ContactRequestType,
+    OrderDenialFallbackOfferType,
 } from '../../types/general';
 import { OrderFormInputsType, OrderInfoType } from '../../types/order';
 import { orderInvoiceContactFields } from '../../utils/order.helper';
@@ -27,6 +29,8 @@ type Props = {
     className?: string;
     backButtonText?: string;
     verifyButtonText?: string;
+    orderDenialCloseButtonText?: string;
+    orderDenialContinueButtonText?: string;
     organizationNumberLabel?: string;
     organizationNumber?: string;
     glnLabel?: string;
@@ -51,6 +55,10 @@ type Props = {
     errorValidationTitleMsg?: string;
     errorValidationDenialOrderBlockingMsg?: string;
     errorValidationBlockingOffersMsg?: string;
+    orderDenialOfferBaseText?: string;
+    orderDenialOfferWithFallbackText?: string;
+    orderDenialAmountText?: string;
+    orderDenialFallbackOffer?: OrderDenialFallbackOfferType;
 };
 
 type EHFFormInputsType = {
@@ -70,6 +78,8 @@ const EHFForm: FC<Props> = ({
     className = '',
     backButtonText = '',
     verifyButtonText = '',
+    orderDenialCloseButtonText = 'Close',
+    orderDenialContinueButtonText = 'Continue',
     organizationNumberLabel = '',
     organizationNumber = '',
     templatePackageId,
@@ -88,6 +98,10 @@ const EHFForm: FC<Props> = ({
     errorValidationTitleMsg,
     errorValidationDenialOrderBlockingMsg,
     errorValidationBlockingOffersMsg,
+    orderDenialOfferBaseText,
+    orderDenialOfferWithFallbackText,
+    orderDenialAmountText,
+    orderDenialFallbackOffer,
 }) => {
     const methods = useForm<EHFFormInputsType>({
         defaultValues: {
@@ -108,7 +122,16 @@ const EHFForm: FC<Props> = ({
         paymentMethodsOptions?.[orderValues?.paymentMethod as PaymentMethodEnum]
             ?.orderFormFields ?? DEFAULT_ORDER_FORM_FIELDS;
 
-    const { orderSubmit, loading, apiErrorMsg, errorsMsg } = useOrderForm({
+    const {
+        orderSubmit,
+        continueWithFallbackOffer,
+        loading,
+        apiErrorMsg,
+        errorsMsg,
+        orderDenialType,
+        orderDenialMessage,
+        dismissOrderDenial,
+    } = useOrderForm({
         callback,
         submitStartCallback,
         userActionCallback,
@@ -130,6 +153,10 @@ const EHFForm: FC<Props> = ({
         errorValidationTitleMsg,
         errorValidationDenialOrderBlockingMsg,
         errorValidationBlockingOffersMsg,
+        orderDenialOfferBaseText,
+        orderDenialOfferWithFallbackText,
+        orderDenialAmountText,
+        orderDenialFallbackOffer,
     });
 
     const onSubmit: SubmitHandler<EHFFormInputsType> = async (
@@ -178,7 +205,27 @@ const EHFForm: FC<Props> = ({
 
                 {apiErrorMsg && <Alert className="mt-2" msg={apiErrorMsg} />}
                 {errorsMsg?.length > 0 &&
-                    errorsMsg.map((i) => <Alert className="mt-2" msg={i} />)}
+                    errorsMsg.map((i, index) => (
+                        <Alert key={index} className="mt-2" msg={i} />
+                    ))}
+                <OrderDenialModal
+                    isOpen={!!orderDenialType}
+                    message={orderDenialMessage}
+                    closeButtonText={orderDenialCloseButtonText}
+                    continueButtonText={orderDenialContinueButtonText}
+                    canContinue={
+                        orderDenialType === 'offer' &&
+                        !!orderDenialFallbackOffer?.templatePackageId
+                    }
+                    offer={
+                        orderDenialType === 'offer' &&
+                        !!orderDenialFallbackOffer?.templatePackageId
+                            ? orderDenialFallbackOffer
+                            : undefined
+                    }
+                    onClose={dismissOrderDenial}
+                    onContinue={continueWithFallbackOffer}
+                />
             </form>
         </FormProvider>
     );

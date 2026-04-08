@@ -1,0 +1,42 @@
+.sdk-order-denial-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.sdk-order-denial-modal {
+    width: min(560px, 100%);
+    padding: 24px;
+}
+
+.sdk-order-denial-modal-text {
+    margin: 0;
+}
+
+.sdk-order-denial-offer-box {
+    margin-top: 16px;
+    padding: 14px;
+}
+
+.sdk-order-denial-offer-title {
+    margin: 0;
+}
+
+.sdk-order-denial-offer-description {
+    margin: 8px 0 0;
+}
+
+.sdk-order-denial-offer-meta {
+    margin: 8px 0 0;
+}
+
+.sdk-order-denial-modal-actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}

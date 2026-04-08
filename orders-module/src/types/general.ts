@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 import { PaymentMethodEnum, UserActionEnum } from '../enums/general';
 import { OrderFormInputsType } from './order';
 
@@ -32,6 +34,13 @@ export type ContactRequestType = {
     city?: string;
     zip?: string;
     careOf?: string;
+};
+
+export type OrderDenialFallbackOfferType = {
+    title?: string;
+    description?: string;
+    price?: string;
+    templatePackageId?: string;
 };
 
 export type ConfigType = {
@@ -70,6 +79,8 @@ export type ConfigType = {
         submitButtonText?: string;
         backButtonText?: string;
         verifyButtonText?: string;
+        orderDenialCloseButtonText?: string;
+        orderDenialContinueButtonText?: string;
         organizationNumberLabel?: string;
         cvrLabel?: string;
         glnLabel?: string;
@@ -83,7 +94,11 @@ export type ConfigType = {
         errorValidationTitleMsg?: string;
         errorValidationDenialOrderBlockingMsg?: string;
         errorValidationBlockingOffersMsg?: string;
-        termsAndConditionsText?: string;
+        orderDenialOfferBaseText?: string;
+        orderDenialOfferWithFallbackText?: string;
+        orderDenialAmountText?: string;
+        orderDenialFallbackOffer?: OrderDenialFallbackOfferType;
+        termsAndConditionsText?: string | ReactNode;
     };
 };
 

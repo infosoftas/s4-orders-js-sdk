@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 
 import { createSubscriber } from '../api/SubscribeApi';
@@ -14,6 +14,7 @@ import { OrderFormInputsType, OrderInfoType } from '../types/order';
 import {
     ErrorsMsg,
     OrderFormFieldType,
+    OrderDenialFallbackOfferType,
     PaymentMethodOptionsType,
     ContactRequestType,
 } from '../types/general';
@@ -35,9 +36,7 @@ type Props = {
         action: UserActionEnum,
         args: object | null | undefined
     ) => void;
-    setContactCallback?: (
-        contactInfo: ContactRequestType
-    ) => void;
+    setContactCallback?: (contactInfo: ContactRequestType) => void;
     templatePackageId: string;
     subscriberId?: string;
     userId?: string;
@@ -55,6 +54,52 @@ type Props = {
     errorValidationTitleMsg?: string;
     errorValidationDenialOrderBlockingMsg?: string;
     errorValidationBlockingOffersMsg?: string;
+    orderDenialOfferBaseText?: string;
+    orderDenialOfferWithFallbackText?: string;
+    orderDenialAmountText?: string;
+    orderDenialFallbackOffer?: OrderDenialFallbackOfferType;
+};
+
+type DenialErrorType = {
+    status?: number;
+    errors?: Record<string, string[] | undefined>;
+};
+
+const OFFER_DENIAL_BASE_TEXT =
+    'Hello again!\n\nLooks like you already tried this offer.';
+const OFFER_DENIAL_WITH_FALLBACK_TEXT =
+    'Hello again!\n\nLooks like you already tried this offer, but we would like to keep you with us.\n\nTherefore we got a new great offer for you:';
+
+const getDenialErrorType = (
+    error: DenialErrorType
+): 'offer' | 'amount' | null => {
+    if (error?.status !== 400 || !error?.errors) {
+        return null;
+    }
+
+    const normalizedEntries = Object.entries(error.errors).map(
+        ([key, value]) => [key.toLowerCase(), value] as const
+    );
+
+    const hasOffer = normalizedEntries.some(
+        ([key, value]) =>
+            key === 'offer' && Array.isArray(value) && value.length > 0
+    );
+
+    if (hasOffer) {
+        return 'offer';
+    }
+
+    const hasAmount = normalizedEntries.some(
+        ([key, value]) =>
+            key === 'amount' && Array.isArray(value) && value.length > 0
+    );
+
+    if (hasAmount) {
+        return 'amount';
+    }
+
+    return null;
 };
 
 const useOrderForm = ({
@@ -79,17 +124,56 @@ const useOrderForm = ({
     errorValidationTitleMsg,
     errorValidationDenialOrderBlockingMsg,
     errorValidationBlockingOffersMsg,
+    orderDenialOfferBaseText,
+    orderDenialOfferWithFallbackText,
+    orderDenialAmountText,
+    orderDenialFallbackOffer,
 }: Props) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [apiErrorMsg, setApiErrorMsg] = useState<string>('');
     const [errorsMsg, setErrorsMsg] = useState<string[]>([]);
+    const [orderDenialType, setOrderDenialType] = useState<
+        'offer' | 'amount' | null
+    >(null);
+    const [submittedOrderData, setSubmittedOrderData] =
+        useState<OrderFormInputsType | null>(null);
+    const fallbackOfferTemplatePackageIdRef = useRef<string | null>(null);
+
+    const dismissOrderDenial = () => {
+        setOrderDenialType(null);
+    };
+
+    const getOrderDenialMessage = () => {
+        if (orderDenialType === 'offer') {
+            if (orderDenialFallbackOffer?.templatePackageId) {
+                return (
+                    orderDenialOfferWithFallbackText ||
+                    OFFER_DENIAL_WITH_FALLBACK_TEXT
+                );
+            }
+
+            return orderDenialOfferBaseText || OFFER_DENIAL_BASE_TEXT;
+        }
+
+        if (orderDenialType === 'amount') {
+            return (
+                orderDenialAmountText ||
+                errorValidationDenialOrderBlockingMsg ||
+                WRONG_MSG
+            );
+        }
+
+        return '';
+    };
 
     const orderSubmit: SubmitHandler<OrderFormInputsType> = async (
         data
     ): Promise<void> => {
         setApiErrorMsg('');
         setErrorsMsg([]);
+        setOrderDenialType(null);
         setLoading(true);
+        setSubmittedOrderData(data);
         try {
             let id: string | undefined = subscriberId;
             let invoiceResponse = null;
@@ -161,6 +245,10 @@ const useOrderForm = ({
             if (id) {
                 const paymentMethod =
                     data.paymentMethod || PAYMENT_METHOD_DEFAULT;
+                const selectedTemplateSubscriptionPlanId =
+                    fallbackOfferTemplatePackageIdRef.current ||
+                    templatePackageId;
+                fallbackOfferTemplatePackageIdRef.current = null;
 
                 const agreements = prepareAgreementModel({
                     paymentMethod,
@@ -186,7 +274,8 @@ const useOrderForm = ({
                     subscriberId: id,
                     subscriptionPlan: {
                         organizationId,
-                        templateSubscriptionPlanId: templatePackageId,
+                        templateSubscriptionPlanId:
+                            selectedTemplateSubscriptionPlanId,
                     },
                     paymentAgreement: { ...agreements },
                     invoiceContact: invoiceAddressToggle
@@ -216,6 +305,17 @@ const useOrderForm = ({
                 errorValidationDenialOrderBlockingMsg,
             } as ErrorMessages;
 
+            const detectedDenialType = getDenialErrorType(
+                error as DenialErrorType
+            );
+            if (detectedDenialType) {
+                setApiErrorMsg('');
+                setErrorsMsg([]);
+                setOrderDenialType(detectedDenialType);
+                callback(null);
+                return;
+            }
+
             console.error(error);
             setApiErrorMsg(
                 prepareErrorMessage(error as Error, undefined, translations)
@@ -236,11 +336,36 @@ const useOrderForm = ({
         }
     };
 
+    const continueWithFallbackOffer = async () => {
+        if (orderDenialType !== 'offer' || !submittedOrderData) {
+            return;
+        }
+
+        const fallbackTemplatePackageId =
+            orderDenialFallbackOffer?.templatePackageId;
+
+        if (!fallbackTemplatePackageId) {
+            dismissOrderDenial();
+            return;
+        }
+
+        fallbackOfferTemplatePackageIdRef.current = fallbackTemplatePackageId;
+        userActionCallback?.(UserActionEnum.SELECT_FALLBACK_OFFER, {
+            templatePackageId: fallbackTemplatePackageId,
+        });
+        dismissOrderDenial();
+        await orderSubmit(submittedOrderData);
+    };
+
     return {
         orderSubmit,
+        continueWithFallbackOffer,
         loading,
         apiErrorMsg,
         errorsMsg,
+        orderDenialType,
+        orderDenialMessage: getOrderDenialMessage(),
+        dismissOrderDenial,
     };
 };
 
