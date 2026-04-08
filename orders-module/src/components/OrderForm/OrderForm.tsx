@@ -416,11 +416,11 @@ const OrderForm: FC<Props> = ({
                     message={orderDenialMessage}
                     canContinue={
                         orderDenialType === 'offer' &&
-                        !!orderDenialFallbackOffer?.packageId
+                        !!orderDenialFallbackOffer?.templatePackageId
                     }
                     offer={
                         orderDenialType === 'offer' &&
-                        !!orderDenialFallbackOffer?.packageId
+                        !!orderDenialFallbackOffer?.templatePackageId
                             ? orderDenialFallbackOffer
                             : undefined
                     }

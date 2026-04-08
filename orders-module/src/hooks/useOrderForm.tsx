@@ -55,6 +55,8 @@ type Props = {
     errorValidationDenialOrderBlockingMsg?: string;
     errorValidationBlockingOffersMsg?: string;
     orderDenialOfferText?: string;
+    orderDenialOfferBaseText?: string;
+    orderDenialOfferWithFallbackText?: string;
     orderDenialAmountText?: string;
     orderDenialFallbackOffer?: OrderDenialFallbackOfferType;
 };
@@ -63,6 +65,11 @@ type DenialErrorType = {
     status?: number;
     errors?: Record<string, string[] | undefined>;
 };
+
+const OFFER_DENIAL_BASE_TEXT =
+    'Hello again!\n\nLooks like you already tried this offer.';
+const OFFER_DENIAL_WITH_FALLBACK_TEXT =
+    'Hello again!\n\nLooks like you already tried this offer, but we would like to keep you with us.\n\nTherefore we got a new great offer for you:';
 
 const getDenialErrorType = (
     error: DenialErrorType
@@ -118,7 +125,8 @@ const useOrderForm = ({
     errorValidationTitleMsg,
     errorValidationDenialOrderBlockingMsg,
     errorValidationBlockingOffersMsg,
-    orderDenialOfferText,
+    orderDenialOfferBaseText,
+    orderDenialOfferWithFallbackText,
     orderDenialAmountText,
     orderDenialFallbackOffer,
 }: Props) => {
@@ -130,7 +138,7 @@ const useOrderForm = ({
     >(null);
     const [submittedOrderData, setSubmittedOrderData] =
         useState<OrderFormInputsType | null>(null);
-    const fallbackOfferPackageIdRef = useRef<string | null>(null);
+    const fallbackOfferTemplatePackageIdRef = useRef<string | null>(null);
 
     const dismissOrderDenial = () => {
         setOrderDenialType(null);
@@ -138,9 +146,14 @@ const useOrderForm = ({
 
     const getOrderDenialMessage = () => {
         if (orderDenialType === 'offer') {
-            return (
-                orderDenialOfferText || errorValidationBlockingOffersMsg || ''
-            );
+            if (orderDenialFallbackOffer?.templatePackageId) {
+                return (
+                    orderDenialOfferWithFallbackText ||
+                    OFFER_DENIAL_WITH_FALLBACK_TEXT
+                );
+            }
+
+            return orderDenialOfferBaseText || OFFER_DENIAL_BASE_TEXT;
         }
 
         if (orderDenialType === 'amount') {
@@ -234,8 +247,9 @@ const useOrderForm = ({
                 const paymentMethod =
                     data.paymentMethod || PAYMENT_METHOD_DEFAULT;
                 const selectedTemplateSubscriptionPlanId =
-                    fallbackOfferPackageIdRef.current || templatePackageId;
-                fallbackOfferPackageIdRef.current = null;
+                    fallbackOfferTemplatePackageIdRef.current ||
+                    templatePackageId;
+                fallbackOfferTemplatePackageIdRef.current = null;
 
                 const agreements = prepareAgreementModel({
                     paymentMethod,
@@ -323,25 +337,26 @@ const useOrderForm = ({
         }
     };
 
-        const continueWithFallbackOffer = async () => {
-            if (orderDenialType !== 'offer' || !submittedOrderData) {
-                return;
-            }
+    const continueWithFallbackOffer = async () => {
+        if (orderDenialType !== 'offer' || !submittedOrderData) {
+            return;
+        }
 
-            const fallbackPackageId = orderDenialFallbackOffer?.packageId;
+        const fallbackTemplatePackageId =
+            orderDenialFallbackOffer?.templatePackageId;
 
-            if (!fallbackPackageId) {
-                dismissOrderDenial();
-                return;
-            }
-
-            fallbackOfferPackageIdRef.current = fallbackPackageId;
-            userActionCallback?.(UserActionEnum.SELECT_FALLBACK_OFFER, {
-                packageId: fallbackPackageId,
-            });
+        if (!fallbackTemplatePackageId) {
             dismissOrderDenial();
-            await orderSubmit(submittedOrderData);
-        };
+            return;
+        }
+
+        fallbackOfferTemplatePackageIdRef.current = fallbackTemplatePackageId;
+        userActionCallback?.(UserActionEnum.SELECT_FALLBACK_OFFER, {
+            templatePackageId: fallbackTemplatePackageId,
+        });
+        dismissOrderDenial();
+        await orderSubmit(submittedOrderData);
+    };
 
     return {
         orderSubmit,

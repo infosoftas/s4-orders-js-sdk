@@ -37,8 +37,15 @@ const OrderDenialModal: FC<Props> = ({
                 role="dialog"
                 aria-modal="true"
             >
-                <p className="sdk-order-denial-modal-text">{message}</p>
-                {offer?.title && (
+                <p className="sdk-order-denial-modal-text">
+                    {message?.split('\\n').map((line, i, arr) => (
+                        <span key={i}>
+                            {line}
+                            {i < arr.length - 1 && <br />}
+                        </span>
+                    ))}
+                </p>
+                {offer?.title && offer?.templatePackageId && (
                     <div className="sdk-order-denial-offer-box">
                         <h4 className="sdk-order-denial-offer-title">
                             {offer.title}
