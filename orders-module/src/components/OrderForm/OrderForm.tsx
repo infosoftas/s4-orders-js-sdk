@@ -73,7 +73,6 @@ type Props = {
     errorValidationTitleMsg?: string;
     errorValidationDenialOrderBlockingMsg?: string;
     errorValidationBlockingOffersMsg?: string;
-    orderDenialOfferText?: string;
     orderDenialOfferBaseText?: string;
     orderDenialOfferWithFallbackText?: string;
     orderDenialAmountText?: string;
@@ -125,7 +124,6 @@ const OrderForm: FC<Props> = ({
     errorValidationTitleMsg,
     errorValidationDenialOrderBlockingMsg,
     errorValidationBlockingOffersMsg,
-    orderDenialOfferText,
     orderDenialOfferBaseText,
     orderDenialOfferWithFallbackText,
     orderDenialAmountText,
@@ -229,7 +227,6 @@ const OrderForm: FC<Props> = ({
         errorValidationTitleMsg,
         errorValidationDenialOrderBlockingMsg,
         errorValidationBlockingOffersMsg,
-        orderDenialOfferText,
         orderDenialOfferBaseText,
         orderDenialOfferWithFallbackText,
         orderDenialAmountText,

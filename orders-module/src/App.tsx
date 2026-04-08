@@ -68,8 +68,10 @@ const App: FC<ConfigType> = ({
             'The order/subscription will not be created because the subscriber has a denial order blocking all.',
         errorValidationBlockingOffersMsg:
             'The order/subscription will not be created because the subscriber has a denial order blocking offers.',
-        orderDenialOfferText:
-            'Hello again! It looks like you already tried this offer, but we would like to keep you with us. Therefore we have got a new great offer for you:',
+        orderDenialOfferBaseText:
+            'Hello again!\n\nLooks like you already tried this offer.',
+        orderDenialOfferWithFallbackText:
+            'Hello again!\n\nLooks like you already tried this offer, but we would like to keep you with us.\n\nTherefore we got a new great offer for you:',
         orderDenialAmountText:
             'We are sorry, but you do not meet the requirements for this offer. Please contact customer service for more information.',
         orderDenialFallbackOffer: undefined,
@@ -388,9 +390,6 @@ const App: FC<ConfigType> = ({
                                 errorValidationBlockingOffersMsg={
                                     settings?.errorValidationBlockingOffersMsg
                                 }
-                                orderDenialOfferText={
-                                    settings?.orderDenialOfferText
-                                }
                                 orderDenialOfferBaseText={
                                     settings?.orderDenialOfferBaseText
                                 }
@@ -450,9 +449,6 @@ const App: FC<ConfigType> = ({
                                 }
                                 errorValidationBlockingOffersMsg={
                                     settings?.errorValidationBlockingOffersMsg
-                                }
-                                orderDenialOfferText={
-                                    settings?.orderDenialOfferText
                                 }
                                 orderDenialOfferBaseText={
                                     settings?.orderDenialOfferBaseText
@@ -527,9 +523,6 @@ const App: FC<ConfigType> = ({
                                     }
                                     errorValidationBlockingOffersMsg={
                                         settings?.errorValidationBlockingOffersMsg
-                                    }
-                                    orderDenialOfferText={
-                                        settings?.orderDenialOfferText
                                     }
                                     orderDenialOfferBaseText={
                                         settings?.orderDenialOfferBaseText

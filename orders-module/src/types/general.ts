@@ -94,7 +94,6 @@ export type ConfigType = {
         errorValidationTitleMsg?: string;
         errorValidationDenialOrderBlockingMsg?: string;
         errorValidationBlockingOffersMsg?: string;
-        orderDenialOfferText?: string;
         orderDenialOfferBaseText?: string;
         orderDenialOfferWithFallbackText?: string;
         orderDenialAmountText?: string;
