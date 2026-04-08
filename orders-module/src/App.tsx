@@ -349,6 +349,12 @@ const App: FC<ConfigType> = ({
                                 callback={handleInvoiceForm}
                                 backButtonText={settings?.backButtonText}
                                 verifyButtonText={settings?.verifyButtonText}
+                                orderDenialCloseButtonText={
+                                    settings?.orderDenialCloseButtonText
+                                }
+                                orderDenialContinueButtonText={
+                                    settings?.orderDenialContinueButtonText
+                                }
                                 organizationNumberLabel={settings?.cvrLabel}
                                 glnLabel={settings?.glnLabel}
                                 organizationNumber={
@@ -399,6 +405,12 @@ const App: FC<ConfigType> = ({
                                 callback={handleInvoiceForm}
                                 backButtonText={settings?.backButtonText}
                                 verifyButtonText={settings?.verifyButtonText}
+                                orderDenialCloseButtonText={
+                                    settings?.orderDenialCloseButtonText
+                                }
+                                orderDenialContinueButtonText={
+                                    settings?.orderDenialContinueButtonText
+                                }
                                 organizationNumberLabel={
                                     settings?.organizationNumberLabel
                                 }
@@ -462,6 +474,12 @@ const App: FC<ConfigType> = ({
                                     }
                                     submitButtonText={
                                         settings?.submitButtonText
+                                    }
+                                    orderDenialCloseButtonText={
+                                        settings?.orderDenialCloseButtonText
+                                    }
+                                    orderDenialContinueButtonText={
+                                        settings?.orderDenialContinueButtonText
                                     }
                                     paymentMethodLabel={
                                         settings?.paymentMethodLabel

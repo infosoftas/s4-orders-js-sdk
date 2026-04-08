@@ -56,6 +56,8 @@ type Props = {
     paymentMethods?: { label: string; value: PaymentMethodEnum }[];
     allowedPaymentMethods?: PaymentMethodEnum[];
     submitButtonText?: string;
+    orderDenialCloseButtonText?: string;
+    orderDenialContinueButtonText?: string;
     paymentMethodLabel?: string;
     paymentMethodNotAllowedMsg?: string;
     errorReqMsg?: string;
@@ -111,6 +113,8 @@ const OrderForm: FC<Props> = ({
     allowedPaymentMethods,
     invoiceAddressSelection,
     submitButtonText = 'Start',
+    orderDenialCloseButtonText = 'Close',
+    orderDenialContinueButtonText = 'Continue',
     paymentMethodLabel = 'Select Payment Method',
     paymentMethodNotAllowedMsg = 'This payment method not allowed!',
     errorReqMsg = '',
@@ -414,6 +418,8 @@ const OrderForm: FC<Props> = ({
                 <OrderDenialModal
                     isOpen={!!orderDenialType}
                     message={orderDenialMessage}
+                    closeButtonText={orderDenialCloseButtonText}
+                    continueButtonText={orderDenialContinueButtonText}
                     canContinue={
                         orderDenialType === 'offer' &&
                         !!orderDenialFallbackOffer?.templatePackageId

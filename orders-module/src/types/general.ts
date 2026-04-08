@@ -79,6 +79,8 @@ export type ConfigType = {
         submitButtonText?: string;
         backButtonText?: string;
         verifyButtonText?: string;
+        orderDenialCloseButtonText?: string;
+        orderDenialContinueButtonText?: string;
         organizationNumberLabel?: string;
         cvrLabel?: string;
         glnLabel?: string;

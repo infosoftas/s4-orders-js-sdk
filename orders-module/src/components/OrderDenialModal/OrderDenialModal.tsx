@@ -11,6 +11,8 @@ type Props = {
     message?: string;
     offer?: OrderDenialFallbackOfferType;
     canContinue?: boolean;
+    closeButtonText?: string;
+    continueButtonText?: string;
     onContinue: () => void;
     onClose: () => void;
 };
@@ -20,6 +22,8 @@ const OrderDenialModal: FC<Props> = ({
     message,
     offer,
     canContinue = true,
+    closeButtonText = 'Close',
+    continueButtonText = 'Continue',
     onContinue,
     onClose,
 }) => {
@@ -66,13 +70,13 @@ const OrderDenialModal: FC<Props> = ({
                     <Button
                         type="button"
                         btnType="default"
-                        buttonText="Close"
+                        buttonText={closeButtonText}
                         onClick={onClose}
                     />
                     {canContinue && (
                         <Button
                             type="button"
-                            buttonText="Continue"
+                            buttonText={continueButtonText}
                             onClick={onContinue}
                         />
                     )}

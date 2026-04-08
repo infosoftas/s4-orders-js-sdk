@@ -29,6 +29,8 @@ type Props = {
     className?: string;
     backButtonText?: string;
     verifyButtonText?: string;
+    orderDenialCloseButtonText?: string;
+    orderDenialContinueButtonText?: string;
     organizationNumberLabel?: string;
     organizationNumber?: string;
     glnLabel?: string;
@@ -75,6 +77,8 @@ const EHFForm: FC<Props> = ({
     className = '',
     backButtonText = '',
     verifyButtonText = '',
+    orderDenialCloseButtonText = 'Close',
+    orderDenialContinueButtonText = 'Continue',
     organizationNumberLabel = '',
     organizationNumber = '',
     templatePackageId,
@@ -204,6 +208,8 @@ const EHFForm: FC<Props> = ({
                 <OrderDenialModal
                     isOpen={!!orderDenialType}
                     message={orderDenialMessage}
+                    closeButtonText={orderDenialCloseButtonText}
+                    continueButtonText={orderDenialContinueButtonText}
                     canContinue={
                         orderDenialType === 'offer' &&
                         !!orderDenialFallbackOffer?.templatePackageId
