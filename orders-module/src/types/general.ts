@@ -40,7 +40,7 @@ export type OrderDenialFallbackOfferType = {
     title?: string;
     description?: string;
     price?: string;
-    packageId?: string;
+    templatePackageId?: string;
 };
 
 export type ConfigType = {
