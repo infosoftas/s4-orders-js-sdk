@@ -56,6 +56,8 @@ type Props = {
     errorValidationDenialOrderBlockingMsg?: string;
     errorValidationBlockingOffersMsg?: string;
     orderDenialOfferText?: string;
+    orderDenialOfferBaseText?: string;
+    orderDenialOfferWithFallbackText?: string;
     orderDenialAmountText?: string;
     orderDenialFallbackOffer?: OrderDenialFallbackOfferType;
 };
@@ -98,6 +100,8 @@ const EHFForm: FC<Props> = ({
     errorValidationDenialOrderBlockingMsg,
     errorValidationBlockingOffersMsg,
     orderDenialOfferText,
+    orderDenialOfferBaseText,
+    orderDenialOfferWithFallbackText,
     orderDenialAmountText,
     orderDenialFallbackOffer,
 }) => {
@@ -152,6 +156,8 @@ const EHFForm: FC<Props> = ({
         errorValidationDenialOrderBlockingMsg,
         errorValidationBlockingOffersMsg,
         orderDenialOfferText,
+        orderDenialOfferBaseText,
+        orderDenialOfferWithFallbackText,
         orderDenialAmountText,
         orderDenialFallbackOffer,
     });
@@ -203,7 +209,7 @@ const EHFForm: FC<Props> = ({
                 {apiErrorMsg && <Alert className="mt-2" msg={apiErrorMsg} />}
                 {errorsMsg?.length > 0 &&
                     errorsMsg.map((i, index) => (
-                        <Alert key={`${i}-${index}`} className="mt-2" msg={i} />
+                        <Alert key={index} className="mt-2" msg={i} />
                     ))}
                 <OrderDenialModal
                     isOpen={!!orderDenialType}

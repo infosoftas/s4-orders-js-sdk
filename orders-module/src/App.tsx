@@ -391,6 +391,12 @@ const App: FC<ConfigType> = ({
                                 orderDenialOfferText={
                                     settings?.orderDenialOfferText
                                 }
+                                orderDenialOfferBaseText={
+                                    settings?.orderDenialOfferBaseText
+                                }
+                                orderDenialOfferWithFallbackText={
+                                    settings?.orderDenialOfferWithFallbackText
+                                }
                                 orderDenialAmountText={
                                     settings?.orderDenialAmountText
                                 }
@@ -447,6 +453,12 @@ const App: FC<ConfigType> = ({
                                 }
                                 orderDenialOfferText={
                                     settings?.orderDenialOfferText
+                                }
+                                orderDenialOfferBaseText={
+                                    settings?.orderDenialOfferBaseText
+                                }
+                                orderDenialOfferWithFallbackText={
+                                    settings?.orderDenialOfferWithFallbackText
                                 }
                                 orderDenialAmountText={
                                     settings?.orderDenialAmountText
@@ -518,6 +530,12 @@ const App: FC<ConfigType> = ({
                                     }
                                     orderDenialOfferText={
                                         settings?.orderDenialOfferText
+                                    }
+                                    orderDenialOfferBaseText={
+                                        settings?.orderDenialOfferBaseText
+                                    }
+                                    orderDenialOfferWithFallbackText={
+                                        settings?.orderDenialOfferWithFallbackText
                                     }
                                     orderDenialAmountText={
                                         settings?.orderDenialAmountText

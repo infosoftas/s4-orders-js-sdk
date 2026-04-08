@@ -57,6 +57,8 @@ type Props = {
     errorValidationDenialOrderBlockingMsg?: string;
     errorValidationBlockingOffersMsg?: string;
     orderDenialOfferText?: string;
+    orderDenialOfferBaseText?: string;
+    orderDenialOfferWithFallbackText?: string;
     orderDenialAmountText?: string;
     orderDenialFallbackOffer?: OrderDenialFallbackOfferType;
 };
@@ -102,6 +104,8 @@ const OIOForm: FC<Props> = ({
     errorValidationDenialOrderBlockingMsg,
     errorValidationBlockingOffersMsg,
     orderDenialOfferText,
+    orderDenialOfferBaseText,
+    orderDenialOfferWithFallbackText,
     orderDenialAmountText,
     orderDenialFallbackOffer,
 }) => {
@@ -160,6 +164,8 @@ const OIOForm: FC<Props> = ({
         errorValidationDenialOrderBlockingMsg,
         errorValidationBlockingOffersMsg,
         orderDenialOfferText,
+        orderDenialOfferBaseText,
+        orderDenialOfferWithFallbackText,
         orderDenialAmountText,
         orderDenialFallbackOffer,
     });

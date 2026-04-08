@@ -74,6 +74,8 @@ type Props = {
     errorValidationDenialOrderBlockingMsg?: string;
     errorValidationBlockingOffersMsg?: string;
     orderDenialOfferText?: string;
+    orderDenialOfferBaseText?: string;
+    orderDenialOfferWithFallbackText?: string;
     orderDenialAmountText?: string;
     orderDenialFallbackOffer?: OrderDenialFallbackOfferType;
     termsAndConditionsText?: string | ReactNode;
@@ -124,6 +126,8 @@ const OrderForm: FC<Props> = ({
     errorValidationDenialOrderBlockingMsg,
     errorValidationBlockingOffersMsg,
     orderDenialOfferText,
+    orderDenialOfferBaseText,
+    orderDenialOfferWithFallbackText,
     orderDenialAmountText,
     orderDenialFallbackOffer,
     requireTermsAcceptance,
@@ -226,6 +230,8 @@ const OrderForm: FC<Props> = ({
         errorValidationDenialOrderBlockingMsg,
         errorValidationBlockingOffersMsg,
         orderDenialOfferText,
+        orderDenialOfferBaseText,
+        orderDenialOfferWithFallbackText,
         orderDenialAmountText,
         orderDenialFallbackOffer,
     });

@@ -95,6 +95,8 @@ export type ConfigType = {
         errorValidationDenialOrderBlockingMsg?: string;
         errorValidationBlockingOffersMsg?: string;
         orderDenialOfferText?: string;
+        orderDenialOfferBaseText?: string;
+        orderDenialOfferWithFallbackText?: string;
         orderDenialAmountText?: string;
         orderDenialFallbackOffer?: OrderDenialFallbackOfferType;
         termsAndConditionsText?: string | ReactNode;

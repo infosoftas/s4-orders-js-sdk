@@ -125,6 +125,7 @@ const useOrderForm = ({
     errorValidationTitleMsg,
     errorValidationDenialOrderBlockingMsg,
     errorValidationBlockingOffersMsg,
+    orderDenialOfferText,
     orderDenialOfferBaseText,
     orderDenialOfferWithFallbackText,
     orderDenialAmountText,
@@ -149,6 +150,7 @@ const useOrderForm = ({
             if (orderDenialFallbackOffer?.templatePackageId) {
                 return (
                     orderDenialOfferWithFallbackText ||
+                    orderDenialOfferText ||
                     OFFER_DENIAL_WITH_FALLBACK_TEXT
                 );
             }
