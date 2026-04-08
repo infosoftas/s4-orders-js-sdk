@@ -3,6 +3,7 @@ import { FormProvider, useForm, SubmitHandler } from 'react-hook-form';
 
 import Alert from '../Alert/Alert';
 import Button from '../Button/Button';
+import OrderDenialModal from '../OrderDenialModal/OrderDenialModal';
 import InputField from '../FormFields/InputField';
 import { DEFAULT_ORDER_FORM_FIELDS } from '../FormFields/FormFields.helper';
 
@@ -11,6 +12,7 @@ import {
     OrderFormFieldType,
     PaymentMethodOptionsType,
     ContactRequestType,
+    OrderDenialFallbackOfferType,
 } from '../../types/general';
 import useOrderForm from '../../hooks/useOrderForm';
 import { orderInvoiceContactFields } from '../../utils/order.helper';
@@ -52,6 +54,9 @@ type Props = {
     errorValidationTitleMsg?: string;
     errorValidationDenialOrderBlockingMsg?: string;
     errorValidationBlockingOffersMsg?: string;
+    orderDenialOfferText?: string;
+    orderDenialAmountText?: string;
+    orderDenialFallbackOffer?: OrderDenialFallbackOfferType;
 };
 
 type OIOFormInputsType = {
@@ -64,7 +69,7 @@ const initialData = {
     gln: '',
 };
 
-const EHFForm: FC<Props> = ({
+const OIOForm: FC<Props> = ({
     callback,
     onBack,
     submitStartCallback,
@@ -92,6 +97,9 @@ const EHFForm: FC<Props> = ({
     errorValidationTitleMsg,
     errorValidationDenialOrderBlockingMsg,
     errorValidationBlockingOffersMsg,
+    orderDenialOfferText,
+    orderDenialAmountText,
+    orderDenialFallbackOffer,
 }) => {
     const methods = useForm<OIOFormInputsType>({
         defaultValues: {
@@ -116,7 +124,16 @@ const EHFForm: FC<Props> = ({
         paymentMethodsOptions?.[orderValues?.paymentMethod as PaymentMethodEnum]
             ?.orderFormFields ?? DEFAULT_ORDER_FORM_FIELDS;
 
-    const { orderSubmit, loading, apiErrorMsg, errorsMsg } = useOrderForm({
+    const {
+        orderSubmit,
+        continueWithFallbackOffer,
+        loading,
+        apiErrorMsg,
+        errorsMsg,
+        orderDenialType,
+        orderDenialMessage,
+        dismissOrderDenial,
+    } = useOrderForm({
         callback,
         submitStartCallback,
         userActionCallback,
@@ -138,6 +155,9 @@ const EHFForm: FC<Props> = ({
         errorValidationTitleMsg,
         errorValidationDenialOrderBlockingMsg,
         errorValidationBlockingOffersMsg,
+        orderDenialOfferText,
+        orderDenialAmountText,
+        orderDenialFallbackOffer,
     });
 
     const onSubmit: SubmitHandler<OIOFormInputsType> = async (
@@ -189,10 +209,23 @@ const EHFForm: FC<Props> = ({
                 </div>
                 {apiErrorMsg && <Alert className="mt-2" msg={apiErrorMsg} />}
                 {errorsMsg?.length > 0 &&
-                    errorsMsg.map((i) => <Alert className="mt-2" msg={i} />)}
+                    errorsMsg.map((i, index) => (
+                        <Alert key={`${i}-${index}`} className="mt-2" msg={i} />
+                    ))}
+                <OrderDenialModal
+                    isOpen={!!orderDenialType}
+                    message={orderDenialMessage}
+                    offer={
+                        orderDenialType === 'offer'
+                            ? orderDenialFallbackOffer
+                            : undefined
+                    }
+                    onClose={dismissOrderDenial}
+                    onContinue={continueWithFallbackOffer}
+                />
             </form>
         </FormProvider>
     );
 };
 
-export default EHFForm;
+export default OIOForm;

@@ -1,4 +1,12 @@
-import { FC, ChangeEvent, Suspense, useState, useMemo, useEffect } from 'react';
+import {
+    FC,
+    ChangeEvent,
+    ReactNode,
+    Suspense,
+    useState,
+    useMemo,
+    useEffect,
+} from 'react';
 import { FormProvider, useForm, SubmitHandler } from 'react-hook-form';
 
 import { PaymentMethodEnum, UserActionEnum } from '../../enums/general';
@@ -8,6 +16,7 @@ import {
 } from '../../constants/index';
 import Alert from '../Alert/Alert';
 import Button from '../Button/Button';
+import OrderDenialModal from '../OrderDenialModal/OrderDenialModal';
 import ToggleField from '../FormFields/ToggleFiled';
 import formFieldsMapper from '../FormFields/FormFieldsMapper';
 import { DEFAULT_ORDER_FORM_FIELDS } from '../FormFields/FormFields.helper';
@@ -16,6 +25,7 @@ import {
     PaymentMethodOptionsType,
     OrderFormFieldType,
     ContactRequestType,
+    OrderDenialFallbackOfferType,
 } from '../../types/general';
 import { orderInvoiceContactFields } from '../../utils/order.helper';
 import useOrderForm from '../../hooks/useOrderForm';
@@ -61,7 +71,10 @@ type Props = {
     errorValidationTitleMsg?: string;
     errorValidationDenialOrderBlockingMsg?: string;
     errorValidationBlockingOffersMsg?: string;
-    termsAndConditionsText?: string;
+    orderDenialOfferText?: string;
+    orderDenialAmountText?: string;
+    orderDenialFallbackOffer?: OrderDenialFallbackOfferType;
+    termsAndConditionsText?: string | ReactNode;
 };
 
 const initialData = {
@@ -106,6 +119,9 @@ const OrderForm: FC<Props> = ({
     errorValidationTitleMsg,
     errorValidationDenialOrderBlockingMsg,
     errorValidationBlockingOffersMsg,
+    orderDenialOfferText,
+    orderDenialAmountText,
+    orderDenialFallbackOffer,
     requireTermsAcceptance,
     termsAndConditionsText,
 }) => {
@@ -175,7 +191,16 @@ const OrderForm: FC<Props> = ({
         invoiceAddressSelection?.paymentMethods ||
         INVOICE_ALLOWED_PAYMENT_METHODS;
 
-    const { orderSubmit, loading, apiErrorMsg, errorsMsg } = useOrderForm({
+    const {
+        orderSubmit,
+        continueWithFallbackOffer,
+        loading,
+        apiErrorMsg,
+        errorsMsg,
+        orderDenialType,
+        orderDenialMessage,
+        dismissOrderDenial,
+    } = useOrderForm({
         callback,
         submitStartCallback,
         userActionCallback,
@@ -196,6 +221,9 @@ const OrderForm: FC<Props> = ({
         errorValidationTitleMsg,
         errorValidationDenialOrderBlockingMsg,
         errorValidationBlockingOffersMsg,
+        orderDenialOfferText,
+        orderDenialAmountText,
+        orderDenialFallbackOffer,
     });
 
     const onSubmit: SubmitHandler<OrderFormInputsType> = async (
@@ -380,7 +408,24 @@ const OrderForm: FC<Props> = ({
                 />
                 {errorsMsg?.length > 0 &&
                     allowPaymentMethod &&
-                    errorsMsg.map((i) => <Alert className="mt-2" msg={i} />)}
+                    errorsMsg.map((i, index) => (
+                        <Alert
+                            key={`${i}-${index}`}
+                            className="mt-2"
+                            msg={i}
+                        />
+                    ))}
+                <OrderDenialModal
+                    isOpen={!!orderDenialType}
+                    message={orderDenialMessage}
+                    offer={
+                        orderDenialType === 'offer'
+                            ? orderDenialFallbackOffer
+                            : undefined
+                    }
+                    onClose={dismissOrderDenial}
+                    onContinue={continueWithFallbackOffer}
+                />
             </form>
         </FormProvider>
     );
