@@ -154,26 +154,6 @@ const useOrderForm = ({
         return '';
     };
 
-    const continueWithFallbackOffer = async () => {
-        if (orderDenialType !== 'offer' || !submittedOrderData) {
-            return;
-        }
-
-        const fallbackPackageId = orderDenialFallbackOffer?.packageId;
-
-        if (!fallbackPackageId) {
-            dismissOrderDenial();
-            return;
-        }
-
-        fallbackOfferPackageIdRef.current = fallbackPackageId;
-        userActionCallback?.(UserActionEnum.SELECT_FALLBACK_OFFER, {
-            packageId: fallbackPackageId,
-        });
-        dismissOrderDenial();
-        await orderSubmit(submittedOrderData);
-    };
-
     const orderSubmit: SubmitHandler<OrderFormInputsType> = async (
         data
     ): Promise<void> => {
@@ -342,6 +322,26 @@ const useOrderForm = ({
             setLoading(false);
         }
     };
+
+        const continueWithFallbackOffer = async () => {
+            if (orderDenialType !== 'offer' || !submittedOrderData) {
+                return;
+            }
+
+            const fallbackPackageId = orderDenialFallbackOffer?.packageId;
+
+            if (!fallbackPackageId) {
+                dismissOrderDenial();
+                return;
+            }
+
+            fallbackOfferPackageIdRef.current = fallbackPackageId;
+            userActionCallback?.(UserActionEnum.SELECT_FALLBACK_OFFER, {
+                packageId: fallbackPackageId,
+            });
+            dismissOrderDenial();
+            await orderSubmit(submittedOrderData);
+        };
 
     return {
         orderSubmit,
