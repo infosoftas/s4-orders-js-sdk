@@ -68,6 +68,11 @@ const App: FC<ConfigType> = ({
             'The order/subscription will not be created because the subscriber has a denial order blocking all.',
         errorValidationBlockingOffersMsg:
             'The order/subscription will not be created because the subscriber has a denial order blocking offers.',
+        orderDenialOfferText:
+            'Hello again! It looks like you already tried this offer, but we would like to keep you with us. Therefore we have got a new great offer for you:',
+        orderDenialAmountText:
+            'We are sorry, but you do not meet the requirements for this offer. Please contact customer service for more information.',
+        orderDenialFallbackOffer: undefined,
         paymentMethodNotAllowedMsg: '',
         invoiceLookupNotFoundText:
             'There was no recipient found for the given information',
@@ -377,6 +382,15 @@ const App: FC<ConfigType> = ({
                                 errorValidationBlockingOffersMsg={
                                     settings?.errorValidationBlockingOffersMsg
                                 }
+                                orderDenialOfferText={
+                                    settings?.orderDenialOfferText
+                                }
+                                orderDenialAmountText={
+                                    settings?.orderDenialAmountText
+                                }
+                                orderDenialFallbackOffer={
+                                    settings?.orderDenialFallbackOffer
+                                }
                             />
                         )}
                         {formType === FormTypeEnum.EHF && (
@@ -418,6 +432,15 @@ const App: FC<ConfigType> = ({
                                 }
                                 errorValidationBlockingOffersMsg={
                                     settings?.errorValidationBlockingOffersMsg
+                                }
+                                orderDenialOfferText={
+                                    settings?.orderDenialOfferText
+                                }
+                                orderDenialAmountText={
+                                    settings?.orderDenialAmountText
+                                }
+                                orderDenialFallbackOffer={
+                                    settings?.orderDenialFallbackOffer
                                 }
                             />
                         )}
@@ -475,6 +498,15 @@ const App: FC<ConfigType> = ({
                                     errorValidationBlockingOffersMsg={
                                         settings?.errorValidationBlockingOffersMsg
                                     }
+                                    orderDenialOfferText={
+                                        settings?.orderDenialOfferText
+                                    }
+                                    orderDenialAmountText={
+                                        settings?.orderDenialAmountText
+                                    }
+                                    orderDenialFallbackOffer={
+                                        settings?.orderDenialFallbackOffer
+                                    }
                                     termsAndConditionsText={
                                         settings?.termsAndConditionsText
                                     }
@@ -497,7 +529,9 @@ const App: FC<ConfigType> = ({
                 {isFailed && <Alert className="mt-2" msg={failedMsg} />}
                 {isFailed &&
                     errorsMsg?.length > 0 &&
-                    errorsMsg.map((i) => <Alert className="mt-2" msg={i} />)}
+                    errorsMsg.map((i, index) => (
+                        <Alert key={index} className="mt-2" msg={i} />
+                    ))}
             </div>
         </ErrorBoundary>
     );

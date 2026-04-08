@@ -32,6 +32,7 @@ export enum FormTypeEnum {
 export enum UserActionEnum {
     SELECT_FORM = 'selectForm',
     SELECT_PAYMENT_METHOD = 'selectPaymentMethod',
+    SELECT_FALLBACK_OFFER = 'selectFallbackOffer',
     RETURN_TO_MAIN = 'returnToMain',
     TOGGLE_INVOICE_ADDRESS = 'toggleInvoiceAddress',
     SEARCH_ORGANIZATION_NUMBER = 'searchOrganizationNumber',
