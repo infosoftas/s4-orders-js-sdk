@@ -1,6 +1,6 @@
-# Getting Started with Create React App
+# Simple Orders App
 
-This application contains example of code for the Orders SDK usable to add orders for Tenants within INFO-Subscription.
+This application contains an example of code for the Orders SDK usable to add orders for Tenants within INFO-Subscription. It is built with [React](https://react.dev/) and [Vite](https://vite.dev/).
 
 ## Requirements
 
@@ -18,21 +18,24 @@ npm install
 
 In the project directory, you can run:
 
-### `npm start`
+### `npm run dev`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Runs the app in development mode.\
+Open [https://localhost:3000](https://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+The page will hot-reload when you make changes.
 
 ### `npm run build`
 
-Builds the app for production to the `dist` folder.\
+Builds the app for production to the `build/` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
+The build is minified and the filenames include hashes.\
 Your app is ready to be deployed!
+
+### `npm run preview`
+
+Serves the production build locally for preview before deployment.
 
 ## Usage
 
