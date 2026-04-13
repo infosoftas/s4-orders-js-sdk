@@ -10,7 +10,7 @@
         "strict": true,
         "forceConsistentCasingInFileNames": true,
         "noFallthroughCasesInSwitch": true,
-        "module": "nodenext",
+        "module": "esnext",
         "resolveJsonModule": true,
         "isolatedModules": false,
         "noEmit": false,
