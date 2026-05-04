@@ -97,7 +97,9 @@ export type ConfigType = {
         orderDenialOfferBaseText?: string;
         orderDenialOfferWithFallbackText?: string;
         orderDenialAmountText?: string;
-        orderDenialFallbackOffer?: OrderDenialFallbackOfferType;
+        fetchDenialFallbackOffer?: (
+            organizationId: string
+        ) => Promise<OrderDenialFallbackOfferType | undefined>;
         termsAndConditionsText?: string | ReactNode;
     };
 };

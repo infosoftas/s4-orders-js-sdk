@@ -133,7 +133,11 @@ type ConfigType = {
         errorValidationBlockingOffersMsg?: string;
         paymentMethodNotAllowedMsg?: string;
         invoiceLookupNotFoundText?: string;
-        termsAndConditionsText?: string;
+        orderDenialOfferBaseText?: string;
+        orderDenialOfferWithFallbackText?: string;
+        orderDenialAmountText?: string;
+        fetchDenialFallbackOffer?: (organizationId: string) => Promise<OrderDenialFallbackOfferType | undefined>;
+        termsAndConditionsText?: string | ReactNode;
     };
 }
 ```

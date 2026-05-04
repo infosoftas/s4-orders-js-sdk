@@ -76,7 +76,9 @@ type Props = {
     orderDenialOfferBaseText?: string;
     orderDenialOfferWithFallbackText?: string;
     orderDenialAmountText?: string;
-    orderDenialFallbackOffer?: OrderDenialFallbackOfferType;
+    fetchDenialFallbackOffer?: (
+        organizationId: string
+    ) => Promise<OrderDenialFallbackOfferType | undefined>;
     termsAndConditionsText?: string | ReactNode;
 };
 
@@ -127,7 +129,7 @@ const OrderForm: FC<Props> = ({
     orderDenialOfferBaseText,
     orderDenialOfferWithFallbackText,
     orderDenialAmountText,
-    orderDenialFallbackOffer,
+    fetchDenialFallbackOffer,
     requireTermsAcceptance,
     termsAndConditionsText,
 }) => {
@@ -205,6 +207,7 @@ const OrderForm: FC<Props> = ({
         errorsMsg,
         orderDenialType,
         orderDenialMessage,
+        orderDenialFallbackOffer,
         dismissOrderDenial,
     } = useOrderForm({
         callback,
@@ -230,7 +233,7 @@ const OrderForm: FC<Props> = ({
         orderDenialOfferBaseText,
         orderDenialOfferWithFallbackText,
         orderDenialAmountText,
-        orderDenialFallbackOffer,
+        fetchDenialFallbackOffer,
     });
 
     const onSubmit: SubmitHandler<OrderFormInputsType> = async (
