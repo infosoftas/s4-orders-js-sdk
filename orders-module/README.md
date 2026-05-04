@@ -137,7 +137,7 @@ type ConfigType = {
         orderDenialOfferWithFallbackText?: string;
         orderDenialAmountText?: string;
         fetchDenialFallbackOffer?: (organizationId: string) => Promise<OrderDenialFallbackOfferType | undefined>;
-        termsAndConditionsText?: string;
+        termsAndConditionsText?: string | ReactNode;
     };
 }
 ```
