@@ -97,15 +97,9 @@ export type ConfigType = {
         orderDenialOfferBaseText?: string;
         orderDenialOfferWithFallbackText?: string;
         orderDenialAmountText?: string;
-        /**
-         * Optional async function to fetch a fallback offer when an order is denied.
-         * Called with the organization ID of the denied order, and should resolve to
-         * the fallback offer to present to the user, or `undefined` if none is available.
-         *
-         * @param organizationId - The organization ID associated with the denied order.
-         * @returns A promise resolving to the fallback offer, or `undefined`.
-         */
-        fetchDenialFallbackOffer?: (organizationId: string) => Promise<OrderDenialFallbackOfferType | undefined>;
+        fetchDenialFallbackOffer?: (
+            organizationId: string
+        ) => Promise<OrderDenialFallbackOfferType | undefined>;
         termsAndConditionsText?: string | ReactNode;
     };
 };
