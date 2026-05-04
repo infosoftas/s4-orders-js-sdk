@@ -42,13 +42,11 @@ const OrderDenialModal: FC<Props> = ({
                 aria-modal="true"
                 aria-label="Order denial modal"
             >
-                <p className="sdk-order-denial-modal-text">
-                    {message?.split('\\n').map((line, i, arr) => (
-                        <span key={i}>
-                            {line}
-                            {i < arr.length - 1 && <br />}
-                        </span>
-                    ))}
+                <p
+                    className="sdk-order-denial-modal-text"
+                    style={{ whiteSpace: 'pre-line' }}
+                >
+                    {message?.replace(/\\n/g, '\n')}
                 </p>
                 {offer?.title && offer?.templatePackageId && (
                     <div className="sdk-order-denial-offer-box">

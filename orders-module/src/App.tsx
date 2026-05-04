@@ -74,7 +74,6 @@ const App: FC<ConfigType> = ({
             'Hello again!\n\nLooks like you already tried this offer, but we would like to keep you with us.\n\nTherefore we got a new great offer for you:',
         orderDenialAmountText:
             'We are sorry, but you do not meet the requirements for this offer. Please contact customer service for more information.',
-        orderDenialFallbackOffer: undefined,
         paymentMethodNotAllowedMsg: '',
         invoiceLookupNotFoundText:
             'There was no recipient found for the given information',
@@ -399,8 +398,8 @@ const App: FC<ConfigType> = ({
                                 orderDenialAmountText={
                                     settings?.orderDenialAmountText
                                 }
-                                orderDenialFallbackOffer={
-                                    settings?.orderDenialFallbackOffer
+                                fetchDenialFallbackOffer={
+                                    settings?.fetchDenialFallbackOffer
                                 }
                             />
                         )}
@@ -459,8 +458,8 @@ const App: FC<ConfigType> = ({
                                 orderDenialAmountText={
                                     settings?.orderDenialAmountText
                                 }
-                                orderDenialFallbackOffer={
-                                    settings?.orderDenialFallbackOffer
+                                fetchDenialFallbackOffer={
+                                    settings?.fetchDenialFallbackOffer
                                 }
                             />
                         )}
@@ -533,8 +532,8 @@ const App: FC<ConfigType> = ({
                                     orderDenialAmountText={
                                         settings?.orderDenialAmountText
                                     }
-                                    orderDenialFallbackOffer={
-                                        settings?.orderDenialFallbackOffer
+                                    fetchDenialFallbackOffer={
+                                        settings?.fetchDenialFallbackOffer
                                     }
                                     termsAndConditionsText={
                                         settings?.termsAndConditionsText

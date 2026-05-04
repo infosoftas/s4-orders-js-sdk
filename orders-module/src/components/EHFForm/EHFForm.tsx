@@ -58,7 +58,7 @@ type Props = {
     orderDenialOfferBaseText?: string;
     orderDenialOfferWithFallbackText?: string;
     orderDenialAmountText?: string;
-    orderDenialFallbackOffer?: OrderDenialFallbackOfferType;
+    fetchDenialFallbackOffer?: (organizationId: string) => Promise<OrderDenialFallbackOfferType | undefined>;
 };
 
 type EHFFormInputsType = {
@@ -101,7 +101,7 @@ const EHFForm: FC<Props> = ({
     orderDenialOfferBaseText,
     orderDenialOfferWithFallbackText,
     orderDenialAmountText,
-    orderDenialFallbackOffer,
+    fetchDenialFallbackOffer,
 }) => {
     const methods = useForm<EHFFormInputsType>({
         defaultValues: {
@@ -130,6 +130,7 @@ const EHFForm: FC<Props> = ({
         errorsMsg,
         orderDenialType,
         orderDenialMessage,
+        orderDenialFallbackOffer,
         dismissOrderDenial,
     } = useOrderForm({
         callback,
@@ -156,7 +157,7 @@ const EHFForm: FC<Props> = ({
         orderDenialOfferBaseText,
         orderDenialOfferWithFallbackText,
         orderDenialAmountText,
-        orderDenialFallbackOffer,
+        fetchDenialFallbackOffer,
     });
 
     const onSubmit: SubmitHandler<EHFFormInputsType> = async (

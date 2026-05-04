@@ -57,7 +57,9 @@ type Props = {
     orderDenialOfferBaseText?: string;
     orderDenialOfferWithFallbackText?: string;
     orderDenialAmountText?: string;
-    orderDenialFallbackOffer?: OrderDenialFallbackOfferType;
+    fetchDenialFallbackOffer?: (
+        organizationId: string
+    ) => Promise<OrderDenialFallbackOfferType | undefined>;
 };
 
 type DenialErrorType = {
@@ -127,7 +129,7 @@ const useOrderForm = ({
     orderDenialOfferBaseText,
     orderDenialOfferWithFallbackText,
     orderDenialAmountText,
-    orderDenialFallbackOffer,
+    fetchDenialFallbackOffer,
 }: Props) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [apiErrorMsg, setApiErrorMsg] = useState<string>('');
@@ -135,12 +137,16 @@ const useOrderForm = ({
     const [orderDenialType, setOrderDenialType] = useState<
         'offer' | 'amount' | null
     >(null);
+    const [orderDenialFallbackOffer, setOrderDenialFallbackOffer] = useState<
+        OrderDenialFallbackOfferType | undefined
+    >();
     const [submittedOrderData, setSubmittedOrderData] =
         useState<OrderFormInputsType | null>(null);
     const fallbackOfferTemplatePackageIdRef = useRef<string | null>(null);
 
     const dismissOrderDenial = () => {
         setOrderDenialType(null);
+        setOrderDenialFallbackOffer(undefined);
     };
 
     const getOrderDenialMessage = () => {
@@ -311,6 +317,18 @@ const useOrderForm = ({
             if (detectedDenialType) {
                 setApiErrorMsg('');
                 setErrorsMsg([]);
+                if (
+                    detectedDenialType === 'offer' &&
+                    fetchDenialFallbackOffer
+                ) {
+                    try {
+                        const offer =
+                            await fetchDenialFallbackOffer(organizationId);
+                        setOrderDenialFallbackOffer(offer);
+                    } catch {
+                        setOrderDenialFallbackOffer(undefined);
+                    }
+                }
                 setOrderDenialType(detectedDenialType);
                 callback(null);
                 return;
@@ -365,6 +383,7 @@ const useOrderForm = ({
         errorsMsg,
         orderDenialType,
         orderDenialMessage: getOrderDenialMessage(),
+        orderDenialFallbackOffer,
         dismissOrderDenial,
     };
 };

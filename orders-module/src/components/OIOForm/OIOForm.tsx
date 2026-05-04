@@ -59,7 +59,7 @@ type Props = {
     orderDenialOfferBaseText?: string;
     orderDenialOfferWithFallbackText?: string;
     orderDenialAmountText?: string;
-    orderDenialFallbackOffer?: OrderDenialFallbackOfferType;
+    fetchDenialFallbackOffer?: (organizationId: string) => Promise<OrderDenialFallbackOfferType | undefined>;
 };
 
 type OIOFormInputsType = {
@@ -105,7 +105,7 @@ const OIOForm: FC<Props> = ({
     orderDenialOfferBaseText,
     orderDenialOfferWithFallbackText,
     orderDenialAmountText,
-    orderDenialFallbackOffer,
+    fetchDenialFallbackOffer,
 }) => {
     const methods = useForm<OIOFormInputsType>({
         defaultValues: {
@@ -138,6 +138,7 @@ const OIOForm: FC<Props> = ({
         errorsMsg,
         orderDenialType,
         orderDenialMessage,
+        orderDenialFallbackOffer,
         dismissOrderDenial,
     } = useOrderForm({
         callback,
@@ -164,7 +165,7 @@ const OIOForm: FC<Props> = ({
         orderDenialOfferBaseText,
         orderDenialOfferWithFallbackText,
         orderDenialAmountText,
-        orderDenialFallbackOffer,
+        fetchDenialFallbackOffer,
     });
 
     const onSubmit: SubmitHandler<OIOFormInputsType> = async (
