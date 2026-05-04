@@ -317,20 +317,21 @@ const useOrderForm = ({
             if (detectedDenialType) {
                 setApiErrorMsg('');
                 setErrorsMsg([]);
+                setOrderDenialFallbackOffer(undefined);
+                setOrderDenialType(detectedDenialType);
+                callback(null);
                 if (
                     detectedDenialType === 'offer' &&
                     fetchDenialFallbackOffer
                 ) {
-                    try {
-                        const offer =
-                            await fetchDenialFallbackOffer(organizationId);
-                        setOrderDenialFallbackOffer(offer);
-                    } catch {
-                        setOrderDenialFallbackOffer(undefined);
-                    }
+                    void fetchDenialFallbackOffer(organizationId)
+                        .then((offer) => {
+                            setOrderDenialFallbackOffer(offer);
+                        })
+                        .catch(() => {
+                            setOrderDenialFallbackOffer(undefined);
+                        });
                 }
-                setOrderDenialType(detectedDenialType);
-                callback(null);
                 return;
             }
 
