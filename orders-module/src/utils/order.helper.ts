@@ -112,6 +112,11 @@ export const prepareContactModel = ({
     data,
     orderFields,
 }: ContactModelType) => {
+    const organizationNumber =
+        data.paymentMethod === PaymentMethodEnum.OIO
+            ? data.cvr?.trim() || undefined
+            : data.organizationNumber?.trim() || undefined;
+
     const model = {
         name: orderFields.find((i) => i.name === 'name')
             ? data.name?.trim() || undefined
@@ -143,6 +148,8 @@ export const prepareContactModel = ({
         careOf: orderFields.find((i) => i.name === 'careOf')
             ? data.careOf?.trim() || undefined
             : undefined,
+        organizationNumber,
+        gln: data.gln?.trim() || undefined,
     };
 
     return model;
