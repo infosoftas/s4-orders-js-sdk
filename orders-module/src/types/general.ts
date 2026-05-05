@@ -34,6 +34,8 @@ export type ContactRequestType = {
     city?: string;
     zip?: string;
     careOf?: string;
+    organizationNumber?: string;
+    gln?: string;
 };
 
 export type OrderDenialFallbackOfferType = {
