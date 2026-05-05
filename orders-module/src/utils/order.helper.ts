@@ -149,7 +149,10 @@ export const prepareContactModel = ({
             ? data.careOf?.trim() || undefined
             : undefined,
         organizationNumber,
-        gln: data.gln?.trim() || undefined,
+        gln:
+            data.paymentMethod === PaymentMethodEnum.OIO
+                ? data.gln?.trim() || undefined
+                : undefined,
     };
 
     return model;
