@@ -328,7 +328,8 @@ const useOrderForm = ({
                         .then((offer) => {
                             setOrderDenialFallbackOffer(offer);
                             if (offer?.templatePackageId) {
-                                fallbackOfferTemplatePackageIdRef.current = offer.templatePackageId;
+                                fallbackOfferTemplatePackageIdRef.current =
+                                    offer.templatePackageId;
                             }
                         })
                         .catch(() => {
