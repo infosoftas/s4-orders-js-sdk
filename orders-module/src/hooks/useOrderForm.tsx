@@ -327,6 +327,9 @@ const useOrderForm = ({
                     void fetchDenialFallbackOffer(organizationId)
                         .then((offer) => {
                             setOrderDenialFallbackOffer(offer);
+                            if (offer?.templatePackageId) {
+                                fallbackOfferTemplatePackageIdRef.current = offer.templatePackageId;
+                            }
                         })
                         .catch(() => {
                             setOrderDenialFallbackOffer(undefined);
