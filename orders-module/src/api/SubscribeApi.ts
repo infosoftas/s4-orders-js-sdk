@@ -1,4 +1,4 @@
-import fetcher from '../utils/fetcher';
+import fetcher, { getSdkApiKey } from '../utils/fetcher';
 import { CreateSubscriberRequestType } from '../types/api';
 
 type CreateSubscriberResponseType = {
@@ -13,9 +13,7 @@ export const createSubscriber = (
         url: '/subscriber',
         headers: {
             'S4-ORDERS-API-KEY':
-                sessionStorage.getItem('sdk_api_key') ||
-                localStorage.getItem('sdk_api_key') ||
-                '',
+                getSdkApiKey(),
         },
         body,
     }) as Promise<CreateSubscriberResponseType>;

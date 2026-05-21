@@ -19,6 +19,10 @@ type Fetcher<T> = {
     body?: T;
 };
 
+export function getSdkApiKey(): string {
+    return sessionStorage.getItem('sdk_api_key') || localStorage.getItem('sdk_api_key') || '';
+}
+
 function createHeader<T>(options: Fetcher<T>): Fetcher<T> {
     const accessToken = localStorage.getItem('authTokenKey') || '';
 
@@ -42,7 +46,7 @@ async function fetcher<ResponseType, BodyType = void>(
 ): Promise<ApiResponseType<ResponseType> | ResponseType> {
     const { url, method, headers, body, params } = createHeader(options);
 
-    const apiUrl = sessionStorage.getItem('sdk_api_url');
+    const apiUrl = sessionStorage.getItem('sdk_api_url') || localStorage.getItem('sdk_api_url');
     const endpoint = new URL(`${apiUrl || BASE_API}${url}`);
 
     if (params) {
