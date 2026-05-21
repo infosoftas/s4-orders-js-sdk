@@ -12,8 +12,7 @@ export const createSubscriber = (
         method: 'POST',
         url: '/subscriber',
         headers: {
-            'S4-ORDERS-API-KEY':
-                getSdkApiKey(),
+            'S4-ORDERS-API-KEY': getSdkApiKey(),
         },
         body,
     }) as Promise<CreateSubscriberResponseType>;
