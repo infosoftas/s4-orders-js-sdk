@@ -17,8 +17,7 @@ export const invoiceLookup = (
         method: 'POST',
         url: '/invoicelookup',
         headers: {
-            'S4-ORDERS-API-KEY':
-                getSdkApiKey(),
+            'S4-ORDERS-API-KEY': getSdkApiKey(),
         },
         body,
     }) as Promise<InvoiceLookupResponseType>;
