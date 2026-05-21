@@ -101,9 +101,6 @@ const App: FC<ConfigType> = ({
         if (apiKey) {
             sessionStorage.setItem('sdk_api_key', apiKey);
             localStorage.setItem('sdk_api_key', apiKey);
-        } else {
-            sessionStorage.removeItem('sdk_api_key');
-            localStorage.removeItem('sdk_api_key');
         }
     }, [apiKey]);
 
