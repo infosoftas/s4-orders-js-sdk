@@ -100,6 +100,7 @@ const App: FC<ConfigType> = ({
     useEffect(() => {
         if (apiKey) {
             sessionStorage.setItem('sdk_api_key', apiKey);
+            localStorage.setItem('sdk_api_key', apiKey);
         }
     }, [apiKey]);
 

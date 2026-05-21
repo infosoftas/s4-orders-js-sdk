@@ -1,4 +1,4 @@
-import fetcher from '../utils/fetcher';
+import fetcher, { getSdkApiKey } from '../utils/fetcher';
 
 type RequestInvoiceLookupType = {
     network: string;
@@ -17,7 +17,7 @@ export const invoiceLookup = (
         method: 'POST',
         url: '/invoicelookup',
         headers: {
-            'S4-ORDERS-API-KEY': sessionStorage.getItem('sdk_api_key') || '',
+            'S4-ORDERS-API-KEY': getSdkApiKey(),
         },
         body,
     }) as Promise<InvoiceLookupResponseType>;
