@@ -304,123 +304,142 @@ const OrderForm: FC<Props> = ({
                 data-testid="sdk-order-form-id"
             >
                 {paymentMethods?.length > 0 && (
-                    <div className="field-wrapper radio-button-group">
-                        <div className="field-label">{paymentMethodLabel}</div>
-                        {paymentMethods.map((item) => (
-                            <div
-                                className="radio-button-control"
-                                key={item.value}
-                            >
-                                <label className="radio-badge">
-                                    <input
-                                        {...register('paymentMethod', {
-                                            required: true,
-                                        })}
-                                        onChange={handlePaymentChange}
-                                        type="radio"
-                                        value={item.value}
-                                    />
-                                    <span className="value-block">
-                                        <span className="prefix-icon"></span>
-                                        <span className="text-block">
-                                            {item.label}
+                    <div className="sdk-payment-method-section">
+                        <div className="field-wrapper radio-button-group">
+                            <div className="field-label">
+                                {paymentMethodLabel}
+                            </div>
+                            {paymentMethods.map((item) => (
+                                <div
+                                    className="radio-button-control"
+                                    key={item.value}
+                                >
+                                    <label className="radio-badge">
+                                        <input
+                                            {...register('paymentMethod', {
+                                                required: true,
+                                            })}
+                                            onChange={handlePaymentChange}
+                                            type="radio"
+                                            value={item.value}
+                                        />
+                                        <span className="value-block">
+                                            <span className="prefix-icon"></span>
+                                            <span className="text-block">
+                                                {item.label}
+                                            </span>
                                         </span>
-                                    </span>
-                                </label>
-                            </div>
-                        ))}
-                        {errors.paymentMethod && (
-                            <div className="text-error caption">
-                                {errors.paymentMethod.message}
-                            </div>
-                        )}
+                                    </label>
+                                </div>
+                            ))}
+                            {errors.paymentMethod && (
+                                <div className="text-error caption">
+                                    {errors.paymentMethod.message}
+                                </div>
+                            )}
+                        </div>
                     </div>
                 )}
-                {orderFields?.length > 0 && allowPaymentMethod && (
-                    <Suspense fallback={null}>
-                        {orderFields.map((field) => {
-                            const Component = formFieldsMapper[field.name];
+                <div className="sdk-order-details-section">
+                    {orderFields?.length > 0 && allowPaymentMethod && (
+                        <Suspense fallback={null}>
+                            {orderFields.map((field) => {
+                                const Component = formFieldsMapper[field.name];
 
-                            return Component ? (
-                                <Component
-                                    key={field.name}
-                                    name={field.name}
-                                    label={field.label}
-                                    required={field.required || false}
-                                    readOnly={field.readOnly || false}
-                                    errors={errors}
-                                    errorReqMsg={errorReqMsg}
-                                    errorInvalidEmailMsg={errorInvalidEmailMsg}
-                                    errorInvalidPhoneMsg={errorInvalidPhoneMsg}
-                                />
-                            ) : null;
-                        })}
-                    </Suspense>
-                )}
-                {showInvoiceToggle && (
-                    <ToggleField
-                        name="invoiceAddressSelection"
-                        label={
-                            invoiceAddressSelection?.label ?? 'Invoice Address'
-                        }
-                        toggleCallback={(e) =>
-                            userActionCallback?.(
-                                UserActionEnum.TOGGLE_INVOICE_ADDRESS,
-                                { value: e }
-                            )
-                        }
-                    />
-                )}
-                {showInvoiceFields && (
-                    <Suspense fallback={null}>
-                        {invoiceOrderFields.map((field) => {
-                            const Component = formFieldsMapper[field.name];
+                                return Component ? (
+                                    <Component
+                                        key={field.name}
+                                        name={field.name}
+                                        label={field.label}
+                                        required={field.required || false}
+                                        readOnly={field.readOnly || false}
+                                        errors={errors}
+                                        errorReqMsg={errorReqMsg}
+                                        errorInvalidEmailMsg={
+                                            errorInvalidEmailMsg
+                                        }
+                                        errorInvalidPhoneMsg={
+                                            errorInvalidPhoneMsg
+                                        }
+                                    />
+                                ) : null;
+                            })}
+                        </Suspense>
+                    )}
+                    {showInvoiceToggle && (
+                        <ToggleField
+                            name="invoiceAddressSelection"
+                            label={
+                                invoiceAddressSelection?.label ??
+                                'Invoice Address'
+                            }
+                            toggleCallback={(e) =>
+                                userActionCallback?.(
+                                    UserActionEnum.TOGGLE_INVOICE_ADDRESS,
+                                    { value: e }
+                                )
+                            }
+                        />
+                    )}
+                    {showInvoiceFields && (
+                        <Suspense fallback={null}>
+                            {invoiceOrderFields.map((field) => {
+                                const Component = formFieldsMapper[field.name];
 
-                            return Component ? (
-                                <Component
-                                    key={field.name}
-                                    name={field.name}
-                                    label={field.label}
-                                    required={field.required || false}
-                                    readOnly={field.readOnly || false}
-                                    errors={errors}
-                                    errorReqMsg={errorReqMsg}
-                                    errorInvalidEmailMsg={errorInvalidEmailMsg}
-                                    errorInvalidPhoneMsg={errorInvalidPhoneMsg}
-                                />
-                            ) : null;
-                        })}
-                    </Suspense>
-                )}
-                {requireTermsAcceptance && (
-                    <TermsCheckbox
-                        name="termsAccept"
-                        label={termsAndConditionsText}
-                        required
-                        errors={errors}
+                                return Component ? (
+                                    <Component
+                                        key={field.name}
+                                        name={field.name}
+                                        label={field.label}
+                                        required={field.required || false}
+                                        readOnly={field.readOnly || false}
+                                        errors={errors}
+                                        errorReqMsg={errorReqMsg}
+                                        errorInvalidEmailMsg={
+                                            errorInvalidEmailMsg
+                                        }
+                                        errorInvalidPhoneMsg={
+                                            errorInvalidPhoneMsg
+                                        }
+                                    />
+                                ) : null;
+                            })}
+                        </Suspense>
+                    )}
+                    {requireTermsAcceptance && (
+                        <TermsCheckbox
+                            name="termsAccept"
+                            label={termsAndConditionsText}
+                            required
+                            errors={errors}
+                        />
+                    )}
+                    {allowPaymentMethod && (
+                        <Button
+                            type="submit"
+                            loading={loading}
+                            buttonText={submitButtonText}
+                            disable={isSubmitButtonDisabled}
+                        />
+                    )}
+                    <Alert
+                        className="mt-2"
+                        msg={
+                            allowPaymentMethod
+                                ? apiErrorMsg
+                                : paymentMethodNotAllowedMsg
+                        }
                     />
-                )}
-                {allowPaymentMethod && (
-                    <Button
-                        type="submit"
-                        loading={loading}
-                        buttonText={submitButtonText}
-                        disable={isSubmitButtonDisabled}
-                    />
-                )}
-                <Alert
-                    className="mt-2"
-                    msg={
-                        allowPaymentMethod
-                            ? apiErrorMsg
-                            : paymentMethodNotAllowedMsg
-                    }
-                />
-                {errorsMsg?.length > 0 &&
-                    allowPaymentMethod &&
-                    errorsMsg.map((i, index) => (
-                        <Alert key={`${i}-${index}`} className="mt-2" msg={i} />
-                    ))}
+                    {errorsMsg?.length > 0 &&
+                        allowPaymentMethod &&
+                        errorsMsg.map((i, index) => (
+                            <Alert
+                                key={`${i}-${index}`}
+                                className="mt-2"
+                                msg={i}
+                            />
+                        ))}
+                </div>
                 <OrderDenialModal
                     isOpen={!!orderDenialType}
                     message={orderDenialMessage}
