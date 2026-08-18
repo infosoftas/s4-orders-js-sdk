@@ -39,6 +39,9 @@
     "publishConfig": {
         "access": "public"
     },
+    "engines": {
+        "node": "^22.21.0 || >=24.11.0"
+    },
     "browserslist": [
         "> 0.5%",
         "last 2 versions",
