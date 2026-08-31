@@ -19,8 +19,8 @@ type OrderCompleteRequestType = {
 };
 
 type OrderResponseType = {
-    terminalRedirectUrl: string;
-    id: string;
+    terminalRedirectUrl: string | null;
+    id: string | null;
 };
 
 export const orderStart = (

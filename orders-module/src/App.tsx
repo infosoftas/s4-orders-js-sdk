@@ -284,11 +284,32 @@ const App: FC<ConfigType> = ({
                 return;
             }
 
+            if (
+                data?.paymentMethod === PaymentMethodEnum.Mollie &&
+                data?.orderId
+            ) {
+                try {
+                    sessionStorage.setItem(
+                        'mollieOrderId',
+                        JSON.stringify({ id: data.orderId, ts: Date.now() })
+                    );
+                } catch (e) {
+                    console.warn(
+                        'Could not persist mollieOrderId; return leg will rely on the S4OrderId param.',
+                        e
+                    );
+                }
+            }
+
             setTimeout(() => {
                 window.location.href = url;
             }, 300);
 
             return;
+        } else if (data?.paymentMethod) {
+            setIsFailed(true);
+            setShowOrderForm(true);
+            setFormType(FormTypeEnum.ORDER);
         }
 
         setIframeSrc(null);

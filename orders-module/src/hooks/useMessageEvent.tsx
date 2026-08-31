@@ -128,6 +128,7 @@ const useMessageEvent = (
             queryParams.get('action') === MessageEventTypeEnum.CANCEL &&
             !showIframe
         ) {
+            sessionStorage.removeItem('mollieOrderId');
             handleMessageEvent(
                 queryParams.get('action') as MessageEventTypeEnum
             );
@@ -137,6 +138,53 @@ const useMessageEvent = (
         queryParams.get('S4OrderId'),
         queryParams.get('TransactionId'),
         showIframe,
+    ]);
+
+    useEffect(() => {
+        if (
+            queryParams.get('TransactionId') ||
+            queryParams.get('action') !== MessageEventTypeEnum.COMPLETE
+        ) {
+            return;
+        }
+
+        const s4OrderId = queryParams.get('S4OrderId');
+
+        let storedOrderId: string | null = null;
+        if (!s4OrderId) {
+            const raw = sessionStorage.getItem('mollieOrderId');
+            if (raw) {
+                try {
+                    const { id, ts } = JSON.parse(raw) as {
+                        id: string;
+                        ts: number;
+                    };
+                    if (Date.now() - ts <= 20 * 60 * 1000) {
+                        storedOrderId = id;
+                    } else {
+                        sessionStorage.removeItem('mollieOrderId');
+                    }
+                } catch {
+                    sessionStorage.removeItem('mollieOrderId');
+                }
+            }
+        }
+
+        const mollieOrderId = s4OrderId || storedOrderId;
+        if (!mollieOrderId) {
+            return;
+        }
+
+        sessionStorage.removeItem('mollieOrderId');
+        messageCallback({
+            orderId: mollieOrderId,
+            agreementId: '',
+            orderInfo: orderInfo || null,
+        });
+    }, [
+        queryParams.get('action'),
+        queryParams.get('S4OrderId'),
+        queryParams.get('TransactionId'),
     ]);
 };
 

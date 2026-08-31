@@ -295,7 +295,7 @@ const useOrderForm = ({
 
                 callback(responseOrder.terminalRedirectUrl, {
                     ...(data || {}),
-                    orderId: responseOrder.id,
+                    orderId: responseOrder.id ?? '',
                     subscriberId: id,
                     paymentMethod: paymentMethod,
                 });
