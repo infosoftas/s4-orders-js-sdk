@@ -45,6 +45,17 @@ export type OrderDenialFallbackOfferType = {
     templatePackageId?: string;
 };
 
+export type PaymentIconType = {
+    src: string;
+    alt: string;
+};
+
+export type PaymentMethodOptionType = {
+    label: string;
+    value: PaymentMethodEnum;
+    icons?: PaymentIconType[];
+};
+
 export type ConfigType = {
     submitStartCallback?: (subscriberId: string) => void;
     userActionCallback?: (
@@ -64,7 +75,7 @@ export type ConfigType = {
     apiUrl?: string;
     redirectUrl?: string;
     showIframe?: boolean;
-    availablePaymentMethods?: { label: string; value: PaymentMethodEnum }[];
+    availablePaymentMethods?: PaymentMethodOptionType[];
     allowedPaymentMethods?: PaymentMethodEnum[];
     paymentMethodsOptions?: PaymentMethodOptionsType;
     requireTermsAcceptance?: boolean;
