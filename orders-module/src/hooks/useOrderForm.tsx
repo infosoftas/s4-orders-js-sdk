@@ -293,9 +293,16 @@ const useOrderForm = ({
                     orderReference: data.orderReference || undefined,
                 });
 
+                if (!responseOrder.id) {
+                    callback(null);
+                    setApiErrorMsg(WRONG_MSG);
+                    setErrorsMsg([]);
+                    return;
+                }
+
                 callback(responseOrder.terminalRedirectUrl, {
                     ...(data || {}),
-                    orderId: responseOrder.id ?? '',
+                    orderId: responseOrder.id,
                     subscriberId: id,
                     paymentMethod: paymentMethod,
                 });
