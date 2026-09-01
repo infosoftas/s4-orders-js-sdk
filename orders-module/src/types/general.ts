@@ -16,7 +16,7 @@ export type OrderFormFieldType = {
     label?: string;
 };
 
-export type PaymentMethodOptionsType = {
+export type PaymentMethodSettingsType = {
     [key in PaymentMethodEnum]: {
         generateSubscriberContact?: boolean;
         accountId?: string;
@@ -77,7 +77,7 @@ export type ConfigType = {
     showIframe?: boolean;
     availablePaymentMethods?: PaymentMethodOptionType[];
     allowedPaymentMethods?: PaymentMethodEnum[];
-    paymentMethodsOptions?: PaymentMethodOptionsType;
+    paymentMethodsOptions?: PaymentMethodSettingsType;
     requireTermsAcceptance?: boolean;
     language?: string;
     merchantAgreementUrl?: string;

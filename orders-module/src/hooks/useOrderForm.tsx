@@ -15,7 +15,7 @@ import {
     ErrorsMsg,
     OrderFormFieldType,
     OrderDenialFallbackOfferType,
-    PaymentMethodOptionsType,
+    PaymentMethodSettingsType,
     ContactRequestType,
 } from '../types/general';
 import {
@@ -46,7 +46,7 @@ type Props = {
     showIframe?: boolean;
     language: string;
     merchantAgreementUrl: string;
-    paymentMethodsOptions?: PaymentMethodOptionsType;
+    paymentMethodsOptions?: PaymentMethodSettingsType;
     orderFields: OrderFormFieldType[];
     invoiceAddressToggle?: boolean;
     invoiceOrderFields: OrderFormFieldType[];

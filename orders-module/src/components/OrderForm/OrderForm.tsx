@@ -22,7 +22,7 @@ import formFieldsMapper from '../FormFields/FormFieldsMapper';
 import { DEFAULT_ORDER_FORM_FIELDS } from '../FormFields/FormFields.helper';
 import { OrderFormInputsType, OrderInfoType } from '../../types/order';
 import {
-    PaymentMethodOptionsType,
+    PaymentMethodSettingsType,
     PaymentMethodOptionType,
     OrderFormFieldType,
     ContactRequestType,
@@ -52,7 +52,7 @@ type Props = {
     showIframe?: boolean;
     language: string;
     merchantAgreementUrl: string;
-    paymentMethodsOptions?: PaymentMethodOptionsType;
+    paymentMethodsOptions?: PaymentMethodSettingsType;
     defaultValues?: OrderFormInputsType;
     paymentMethods?: PaymentMethodOptionType[];
     allowedPaymentMethods?: PaymentMethodEnum[];
