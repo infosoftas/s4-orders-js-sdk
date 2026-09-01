@@ -47,8 +47,8 @@ type OrderFormFieldType = {
     label?: string;
 };
 
-type PaymentMethodOptionsType = {
-    [key in PaymentMethodEnum]: {
+type PaymentMethodSettingsType = {
+    [key in PaymentMethodEnum]?: {
         generateSubscriberContact?: boolean;
         accountId?: string;
         orderFormFields?: OrderFormFieldType[];
@@ -106,7 +106,7 @@ type ConfigType = {
      * Controls which input fields are shown in the order form for each payment method.
      * Use accountId on SwedbankPay to set your Swedbank Pay account ID.
      */
-    paymentMethodsOptions?: PaymentMethodOptionsType;
+    paymentMethodsOptions?: PaymentMethodSettingsType;
     requireTermsAcceptance?: boolean;
     language?: string;
     merchantAgreementUrl?: string;
