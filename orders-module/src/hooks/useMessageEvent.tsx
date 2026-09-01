@@ -27,7 +27,10 @@ const takeStoredMollieOrderId = (): string | null => {
 
 const useMessageEvent = (
     messageCallback: (data: CompleteOrderParamsType) => Promise<void>,
-    handleMessageEvent: (type: MessageEventTypeEnum) => void,
+    handleMessageEvent: (
+        type: MessageEventTypeEnum,
+        orderId?: string
+    ) => void,
     showIframe: boolean,
     orderInfo: OrderInfoType | null
 ) => {
@@ -147,11 +150,13 @@ const useMessageEvent = (
 
         if (
             queryParams.get('action') === MessageEventTypeEnum.CANCEL &&
-            !showIframe
+            !queryParams.get('TransactionId')
         ) {
-            sessionStorage.removeItem('mollieOrderId');
+            const cancelOrderId =
+                queryParams.get('S4OrderId') || takeStoredMollieOrderId();
             handleMessageEvent(
-                queryParams.get('action') as MessageEventTypeEnum
+                queryParams.get('action') as MessageEventTypeEnum,
+                cancelOrderId || undefined
             );
         }
     }, [

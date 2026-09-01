@@ -212,11 +212,15 @@ const App: FC<ConfigType> = ({
         setShowOrderForm(true);
     };
 
-    const handleMessageEvent = async (type: MessageEventTypeEnum) => {
+    const handleMessageEvent = async (
+        type: MessageEventTypeEnum,
+        canceledOrderId?: string
+    ) => {
         if (type === MessageEventTypeEnum.CANCEL) {
             try {
-                if (orderId) {
-                    await handleOrderDelete(orderId);
+                const orderIdToCancel = canceledOrderId || orderId;
+                if (orderIdToCancel) {
+                    await handleOrderDelete(orderIdToCancel);
                 }
             } catch (error) {
                 console.log(error);
