@@ -16,8 +16,8 @@ export type OrderFormFieldType = {
     label?: string;
 };
 
-export type PaymentMethodOptionsType = {
-    [key in PaymentMethodEnum]: {
+export type PaymentMethodSettingsType = {
+    [key in PaymentMethodEnum]?: {
         generateSubscriberContact?: boolean;
         accountId?: string;
         orderFormFields?: OrderFormFieldType[];
@@ -45,6 +45,17 @@ export type OrderDenialFallbackOfferType = {
     templatePackageId?: string;
 };
 
+export type PaymentIconType = {
+    src: string;
+    alt: string;
+};
+
+export type PaymentMethodOptionType = {
+    label: string;
+    value: PaymentMethodEnum;
+    icons?: PaymentIconType[];
+};
+
 export type ConfigType = {
     submitStartCallback?: (subscriberId: string) => void;
     userActionCallback?: (
@@ -64,9 +75,9 @@ export type ConfigType = {
     apiUrl?: string;
     redirectUrl?: string;
     showIframe?: boolean;
-    availablePaymentMethods?: { label: string; value: PaymentMethodEnum }[];
+    availablePaymentMethods?: PaymentMethodOptionType[];
     allowedPaymentMethods?: PaymentMethodEnum[];
-    paymentMethodsOptions?: PaymentMethodOptionsType;
+    paymentMethodsOptions?: PaymentMethodSettingsType;
     requireTermsAcceptance?: boolean;
     language?: string;
     merchantAgreementUrl?: string;

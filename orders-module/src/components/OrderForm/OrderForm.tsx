@@ -22,7 +22,8 @@ import formFieldsMapper from '../FormFields/FormFieldsMapper';
 import { DEFAULT_ORDER_FORM_FIELDS } from '../FormFields/FormFields.helper';
 import { OrderFormInputsType, OrderInfoType } from '../../types/order';
 import {
-    PaymentMethodOptionsType,
+    PaymentMethodSettingsType,
+    PaymentMethodOptionType,
     OrderFormFieldType,
     ContactRequestType,
     OrderDenialFallbackOfferType,
@@ -51,9 +52,9 @@ type Props = {
     showIframe?: boolean;
     language: string;
     merchantAgreementUrl: string;
-    paymentMethodsOptions?: PaymentMethodOptionsType;
+    paymentMethodsOptions?: PaymentMethodSettingsType;
     defaultValues?: OrderFormInputsType;
-    paymentMethods?: { label: string; value: PaymentMethodEnum }[];
+    paymentMethods?: PaymentMethodOptionType[];
     allowedPaymentMethods?: PaymentMethodEnum[];
     submitButtonText?: string;
     orderDenialCloseButtonText?: string;
@@ -324,7 +325,18 @@ const OrderForm: FC<Props> = ({
                                             value={item.value}
                                         />
                                         <span className="value-block">
-                                            <span className="prefix-icon"></span>
+                                            {item.icons &&
+                                            item.icons.length > 0 ? (
+                                                <span className="prefix-icon">
+                                                    {item.icons.map((icon) => (
+                                                        <img
+                                                            key={icon.src}
+                                                            src={icon.src}
+                                                            alt={icon.alt}
+                                                        />
+                                                    ))}
+                                                </span>
+                                            ) : null}
                                             <span className="text-block">
                                                 {item.label}
                                             </span>

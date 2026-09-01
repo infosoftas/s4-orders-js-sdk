@@ -2,6 +2,7 @@ export enum PaymentMethodEnum {
     Vipps = 'Vipps',
     MobilePay = 'MobilePay',
     SwedbankPay = 'SwedbankPay',
+    Mollie = 'Mollie',
     Invoice = 'Invoice',
     Email = 'Email',
     EHF = 'EHF',

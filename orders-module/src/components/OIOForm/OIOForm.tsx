@@ -10,7 +10,7 @@ import { DEFAULT_ORDER_FORM_FIELDS } from '../FormFields/FormFields.helper';
 import { PaymentMethodEnum, UserActionEnum } from '../../enums/general';
 import {
     OrderFormFieldType,
-    PaymentMethodOptionsType,
+    PaymentMethodSettingsType,
     ContactRequestType,
     OrderDenialFallbackOfferType,
 } from '../../types/general';
@@ -45,7 +45,7 @@ type Props = {
     language: string;
     merchantAgreementUrl: string;
     orderValues?: OrderFormInputsType;
-    paymentMethodsOptions?: PaymentMethodOptionsType;
+    paymentMethodsOptions?: PaymentMethodSettingsType;
     invoiceAddressSelection?: {
         enabled?: boolean;
         label?: string;

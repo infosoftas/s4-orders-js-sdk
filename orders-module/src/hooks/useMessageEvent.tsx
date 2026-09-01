@@ -4,9 +4,30 @@ import { MessageEventTypeEnum, PaymentMethodEnum } from '../enums/general';
 import { CompleteOrderParamsType, OrderInfoType } from '../types/order';
 import useQueryParams from './useQueryParams';
 
+const MOLLIE_ORDER_TTL_MS = 20 * 60 * 1000;
+
+// Reads and consumes the persisted Mollie order id. The key is always removed:
+// the return leg gets one chance to use it, whether or not it is still valid.
+const takeStoredMollieOrderId = (): string | null => {
+    const raw = sessionStorage.getItem('mollieOrderId');
+    if (!raw) {
+        return null;
+    }
+
+    sessionStorage.removeItem('mollieOrderId');
+
+    try {
+        const { id, ts } = JSON.parse(raw) as { id: string; ts: number };
+
+        return Date.now() - ts <= MOLLIE_ORDER_TTL_MS ? id : null;
+    } catch {
+        return null;
+    }
+};
+
 const useMessageEvent = (
     messageCallback: (data: CompleteOrderParamsType) => Promise<void>,
-    handleMessageEvent: (type: MessageEventTypeEnum) => void,
+    handleMessageEvent: (type: MessageEventTypeEnum, orderId?: string) => void,
     showIframe: boolean,
     orderInfo: OrderInfoType | null
 ) => {
@@ -126,10 +147,13 @@ const useMessageEvent = (
 
         if (
             queryParams.get('action') === MessageEventTypeEnum.CANCEL &&
-            !showIframe
+            (!showIframe || !queryParams.get('TransactionId'))
         ) {
+            const cancelOrderId =
+                queryParams.get('S4OrderId') || takeStoredMollieOrderId();
             handleMessageEvent(
-                queryParams.get('action') as MessageEventTypeEnum
+                queryParams.get('action') as MessageEventTypeEnum,
+                cancelOrderId || undefined
             );
         }
     }, [
@@ -137,6 +161,33 @@ const useMessageEvent = (
         queryParams.get('S4OrderId'),
         queryParams.get('TransactionId'),
         showIframe,
+    ]);
+
+    // Mollie: a completion return with no TransactionId (that one is SwedbankPay's).
+    useEffect(() => {
+        if (
+            queryParams.get('action') !== MessageEventTypeEnum.COMPLETE ||
+            queryParams.get('TransactionId')
+        ) {
+            return;
+        }
+
+        const s4OrderId = queryParams.get('S4OrderId');
+        const storedOrderId = takeStoredMollieOrderId();
+        const mollieOrderId = s4OrderId || storedOrderId;
+        if (!mollieOrderId) {
+            return;
+        }
+
+        messageCallback({
+            orderId: mollieOrderId,
+            agreementId: '',
+            orderInfo: orderInfo || null,
+        });
+    }, [
+        queryParams.get('action'),
+        queryParams.get('S4OrderId'),
+        queryParams.get('TransactionId'),
     ]);
 };
 

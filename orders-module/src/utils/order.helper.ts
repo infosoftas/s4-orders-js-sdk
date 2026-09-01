@@ -14,7 +14,7 @@ type AgreementModelType = {
     accountId?: string;
 };
 
-const mapToSwedbankLanguage = (language: string) => {
+const mapToPaymentProviderLanguage = (language: string) => {
     const allowedLanguages = [
         'en-US',
         'sv-SE',
@@ -32,7 +32,7 @@ const mapToSwedbankLanguage = (language: string) => {
 
     console.warn(`Language ${language} not supported.`);
 
-    return 'en-US'; // Default value for 'Swedbank'
+    return 'en-US';
 };
 
 export const prepareAgreementModel = ({
@@ -78,8 +78,19 @@ export const prepareAgreementModel = ({
         model.swedbankPay = {
             cancelUrl: `${cancelUrl}`,
             completeUrl: `${confirmUrl}`,
-            language: mapToSwedbankLanguage(language),
+            language: mapToPaymentProviderLanguage(language),
             accountId,
+        };
+
+        return model;
+    }
+
+    if (paymentMethod === PaymentMethodEnum.Mollie) {
+        model.mollie = {
+            accountId,
+            returnUrl: `${confirmUrl}`,
+            cancelUrl: `${cancelUrl}`,
+            language: mapToPaymentProviderLanguage(language),
         };
 
         return model;

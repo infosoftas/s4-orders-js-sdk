@@ -42,10 +42,18 @@ export type SwedbankPay = {
     language?: string;
 };
 
+export type Mollie = {
+    accountId?: string;
+    returnUrl: string;
+    cancelUrl?: string;
+    language?: string;
+};
+
 export type AgreementsType = {
     paymentProvider: PaymentMethodEnum;
     vippsMobilePay?: VippsMobilePay;
     swedbankPay?: SwedbankPay;
+    mollie?: Mollie;
 };
 
 export type OrderInfoType = {
