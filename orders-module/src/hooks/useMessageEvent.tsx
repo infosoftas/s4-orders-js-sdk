@@ -170,8 +170,9 @@ const useMessageEvent = (
             return;
         }
 
-        const mollieOrderId =
-            queryParams.get('S4OrderId') || takeStoredMollieOrderId();
+        const s4OrderId = queryParams.get('S4OrderId');
+        const storedOrderId = takeStoredMollieOrderId();
+        const mollieOrderId = s4OrderId || storedOrderId;
         if (!mollieOrderId) {
             return;
         }
