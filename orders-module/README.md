@@ -33,6 +33,7 @@ enum PaymentMethodEnum {
     Vipps = 'Vipps',
     MobilePay = 'MobilePay',
     SwedbankPay = 'SwedbankPay',
+    Mollie = 'Mollie',
     Invoice = 'Invoice',
     Email = 'Email',
     EHF = 'EHF',
@@ -50,7 +51,7 @@ type PaymentMethodOptionsType = {
     [key in PaymentMethodEnum]: {
         generateSubscriberContact?: boolean;
         accountId?: string;
-        orderFormFields: OrderFormFieldType[];
+        orderFormFields?: OrderFormFieldType[];
         paymentInvoiceFields?: OrderFormFieldType[] | never[] | null;
     };
 }
@@ -211,6 +212,7 @@ export const prepareConfig = ({
                 { label: "Vipps", value: "Vipps" },
                 { label: "MobilePay", value: "MobilePay" },
                 { label: "Credit Card/Debit Card", value: "SwedbankPay" },
+                { label: "Mollie", value: "Mollie" },
                 { label: 'Invoice', translateKey: 'Invoice', value: 'Invoice' },
                 { label: 'Email', translateKey: 'Email', value: 'Email' },
                 { label: 'EHF', translateKey: 'EHF', value: 'EHF' },
@@ -232,6 +234,22 @@ export const prepareConfig = ({
                         name: OrderModuleFiledNameEnum.phoneNumber,
                         label: 'Phone',
                         readOnly: false,
+                        required: false,
+                    },
+                    {
+                        name: OrderModuleFiledNameEnum.email,
+                        label: 'Email',
+                        required: true,
+                        readOnly: !!userEmail,
+                    },
+                ],
+            },
+            Mollie: {
+                accountId: 'your-mollie-account-id',
+                orderFormFields: [
+                    {
+                        name: OrderModuleFiledNameEnum.name,
+                        label: 'Name',
                         required: false,
                     },
                     {
