@@ -84,9 +84,6 @@ module.exports = (env, argv) => {
                             loader: 'sass-loader', // compiles Scss to CSS
                             options: {
                                 sourceMap: isDevelopment,
-                                sassOptions: {
-                                    javascriptEnabled: true,
-                                },
                             },
                         },
                     ],
