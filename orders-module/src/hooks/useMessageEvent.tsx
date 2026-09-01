@@ -4,6 +4,27 @@ import { MessageEventTypeEnum, PaymentMethodEnum } from '../enums/general';
 import { CompleteOrderParamsType, OrderInfoType } from '../types/order';
 import useQueryParams from './useQueryParams';
 
+const MOLLIE_ORDER_TTL_MS = 20 * 60 * 1000;
+
+// Reads and consumes the persisted Mollie order id. The key is always removed:
+// the return leg gets one chance to use it, whether or not it is still valid.
+const takeStoredMollieOrderId = (): string | null => {
+    const raw = sessionStorage.getItem('mollieOrderId');
+    if (!raw) {
+        return null;
+    }
+
+    sessionStorage.removeItem('mollieOrderId');
+
+    try {
+        const { id, ts } = JSON.parse(raw) as { id: string; ts: number };
+
+        return Date.now() - ts <= MOLLIE_ORDER_TTL_MS ? id : null;
+    } catch {
+        return null;
+    }
+};
+
 const useMessageEvent = (
     messageCallback: (data: CompleteOrderParamsType) => Promise<void>,
     handleMessageEvent: (type: MessageEventTypeEnum) => void,
@@ -140,42 +161,21 @@ const useMessageEvent = (
         showIframe,
     ]);
 
+    // Mollie: a completion return with no TransactionId (that one is SwedbankPay's).
     useEffect(() => {
         if (
-            queryParams.get('TransactionId') ||
-            queryParams.get('action') !== MessageEventTypeEnum.COMPLETE
+            queryParams.get('action') !== MessageEventTypeEnum.COMPLETE ||
+            queryParams.get('TransactionId')
         ) {
             return;
         }
 
-        const s4OrderId = queryParams.get('S4OrderId');
-
-        let storedOrderId: string | null = null;
-        if (!s4OrderId) {
-            const raw = sessionStorage.getItem('mollieOrderId');
-            if (raw) {
-                try {
-                    const { id, ts } = JSON.parse(raw) as {
-                        id: string;
-                        ts: number;
-                    };
-                    if (Date.now() - ts <= 20 * 60 * 1000) {
-                        storedOrderId = id;
-                    } else {
-                        sessionStorage.removeItem('mollieOrderId');
-                    }
-                } catch {
-                    sessionStorage.removeItem('mollieOrderId');
-                }
-            }
-        }
-
-        const mollieOrderId = s4OrderId || storedOrderId;
+        const mollieOrderId =
+            queryParams.get('S4OrderId') || takeStoredMollieOrderId();
         if (!mollieOrderId) {
             return;
         }
 
-        sessionStorage.removeItem('mollieOrderId');
         messageCallback({
             orderId: mollieOrderId,
             agreementId: '',
