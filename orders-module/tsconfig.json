@@ -20,7 +20,7 @@
         "inlineSources": true,
         "sourceRoot": "/",
         "paths": {
-            "*": ["./src/*"],
+            "@/*": ["./*"],
             "API": ["./src/api"],
             "API/*": ["./src/api/*"],
             "Component/*": ["./src/components/*"],
