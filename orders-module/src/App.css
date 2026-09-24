@@ -157,6 +157,6 @@
         max-width: 640px;
         border: none;
         background: transparent;
-        border-radius: $border-radius * 2;
+        border-radius: calc(var(--radius) * 2);
     }
 }
