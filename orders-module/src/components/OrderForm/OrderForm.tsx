@@ -1,25 +1,25 @@
 import {
     FC,
-    ChangeEvent,
+    KeyboardEvent,
     ReactNode,
-    Suspense,
-    useState,
-    useMemo,
     useEffect,
+    useRef,
+    useState,
 } from 'react';
-import { FormProvider, useForm, SubmitHandler } from 'react-hook-form';
+import {
+    FormProvider,
+    useForm,
+    Resolver,
+    SubmitHandler,
+} from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 import { PaymentMethodEnum, UserActionEnum } from '../../enums/general';
-import {
-    PAYMENT_METHOD_DEFAULT,
-    INVOICE_ALLOWED_PAYMENT_METHODS,
-} from '../../constants/index';
+import { PAYMENT_METHOD_DEFAULT } from '../../constants/index';
 import Alert from '../Alert/Alert';
 import Button from '../Button/Button';
 import OrderDenialModal from '../OrderDenialModal/OrderDenialModal';
-import ToggleField from '../FormFields/ToggleFiled';
-import formFieldsMapper from '../FormFields/FormFieldsMapper';
-import { DEFAULT_ORDER_FORM_FIELDS } from '../FormFields/FormFields.helper';
+import TermsCheckbox from '../FormFields/TermsCheckbox';
 import { OrderFormInputsType, OrderInfoType } from '../../types/order';
 import {
     PaymentMethodSettingsType,
@@ -27,12 +27,18 @@ import {
     OrderFormFieldType,
     ContactRequestType,
     OrderDenialFallbackOfferType,
+    SubmitConfirmationType,
 } from '../../types/general';
-import { orderInvoiceContactFields } from '../../utils/order.helper';
 import useOrderForm from '../../hooks/useOrderForm';
-
-import './orderForm.scss';
-import TermsCheckbox from '../FormFields/TermsCheckbox';
+import { useSlotElement, renderInSlot } from './useSlotElement';
+import {
+    deriveOrderFormState,
+    buildOrderFormSchema,
+    OrderFormConfig,
+} from './orderFormState';
+import PaymentMethodSection from './PaymentMethodSection';
+import ContactDetailsSection from './ContactDetailsSection';
+import SubmitConfirmationDialog from './SubmitConfirmationDialog';
 
 type Props = {
     callback: (url: string | null, orderInfo?: OrderInfoType | null) => void;
@@ -60,10 +66,14 @@ type Props = {
     orderDenialCloseButtonText?: string;
     orderDenialContinueButtonText?: string;
     paymentMethodLabel?: string;
+    contactDetailsLabel?: string;
+    paymentMethodElementId?: string;
+    contactDetailsElementId?: string;
     paymentMethodNotAllowedMsg?: string;
     errorReqMsg?: string;
     errorInvalidEmailMsg?: string;
     errorInvalidPhoneMsg?: string;
+    errorTermsMsg?: string;
     invoiceAddressSelection?: {
         enabled?: boolean;
         label?: string;
@@ -81,6 +91,7 @@ type Props = {
         organizationId: string
     ) => Promise<OrderDenialFallbackOfferType | undefined>;
     termsAndConditionsText?: string | ReactNode;
+    submitConfirmation?: SubmitConfirmationType;
 };
 
 const initialData = {
@@ -95,6 +106,7 @@ const initialData = {
     paymentMethod: PAYMENT_METHOD_DEFAULT,
     orderReference: '',
 };
+
 
 const OrderForm: FC<Props> = ({
     callback,
@@ -119,11 +131,15 @@ const OrderForm: FC<Props> = ({
     submitButtonText = 'Start',
     orderDenialCloseButtonText = 'Close',
     orderDenialContinueButtonText = 'Continue',
-    paymentMethodLabel = 'Select Payment Method',
+    paymentMethodLabel = 'Select payment method',
+    contactDetailsLabel,
+    paymentMethodElementId,
+    contactDetailsElementId,
     paymentMethodNotAllowedMsg = 'This payment method not allowed!',
     errorReqMsg = '',
     errorInvalidEmailMsg = '',
     errorInvalidPhoneMsg = '',
+    errorTermsMsg = '',
     errorValidationTitleMsg,
     errorValidationDenialOrderBlockingMsg,
     errorValidationBlockingOffersMsg,
@@ -133,72 +149,71 @@ const OrderForm: FC<Props> = ({
     fetchDenialFallbackOffer,
     requireTermsAcceptance,
     termsAndConditionsText,
+    submitConfirmation,
 }) => {
-    if (!templatePackageId) {
-        console.error('"templatePackageId" should be set');
-    }
+    const subscriberIdValue =
+        subscriberId || sessionStorage.getItem('subscriberId') || undefined;
 
-    if (!organizationId) {
-        console.error('"organizationId" should be set');
-    }
+    useEffect(() => {
+        if (!templatePackageId) console.error('"templatePackageId" should be set');
+        if (!organizationId) console.error('"organizationId" should be set');
+        if (!userId) console.error('"userId" should be set');
+        if (!identityProviderId)
+            console.error('"identityProviderId" should be set');
+    }, [templatePackageId, organizationId, userId, identityProviderId]);
 
-    if (!subscriberId) {
-        const sessionSubscriberId = sessionStorage.getItem('subscriberId');
-        if (sessionSubscriberId) {
-            subscriberId = sessionSubscriberId;
-        }
-    }
+    const config: OrderFormConfig = {
+        paymentMethods,
+        paymentMethodsOptions,
+        allowedPaymentMethods,
+        invoiceAddressSelection,
+    };
 
-    if (!userId) {
-        console.error('"userId" should be set');
-    }
+    const messages = {
+        errorReqMsg,
+        errorInvalidEmailMsg,
+        errorInvalidPhoneMsg,
+        errorTermsMsg,
+    };
 
-    if (!identityProviderId) {
-        console.error('"identityProviderId" should be set');
-    }
+    const initialPaymentMethod =
+        (paymentMethods.length === 1 ? paymentMethods[0].value : null) ||
+        defaultValues?.paymentMethod ||
+        PAYMENT_METHOD_DEFAULT;
 
-    const [orderFields, setOrderFields] = useState<OrderFormFieldType[]>(
-        paymentMethodsOptions?.[
-            defaultValues?.paymentMethod || PAYMENT_METHOD_DEFAULT
-        ]?.orderFormFields ?? DEFAULT_ORDER_FORM_FIELDS
-    );
+    const resolver: Resolver<OrderFormInputsType> = (values, ctx, options) => {
+        const schema = buildOrderFormSchema(
+            deriveOrderFormState(values, config),
+            requireTermsAcceptance,
+            messages
+        );
+        return zodResolver(schema)(values, ctx, options);
+    };
 
     const methods = useForm<OrderFormInputsType>({
+        resolver,
         defaultValues: {
             ...initialData,
             ...(defaultValues ?? {}),
-            paymentMethod:
-                defaultValues?.paymentMethod || PAYMENT_METHOD_DEFAULT,
+            paymentMethod: initialPaymentMethod,
         },
     });
 
-    const {
-        register,
-        handleSubmit,
-        setValue,
-        watch,
-        formState: { errors },
-    } = methods;
+    const { control, handleSubmit, setValue, watch } = methods;
+
+    const derived = deriveOrderFormState(
+        {
+            paymentMethod: watch('paymentMethod'),
+            invoiceAddressSelection: watch('invoiceAddressSelection'),
+        },
+        config
+    );
 
     useEffect(() => {
         userActionCallback?.(UserActionEnum.SELECT_PAYMENT_METHOD, {
             paymentMethod: methods.getValues('paymentMethod'),
         });
     }, []);
-
-    const invoiceAddressToggle = watch('invoiceAddressSelection');
-    const paymentMethodInput = watch('paymentMethod');
-    const isTermsAccepted = watch('termsAccept', false);
-
-    const invoiceOrderFields =
-        paymentMethodsOptions?.[paymentMethodInput || PAYMENT_METHOD_DEFAULT]
-            ?.paymentInvoiceFields ||
-        invoiceAddressSelection?.fields ||
-        orderInvoiceContactFields;
-
-    const invoicePaymentMethods =
-        invoiceAddressSelection?.paymentMethods ||
-        INVOICE_ALLOWED_PAYMENT_METHODS;
 
     const {
         orderSubmit,
@@ -216,18 +231,18 @@ const OrderForm: FC<Props> = ({
         userActionCallback,
         setContactCallback,
         organizationId,
-        subscriberId,
+        subscriberId: subscriberIdValue,
         userId,
         identityProviderId,
-        orderFields,
+        orderFields: derived.orderFields,
         redirectUrl,
         showIframe,
         language,
         merchantAgreementUrl,
         paymentMethodsOptions,
         templatePackageId,
-        invoiceAddressToggle,
-        invoiceOrderFields,
+        invoiceAddressToggle: watch('invoiceAddressSelection'),
+        invoiceOrderFields: derived.invoiceOrderFields,
         errorValidationTitleMsg,
         errorValidationDenialOrderBlockingMsg,
         errorValidationBlockingOffersMsg,
@@ -237,221 +252,146 @@ const OrderForm: FC<Props> = ({
         fetchDenialFallbackOffer,
     });
 
-    const onSubmit: SubmitHandler<OrderFormInputsType> = async (
-        data
-    ): Promise<void> => {
+    const [pendingSubmit, setPendingSubmit] =
+        useState<OrderFormInputsType | null>(null);
+
+    const submitOrder = async (data: OrderFormInputsType): Promise<void> => {
         if (
-            paymentMethodInput === PaymentMethodEnum.EHF ||
-            paymentMethodInput === PaymentMethodEnum.OIO
+            derived.paymentMethod === PaymentMethodEnum.EHF ||
+            derived.paymentMethod === PaymentMethodEnum.OIO
         ) {
-            updateFormData(data);
+            updateFormData?.(data);
             return;
         }
         await orderSubmit(data);
     };
 
-    const handlePaymentChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setValue('paymentMethod', e.target.value as PaymentMethodEnum);
-        const orderFieldsLocal =
-            paymentMethodsOptions?.[e.target.value as PaymentMethodEnum]
-                ?.orderFormFields ?? DEFAULT_ORDER_FORM_FIELDS;
-        setOrderFields(orderFieldsLocal);
-        if (
-            !invoicePaymentMethods.includes(e.target.value as PaymentMethodEnum)
-        ) {
+    const onSubmit: SubmitHandler<OrderFormInputsType> = async (data) => {
+        if (submitConfirmation) {
+            setPendingSubmit(data);
+            return;
+        }
+        await submitOrder(data);
+    };
+
+    const confirmSubmit = () => {
+        const data = pendingSubmit;
+        setPendingSubmit(null);
+        if (data) submitOrder(data);
+    };
+
+    const handlePaymentChange = (paymentMethod: PaymentMethodEnum) => {
+        setValue('paymentMethod', paymentMethod, { shouldValidate: true });
+        if (!derived.invoicePaymentMethods.includes(paymentMethod)) {
             setValue('invoiceAddressSelection', false);
         }
 
         userActionCallback?.(UserActionEnum.SELECT_PAYMENT_METHOD, {
-            paymentMethod: e.target.value,
+            paymentMethod,
         });
     };
 
-    const allowPaymentMethod = useMemo(() => {
-        if (!allowedPaymentMethods || allowedPaymentMethods?.length === 0) {
-            return true;
-        }
+    const paymentMethodSlot = useSlotElement(paymentMethodElementId);
+    const contactDetailsSlot = useSlotElement(contactDetailsElementId);
+    const formRef = useRef<HTMLFormElement>(null);
 
-        if (
-            allowedPaymentMethods.includes(
-                paymentMethodInput as PaymentMethodEnum
-            )
-        ) {
-            return true;
-        }
+    const handleSlotKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+        if (event.key !== 'Enter' || event.defaultPrevented) return;
+        if (!derived.allowPaymentMethod || loading) return;
 
-        return false;
-    }, [allowedPaymentMethods, paymentMethodInput]);
+        const target = event.target as HTMLElement;
+        if (target.tagName !== 'INPUT') return;
 
-    const showInvoiceFields =
-        invoiceAddressToggle &&
-        invoiceOrderFields?.length > 0 &&
-        allowPaymentMethod;
+        const { type } = target as HTMLInputElement;
+        if (type === 'button' || type === 'submit' || type === 'reset') return;
 
-    const showInvoiceToggle =
-        invoiceAddressSelection?.enabled &&
-        allowPaymentMethod &&
-        invoicePaymentMethods.includes(paymentMethodInput as PaymentMethodEnum);
+        event.preventDefault();
+        formRef.current?.requestSubmit();
+    };
 
-    const isSubmitButtonDisabled = requireTermsAcceptance
-        ? !isTermsAccepted
-        : false;
+    const paymentMethodSection = derived.showPaymentMethodSelection ? (
+        <PaymentMethodSection
+            control={control}
+            paymentMethods={paymentMethods}
+            label={paymentMethodLabel}
+            onChange={handlePaymentChange}
+        />
+    ) : null;
+
+    const contactDetailsSection = derived.showContactDetails ? (
+        <ContactDetailsSection
+            label={contactDetailsLabel}
+            orderFields={derived.orderFields}
+            invoiceOrderFields={derived.invoiceOrderFields}
+            showOrderFields={derived.showOrderFields}
+            showInvoiceToggle={derived.showInvoiceToggle}
+            showInvoiceFields={derived.showInvoiceFields}
+            invoiceToggleLabel={invoiceAddressSelection?.label}
+            onInvoiceToggle={(value) =>
+                userActionCallback?.(UserActionEnum.TOGGLE_INVOICE_ADDRESS, {
+                    value,
+                })
+            }
+        />
+    ) : null;
+
 
     return (
         <FormProvider {...methods}>
             <form
-                className="sdk-order-form"
+                ref={formRef}
+                className="sdk-order-form flex w-full flex-col gap-6"
+                noValidate
                 onSubmit={handleSubmit(onSubmit)}
                 data-testid="sdk-order-form-id"
             >
-                {paymentMethods?.length > 0 && (
-                    <div className="sdk-payment-method-section">
-                        <div className="field-wrapper radio-button-group">
-                            <div className="field-label">
-                                {paymentMethodLabel}
-                            </div>
-                            {paymentMethods.map((item) => (
-                                <div
-                                    className="radio-button-control"
-                                    key={item.value}
-                                >
-                                    <label className="radio-badge">
-                                        <input
-                                            {...register('paymentMethod', {
-                                                required: true,
-                                            })}
-                                            onChange={handlePaymentChange}
-                                            type="radio"
-                                            value={item.value}
-                                        />
-                                        <span className="value-block">
-                                            {item.icons &&
-                                            item.icons.length > 0 ? (
-                                                <span className="prefix-icon">
-                                                    {item.icons.map((icon) => (
-                                                        <img
-                                                            key={icon.src}
-                                                            src={icon.src}
-                                                            alt={icon.alt}
-                                                        />
-                                                    ))}
-                                                </span>
-                                            ) : null}
-                                            <span className="text-block">
-                                                {item.label}
-                                            </span>
-                                        </span>
-                                    </label>
-                                </div>
-                            ))}
-                            {errors.paymentMethod && (
-                                <div className="text-error caption">
-                                    {errors.paymentMethod.message}
-                                </div>
-                            )}
-                        </div>
-                    </div>
+                {renderInSlot(
+                    paymentMethodSection,
+                    paymentMethodSlot,
+                    handleSlotKeyDown
                 )}
-                <div className="sdk-order-details-section">
-                    {orderFields?.length > 0 && allowPaymentMethod && (
-                        <Suspense fallback={null}>
-                            {orderFields.map((field) => {
-                                const Component = formFieldsMapper[field.name];
-
-                                return Component ? (
-                                    <Component
-                                        key={field.name}
-                                        name={field.name}
-                                        label={field.label}
-                                        required={field.required || false}
-                                        readOnly={field.readOnly || false}
-                                        errors={errors}
-                                        errorReqMsg={errorReqMsg}
-                                        errorInvalidEmailMsg={
-                                            errorInvalidEmailMsg
-                                        }
-                                        errorInvalidPhoneMsg={
-                                            errorInvalidPhoneMsg
-                                        }
-                                    />
-                                ) : null;
-                            })}
-                        </Suspense>
-                    )}
-                    {showInvoiceToggle && (
-                        <ToggleField
-                            name="invoiceAddressSelection"
-                            label={
-                                invoiceAddressSelection?.label ??
-                                'Invoice Address'
-                            }
-                            toggleCallback={(e) =>
-                                userActionCallback?.(
-                                    UserActionEnum.TOGGLE_INVOICE_ADDRESS,
-                                    { value: e }
-                                )
-                            }
-                        />
-                    )}
-                    {showInvoiceFields && (
-                        <Suspense fallback={null}>
-                            {invoiceOrderFields.map((field) => {
-                                const Component = formFieldsMapper[field.name];
-
-                                return Component ? (
-                                    <Component
-                                        key={field.name}
-                                        name={field.name}
-                                        label={field.label}
-                                        required={field.required || false}
-                                        readOnly={field.readOnly || false}
-                                        errors={errors}
-                                        errorReqMsg={errorReqMsg}
-                                        errorInvalidEmailMsg={
-                                            errorInvalidEmailMsg
-                                        }
-                                        errorInvalidPhoneMsg={
-                                            errorInvalidPhoneMsg
-                                        }
-                                    />
-                                ) : null;
-                            })}
-                        </Suspense>
-                    )}
+                {renderInSlot(
+                    contactDetailsSection,
+                    contactDetailsSlot,
+                    handleSlotKeyDown
+                )}
+                <div className="sdk-order-actions-section flex flex-col gap-4">
                     {requireTermsAcceptance && (
                         <TermsCheckbox
                             name="termsAccept"
                             label={termsAndConditionsText}
                             required
-                            errors={errors}
                         />
                     )}
-                    {allowPaymentMethod && (
+                    {derived.allowPaymentMethod && (
                         <Button
                             type="submit"
                             loading={loading}
                             buttonText={submitButtonText}
-                            disable={isSubmitButtonDisabled}
+                            className="w-full"
                         />
                     )}
                     <Alert
-                        className="mt-2"
                         msg={
-                            allowPaymentMethod
+                            derived.allowPaymentMethod
                                 ? apiErrorMsg
                                 : paymentMethodNotAllowedMsg
                         }
                     />
                     {errorsMsg?.length > 0 &&
-                        allowPaymentMethod &&
+                        derived.allowPaymentMethod &&
                         errorsMsg.map((i, index) => (
-                            <Alert
-                                key={`${i}-${index}`}
-                                className="mt-2"
-                                msg={i}
-                            />
+                            <Alert key={`${i}-${index}`} msg={i} />
                         ))}
                 </div>
+                {submitConfirmation && (
+                    <SubmitConfirmationDialog
+                        isOpen={!!pendingSubmit}
+                        confirmation={submitConfirmation}
+                        onConfirm={confirmSubmit}
+                        onCancel={() => setPendingSubmit(null)}
+                    />
+                )}
                 <OrderDenialModal
                     isOpen={!!orderDenialType}
                     message={orderDenialMessage}
