@@ -85,7 +85,12 @@ module.exports = (env, argv) => {
                             options: {
                                 sourceMap: isDevelopment,
                                 postcssOptions: {
-                                    plugins: ['@tailwindcss/postcss'],
+                                    plugins: [
+                                        '@tailwindcss/postcss',
+                                        require.resolve(
+                                            './build/postcss-scope-tailwind.cjs'
+                                        ),
+                                    ],
                                 },
                             },
                         },
