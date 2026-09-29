@@ -81,8 +81,8 @@ const initialData = {
 const buildFormSchema = (errorReqMsg?: string) =>
     z
         .object({
-            cvr: z.string(),
-            gln: z.string(),
+            cvr: z.string().trim(),
+            gln: z.string().trim(),
         })
         .superRefine((data, ctx) => {
             if (!data.cvr && !data.gln) {
