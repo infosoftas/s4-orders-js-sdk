@@ -28,7 +28,11 @@ export const useSlotElement = (elementId?: string): SlotState => {
 
         const found = document.getElementById(elementId);
         if (found) {
-            setState({ pending: false, element: found });
+            setState(
+                found.closest('form')
+                    ? NO_SLOT
+                    : { pending: false, element: found }
+            );
             return;
         }
 
@@ -39,7 +43,11 @@ export const useSlotElement = (elementId?: string): SlotState => {
             const target = document.getElementById(elementId);
             if (target) {
                 observer.disconnect();
-                setState({ pending: false, element: target });
+                setState(
+                    target.closest('form')
+                        ? NO_SLOT
+                        : { pending: false, element: target }
+                );
             }
         });
         observer.observe(document.documentElement, {
