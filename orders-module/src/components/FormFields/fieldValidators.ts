@@ -8,7 +8,7 @@ import TermsCheckbox from './TermsCheckbox';
 import formFieldsMapper from './FormFieldsMapper';
 
 export const EMAIL_PATTERN =
-    /^[-!#-'*+/-9=?^-~]+(?:\.[-!#-'*+/-9=?^-~]+)*@[-!#-'*+/-9=?^-~]+(?:\.[-!#-'*+/-9=?^-~]{2,20})+$/i;
+    /^[A-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[A-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[A-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[A-Z0-9!#$%&'*+/=?^_`{|}~-]{2,20})+$/i;
 export const PHONE_PATTERN = /^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\./0-9]{6,14}$/;
 const NON_BLANK_PATTERN = /\S/;
 
