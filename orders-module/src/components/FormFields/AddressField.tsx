@@ -2,7 +2,7 @@ import { FC, useId } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import { Field, FieldError, FieldLabel } from '../ui/field';
-import { Input } from '../ui/input';
+import { Textarea } from '../ui/textarea';
 
 type Props = {
     name: string;
@@ -34,7 +34,7 @@ const AddressField: FC<Props> = ({
                     )}
                 </span>
             </FieldLabel>
-            <Input
+            <Textarea
                 id={id}
                 autoComplete="street-address"
                 readOnly={readOnly}
