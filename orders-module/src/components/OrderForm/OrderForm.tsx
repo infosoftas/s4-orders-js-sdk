@@ -107,7 +107,6 @@ const initialData = {
     orderReference: '',
 };
 
-
 const OrderForm: FC<Props> = ({
     callback,
     updateFormData,
@@ -155,7 +154,8 @@ const OrderForm: FC<Props> = ({
         subscriberId || sessionStorage.getItem('subscriberId') || undefined;
 
     useEffect(() => {
-        if (!templatePackageId) console.error('"templatePackageId" should be set');
+        if (!templatePackageId)
+            console.error('"templatePackageId" should be set');
         if (!organizationId) console.error('"organizationId" should be set');
         if (!userId) console.error('"userId" should be set');
         if (!identityProviderId)
@@ -176,10 +176,12 @@ const OrderForm: FC<Props> = ({
         errorTermsMsg,
     };
 
-    const initialPaymentMethod =
-        (paymentMethods.length === 1 ? paymentMethods[0].value : null) ||
-        defaultValues?.paymentMethod ||
-        PAYMENT_METHOD_DEFAULT;
+    const configuredPaymentMethods = paymentMethods.map((m) => m.value);
+    const initialPaymentMethod = configuredPaymentMethods.length
+        ? ([defaultValues?.paymentMethod, PAYMENT_METHOD_DEFAULT].find(
+              (m) => m && configuredPaymentMethods.includes(m)
+          ) ?? configuredPaymentMethods[0])
+        : defaultValues?.paymentMethod || PAYMENT_METHOD_DEFAULT;
 
     const resolver: Resolver<OrderFormInputsType> = (values, ctx, options) => {
         const schema = buildOrderFormSchema(
@@ -334,7 +336,6 @@ const OrderForm: FC<Props> = ({
             }
         />
     ) : null;
-
 
     return (
         <FormProvider {...methods}>

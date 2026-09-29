@@ -37,6 +37,7 @@ export type OrderFormValues = Pick<
 
 export type OrderFormDerived = {
     paymentMethod: PaymentMethodEnum;
+    availablePaymentMethods: PaymentMethodEnum[];
     orderFields: OrderFormFieldType[];
     invoiceOrderFields: OrderFormFieldType[];
     invoicePaymentMethods: PaymentMethodEnum[];
@@ -93,6 +94,7 @@ export const deriveOrderFormState = (
 
     return {
         paymentMethod,
+        availablePaymentMethods: paymentMethods.map((m) => m.value),
         orderFields,
         invoiceOrderFields,
         invoicePaymentMethods,
@@ -145,10 +147,13 @@ export const buildOrderFormSchema = (
     if (derived.showOrderFields) addFields(derived.orderFields);
     if (derived.showInvoiceFields) addFields(derived.invoiceOrderFields);
 
-    if (derived.showPaymentMethodSelection) {
+    if (derived.availablePaymentMethods.length > 0) {
+        const available: string[] = derived.availablePaymentMethods;
         shape.paymentMethod = z
             .string()
-            .min(1, errorReqMsg || 'This field is required!');
+            .refine((value) => available.includes(value), {
+                message: errorReqMsg || 'This field is required!',
+            });
     }
 
     if (requireTermsAcceptance) {
