@@ -1,62 +1,51 @@
-import { FC } from 'react';
-import { useFormContext } from 'react-hook-form';
+import { FC, useId } from 'react';
+import { Controller, useFormContext } from 'react-hook-form';
 
-import { uuidv4 } from '../../utils/helper';
+import { Field, FieldLabel } from '../ui/field';
+import { Switch } from '../ui/switch';
 
 type Props = {
     name: string;
-    required?: boolean;
     readOnly?: boolean;
     label?: string;
-    errorReqMsg?: string;
-    errors?: {
-        [key: string]: {
-            message?: string;
-        };
-    };
     toggleCallback?: (value: boolean) => void;
 };
 
 const ToggleField: FC<Props> = ({
     name,
-    required = false,
     readOnly = false,
     label = '',
-    errorReqMsg = 'This field is required!',
-    errors,
     toggleCallback,
 }) => {
-    const { register } = useFormContext();
-    const id = uuidv4();
+    const { control } = useFormContext();
+    const id = useId();
+
     return (
-        <div className="field-wrapper">
-            <div className="d-flex align-center flex-wrap">
-                <label className="sdk-on-off-label" htmlFor={id}>
-                    {label} {required && <span className="text-error">*</span>}
-                </label>
-                <label
-                    className="sdk-on-off"
+        <Controller
+            name={name}
+            control={control}
+            defaultValue={false}
+            render={({ field }) => (
+                <Field
+                    orientation="horizontal"
                     data-testid={`sdk-${name}-field-id`}
                 >
-                    <input
+                    <FieldLabel htmlFor={id}>{label}</FieldLabel>
+                    <Switch
                         id={id}
-                        type="checkbox"
+                        name={field.name}
+                        checked={!!field.value}
+                        onCheckedChange={(checked) => {
+                            field.onChange(checked);
+                            toggleCallback?.(checked);
+                        }}
+                        onBlur={field.onBlur}
+                        inputRef={field.ref}
                         readOnly={readOnly}
-                        className={`${readOnly ? 'read-only' : ''}`}
-                        {...register(name, {
-                            required: required ? errorReqMsg : false,
-                        })}
-                        onClick={(e) =>
-                            toggleCallback?.(e.currentTarget.checked)
-                        }
                     />
-                    <span className="slider round"></span>
-                </label>
-            </div>
-            {errors && errors[name] && (
-                <div className="text-error caption">{errors[name].message}</div>
+                </Field>
             )}
-        </div>
+        />
     );
 };
 

@@ -1,8 +1,7 @@
 import { FC, MouseEvent } from 'react';
 
-import Loader from '../Loader/Loader';
-
-import './button.scss';
+import { Button as UIButton } from '../ui/button';
+import { Spinner } from '../ui/spinner';
 
 type Props = {
     onClick?: (e: MouseEvent<HTMLButtonElement>) => void;
@@ -11,6 +10,7 @@ type Props = {
     buttonText?: string;
     loading?: boolean;
     disable?: boolean;
+    className?: string;
 };
 
 const Button: FC<Props> = ({
@@ -20,24 +20,20 @@ const Button: FC<Props> = ({
     buttonText = 'Start',
     loading = false,
     disable = false,
-}) => {
-    const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
-        onClick?.(e);
-    };
-
-    return (
-        <button
-            data-testid="sdk-button-id"
-            type={type}
-            disabled={loading || disable}
-            className={`sdk-btn ${btnType ? `${btnType}-btn` : ''} ${
-                loading ? 'loading' : ''
-            } ${disable ? 'disabled' : ''}`}
-            onClick={handleClick}
-        >
-            {loading ? <Loader className="btn-loader" /> : buttonText}
-        </button>
-    );
-};
+    className,
+}) => (
+    <UIButton
+        data-testid="sdk-button-id"
+        type={type}
+        variant={btnType === 'primary' ? 'default' : 'ghost'}
+        disabled={loading || disable}
+        aria-busy={loading || undefined}
+        className={className}
+        onClick={onClick}
+    >
+        {loading && <Spinner data-icon="inline-start" />}
+        {buttonText}
+    </UIButton>
+);
 
 export default Button;
