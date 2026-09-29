@@ -15,6 +15,7 @@ module.exports = (env, argv) => {
         resolve: {
             extensions: ['.js', '.jsx', '.ts', '.tsx'],
             alias: {
+                '@': path.resolve(__dirname, 'src'),
                 Src: path.resolve(__dirname, 'src'),
                 API: path.resolve(__dirname, 'src/api'),
                 Component: path.resolve(__dirname, 'src/components'),
@@ -24,13 +25,12 @@ module.exports = (env, argv) => {
                 Types: path.resolve(__dirname, 'src/types'),
                 Enums: path.resolve(__dirname, 'src/enums'),
                 Constants: path.resolve(__dirname, 'src/constants'),
-                Assets: path.resolve(__dirname, 'src/assets'),
             },
         },
         output: {
             filename: 'script.js',
             path: path.resolve(__dirname, 'dist'),
-            publicPath: '/',
+            publicPath: 'auto',
             library: {
                 type: 'module',
             },
@@ -71,7 +71,7 @@ module.exports = (env, argv) => {
                     use: ['ts-loader'],
                 },
                 {
-                    test: /\.scss$/,
+                    test: /\.css$/,
                     use: [
                         {
                             loader: 'style-loader',
@@ -81,9 +81,12 @@ module.exports = (env, argv) => {
                             options: { sourceMap: isDevelopment },
                         },
                         {
-                            loader: 'sass-loader', // compiles Scss to CSS
+                            loader: 'postcss-loader', // resolves Tailwind directives/imports
                             options: {
                                 sourceMap: isDevelopment,
+                                postcssOptions: {
+                                    plugins: ['@tailwindcss/postcss'],
+                                },
                             },
                         },
                     ],
