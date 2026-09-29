@@ -1,10 +1,9 @@
-import { FC } from 'react';
-import { FormProvider, useForm, SubmitHandler } from 'react-hook-form';
+import { FC, useId, useMemo } from 'react';
+import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 
 import Alert from '../Alert/Alert';
 import Button from '../Button/Button';
 import OrderDenialModal from '../OrderDenialModal/OrderDenialModal';
-import InputField from '../FormFields/InputField';
 import { DEFAULT_ORDER_FORM_FIELDS } from '../FormFields/FormFields.helper';
 
 import { PaymentMethodEnum, UserActionEnum } from '../../enums/general';
@@ -17,6 +16,10 @@ import {
 import useOrderForm from '../../hooks/useOrderForm';
 import { orderInvoiceContactFields } from '../../utils/order.helper';
 import { OrderFormInputsType, OrderInfoType } from '../../types/order';
+import z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Field, FieldGroup, FieldLabel, FieldError } from '../ui/field';
+import { Input } from '../ui/input';
 
 type Props = {
     callback: (url: string | null, orderInfo?: OrderInfoType | null) => void;
@@ -53,13 +56,16 @@ type Props = {
         paymentMethods?: PaymentMethodEnum[];
     };
     invoiceLookupNotFoundText?: string;
+    errorReqMsg?: string;
     errorValidationTitleMsg?: string;
     errorValidationDenialOrderBlockingMsg?: string;
     errorValidationBlockingOffersMsg?: string;
     orderDenialOfferBaseText?: string;
     orderDenialOfferWithFallbackText?: string;
     orderDenialAmountText?: string;
-    fetchDenialFallbackOffer?: (organizationId: string) => Promise<OrderDenialFallbackOfferType | undefined>;
+    fetchDenialFallbackOffer?: (
+        organizationId: string
+    ) => Promise<OrderDenialFallbackOfferType | undefined>;
 };
 
 type OIOFormInputsType = {
@@ -71,6 +77,28 @@ const initialData = {
     cvr: '',
     gln: '',
 };
+
+const buildFormSchema = (errorReqMsg?: string) =>
+    z
+        .object({
+            cvr: z.string().trim(),
+            gln: z.string().trim(),
+        })
+        .superRefine((data, ctx) => {
+            if (!data.cvr && !data.gln) {
+                const message = errorReqMsg || 'This field is required!';
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message,
+                    path: ['cvr'],
+                });
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message,
+                    path: ['gln'],
+                });
+            }
+        });
 
 const OIOForm: FC<Props> = ({
     callback,
@@ -99,6 +127,7 @@ const OIOForm: FC<Props> = ({
     paymentMethodsOptions,
     invoiceAddressSelection,
     invoiceLookupNotFoundText,
+    errorReqMsg,
     errorValidationTitleMsg,
     errorValidationDenialOrderBlockingMsg,
     errorValidationBlockingOffersMsg,
@@ -107,21 +136,23 @@ const OIOForm: FC<Props> = ({
     orderDenialAmountText,
     fetchDenialFallbackOffer,
 }) => {
-    const methods = useForm<OIOFormInputsType>({
+    const cvrId = useId();
+    const glnId = useId();
+
+    const formSchema = useMemo(
+        () => buildFormSchema(errorReqMsg),
+        [errorReqMsg]
+    );
+
+    const form = useForm<OIOFormInputsType>({
+        resolver: zodResolver(formSchema),
         defaultValues: {
             ...initialData,
             cvr: organizationNumber,
         },
     });
 
-    const {
-        handleSubmit,
-        watch,
-        formState: { errors },
-    } = methods;
-
-    const cvr = watch('cvr');
-    const gln = watch('gln');
+    const { handleSubmit } = form;
 
     const invoiceOrderFields =
         invoiceAddressSelection?.fields || orderInvoiceContactFields;
@@ -171,7 +202,7 @@ const OIOForm: FC<Props> = ({
     const onSubmit: SubmitHandler<OIOFormInputsType> = async (
         data
     ): Promise<void> => {
-        orderSubmit({ ...orderValues, gln: data.gln, cvr: data.cvr });
+        await orderSubmit({ ...orderValues, gln: data.gln, cvr: data.cvr });
     };
 
     const handleBack = () => {
@@ -180,66 +211,96 @@ const OIOForm: FC<Props> = ({
     };
 
     return (
-        <FormProvider {...methods}>
-            <form
-                className={`${className}`}
-                onSubmit={handleSubmit(onSubmit)}
-                data-testid="oio-form-id"
-            >
-                <InputField
+        <form
+            className={`${className}`}
+            noValidate
+            onSubmit={handleSubmit(onSubmit)}
+            data-testid="oio-form-id"
+        >
+            <FieldGroup>
+                <Controller
                     name="cvr"
-                    label={organizationNumberLabel}
-                    required={!gln}
-                    readOnly={false}
-                    errors={!gln ? errors : undefined}
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                        <Field data-invalid={fieldState.invalid}>
+                            <FieldLabel htmlFor={cvrId}>
+                                {organizationNumberLabel}
+                            </FieldLabel>
+                            <Input
+                                {...field}
+                                id={cvrId}
+                                aria-invalid={fieldState.invalid}
+                                autoComplete="off"
+                            />
+                            {fieldState.error && (
+                                <FieldError>
+                                    {fieldState.error.message}
+                                </FieldError>
+                            )}
+                        </Field>
+                    )}
                 />
-                <InputField
-                    name="gln"
-                    label={glnLabel}
-                    required={!cvr}
-                    readOnly={false}
-                    errors={!cvr ? errors : undefined}
-                />
-                <div className="d-flex justify-center flex-wrap gap-2">
-                    <Button
-                        type="button"
-                        btnType="default"
-                        disable={loading}
-                        buttonText={backButtonText}
-                        onClick={handleBack}
-                    />
 
-                    <Button
-                        type="submit"
-                        loading={loading}
-                        buttonText={verifyButtonText}
-                    />
-                </div>
-                {apiErrorMsg && <Alert className="mt-2" msg={apiErrorMsg} />}
-                {errorsMsg?.length > 0 &&
-                    errorsMsg.map((i, index) => (
-                        <Alert key={`${i}-${index}`} className="mt-2" msg={i} />
-                    ))}
-                <OrderDenialModal
-                    isOpen={!!orderDenialType}
-                    message={orderDenialMessage}
-                    closeButtonText={orderDenialCloseButtonText}
-                    continueButtonText={orderDenialContinueButtonText}
-                    canContinue={
-                        orderDenialType === 'offer' &&
-                        !!orderDenialFallbackOffer?.templatePackageId
-                    }
-                    offer={
-                        orderDenialType === 'offer' &&
-                        !!orderDenialFallbackOffer?.templatePackageId
-                            ? orderDenialFallbackOffer
-                            : undefined
-                    }
-                    onClose={dismissOrderDenial}
-                    onContinue={continueWithFallbackOffer}
+                <Controller
+                    name="gln"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                        <Field data-invalid={fieldState.invalid}>
+                            <FieldLabel htmlFor={glnId}>{glnLabel}</FieldLabel>
+                            <Input
+                                {...field}
+                                id={glnId}
+                                aria-invalid={fieldState.invalid}
+                                autoComplete="off"
+                            />
+                            {fieldState.error && (
+                                <FieldError>
+                                    {fieldState.error.message}
+                                </FieldError>
+                            )}
+                        </Field>
+                    )}
                 />
-            </form>
-        </FormProvider>
+            </FieldGroup>
+            <div className="flex justify-center flex-wrap gap-2">
+                <Button
+                    type="button"
+                    btnType="default"
+                    disable={loading}
+                    buttonText={backButtonText}
+                    onClick={handleBack}
+                />
+
+                <Button
+                    type="submit"
+                    loading={loading}
+                    buttonText={verifyButtonText}
+                />
+            </div>
+            {apiErrorMsg && <Alert className="mt-2" msg={apiErrorMsg} />}
+            {errorsMsg?.length > 0 &&
+                errorsMsg.map((i, index) => (
+                    <Alert key={`${i}-${index}`} className="mt-2" msg={i} />
+                ))}
+            <OrderDenialModal
+                isOpen={!!orderDenialType}
+                message={orderDenialMessage}
+                closeButtonText={orderDenialCloseButtonText}
+                continueButtonText={orderDenialContinueButtonText}
+                canContinue={
+                    orderDenialType === 'offer' &&
+                    !!orderDenialFallbackOffer?.templatePackageId
+                }
+                offer={
+                    orderDenialType === 'offer' &&
+                    !!orderDenialFallbackOffer?.templatePackageId
+                        ? orderDenialFallbackOffer
+                        : undefined
+                }
+                onClose={dismissOrderDenial}
+                onContinue={continueWithFallbackOffer}
+            />
+        </form>
     );
 };
 

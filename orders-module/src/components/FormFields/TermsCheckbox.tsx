@@ -1,19 +1,14 @@
-import { FC, ReactNode } from 'react';
-import { useFormContext } from 'react-hook-form';
+import { FC, ReactNode, useId } from 'react';
+import { Controller, useFormContext } from 'react-hook-form';
 
-import { uuidv4 } from '../../utils/helper';
+import { Checkbox } from '../ui/checkbox';
+import { Field, FieldContent, FieldError, FieldLabel } from '../ui/field';
 
 type Props = {
     name: string;
     required: boolean;
     disabled?: boolean;
     label?: string | ReactNode;
-    errorReqMsg?: string;
-    errors?: {
-        [key: string]: {
-            message?: string;
-        };
-    };
 };
 
 const TermsCheckbox: FC<Props> = ({
@@ -21,37 +16,54 @@ const TermsCheckbox: FC<Props> = ({
     required = true,
     disabled = false,
     label = 'I accept the terms and conditions',
-    errorReqMsg = 'You must accept the terms and conditions to proceed.',
-    errors,
 }) => {
-    const { register } = useFormContext();
-    const id = uuidv4();
+    const { control } = useFormContext();
+    const id = useId();
 
     return (
-        <div className="checkbox-wrapper" data-testid={`sdk-${name}-field-id`}>
-            <>
-                <input
-                    id={id}
-                    type="checkbox"
-                    disabled={disabled}
-                    className={`checkbox-control ${disabled ? 'disabled' : ''}`}
-                    {...register(name, {
-                        required: required ? errorReqMsg : false,
-                    })}
-                />
-                <label
-                    className="checkbox-label"
-                    htmlFor={id}
-                    style={{ cursor: disabled ? 'not-allowed' : 'pointer' }}
+        <Controller
+            name={name}
+            control={control}
+            defaultValue={false}
+            render={({ field, fieldState }) => (
+                <Field
+                    orientation="horizontal"
+                    data-invalid={fieldState.invalid}
+                    data-disabled={disabled}
+                    data-testid={`sdk-${name}-field-id`}
                 >
-                    {label} {required && <span className="text-error">*</span>}
-                </label>
-            </>
-
-            {errors && errors[name] && (
-                <div className="text-error caption">{errors[name].message}</div>
+                    <Checkbox
+                        id={id}
+                        name={field.name}
+                        checked={!!field.value}
+                        onCheckedChange={(checked) => field.onChange(checked)}
+                        onBlur={field.onBlur}
+                        inputRef={field.ref}
+                        disabled={disabled}
+                        aria-invalid={fieldState.invalid}
+                        aria-required={required}
+                        required={required}
+                    />
+                    <FieldContent>
+                        <FieldLabel htmlFor={id}>
+                            <span>
+                                {label}
+                                {required && (
+                                    <span
+                                        aria-hidden="true"
+                                        className="text-destructive"
+                                    >
+                                        {' '}
+                                        *
+                                    </span>
+                                )}
+                            </span>
+                        </FieldLabel>
+                        <FieldError errors={[fieldState.error]} />
+                    </FieldContent>
+                </Field>
             )}
-        </div>
+        />
     );
 };
 

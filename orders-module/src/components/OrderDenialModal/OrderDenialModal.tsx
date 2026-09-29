@@ -1,10 +1,16 @@
 import { FC } from 'react';
-import { createPortal } from 'react-dom';
 
 import { OrderDenialFallbackOfferType } from '../../types/general';
-import Button from '../Button/Button';
-
-import './orderDenialModal.scss';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '../ui/alert-dialog';
 
 type Props = {
     isOpen: boolean;
@@ -17,6 +23,16 @@ type Props = {
     onClose: () => void;
 };
 
+const splitMessage = (message = '') => {
+    const [title = '', ...rest] = message
+        .replace(/\\n/g, '\n')
+        .split(/\n\s*\n/)
+        .map((part) => part.trim())
+        .filter(Boolean);
+
+    return { title, description: rest.join('\n\n') };
+};
+
 const OrderDenialModal: FC<Props> = ({
     isOpen,
     message,
@@ -27,62 +43,59 @@ const OrderDenialModal: FC<Props> = ({
     onContinue,
     onClose,
 }) => {
-    if (!isOpen || typeof document === 'undefined') {
-        return null;
-    }
+    const { title, description } = splitMessage(message);
+    const showOffer = !!offer?.title && !!offer?.templatePackageId;
 
-    return createPortal(
-        <div
-            className="sdk-order-denial-modal-overlay"
-            data-testid="sdk-order-denial-modal-overlay"
+    return (
+        <AlertDialog
+            open={isOpen}
+            onOpenChange={(open) => {
+                if (!open) onClose();
+            }}
         >
-            <div
-                className="sdk-order-denial-modal"
-                role="dialog"
-                aria-modal="true"
-                aria-label="Order denial modal"
-            >
-                <p
-                    className="sdk-order-denial-modal-text"
-                    style={{ whiteSpace: 'pre-line' }}
-                >
-                    {message?.replace(/\\n/g, '\n')}
-                </p>
-                {offer?.title && offer?.templatePackageId && (
-                    <div className="sdk-order-denial-offer-box">
-                        <h4 className="sdk-order-denial-offer-title">
-                            {offer.title}
-                        </h4>
-                        {offer.description && (
-                            <p className="sdk-order-denial-offer-description">
+            <AlertDialogContent data-testid="sdk-order-denial-modal">
+                <AlertDialogHeader>
+                    <AlertDialogTitle className="whitespace-pre-line">
+                        {title}
+                    </AlertDialogTitle>
+                    {description && (
+                        <AlertDialogDescription className="whitespace-pre-line">
+                            {description}
+                        </AlertDialogDescription>
+                    )}
+                </AlertDialogHeader>
+
+                {showOffer && (
+                    <div
+                        className="flex flex-col gap-1 rounded-2xl bg-muted p-4 text-sm"
+                        data-testid="sdk-order-denial-offer"
+                    >
+                        <p className="font-medium">{offer?.title}</p>
+                        {offer?.description && (
+                            <p className="text-muted-foreground">
                                 {offer.description}
                             </p>
                         )}
-                        {offer.price && (
-                            <p className="sdk-order-denial-offer-meta">
+                        {offer?.price && (
+                            <p className="mt-1 font-semibold tabular-nums">
                                 {offer.price}
                             </p>
                         )}
                     </div>
                 )}
-                <div className="sdk-order-denial-modal-actions">
-                    <Button
-                        type="button"
-                        btnType="default"
-                        buttonText={closeButtonText}
-                        onClick={onClose}
-                    />
+
+                <AlertDialogFooter>
+                    <AlertDialogCancel variant="ghost">
+                        {closeButtonText}
+                    </AlertDialogCancel>
                     {canContinue && (
-                        <Button
-                            type="button"
-                            buttonText={continueButtonText}
-                            onClick={onContinue}
-                        />
+                        <AlertDialogAction onClick={onContinue}>
+                            {continueButtonText}
+                        </AlertDialogAction>
                     )}
-                </div>
-            </div>
-        </div>,
-        document.body
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
     );
 };
 

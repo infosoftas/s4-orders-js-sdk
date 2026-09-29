@@ -1,0 +1,409 @@
+@layer theme, base, components, utilities;
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+@import url('tw-animate-css');
+@import 'shadcn/tailwind.css';
+
+@custom-variant dark (&:is(.dark *));
+
+.sdk-scope {
+    --background: oklch(0.975 0.002 286.32);
+    --foreground: oklch(0.141 0.005 285.823);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.141 0.005 285.823);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.141 0.005 285.823);
+    --primary: oklch(0.527 0.154 150.069);
+    --primary-foreground: oklch(0.982 0.018 155.826);
+    --secondary: oklch(0.967 0.001 286.375);
+    --secondary-foreground: oklch(0.21 0.006 285.885);
+    --muted: oklch(0.967 0.001 286.375);
+    --muted-foreground: oklch(0.552 0.016 285.938);
+    --accent: oklch(0.967 0.001 286.375);
+    --accent-foreground: oklch(0.21 0.006 285.885);
+    --destructive: oklch(0.577 0.245 27.325);
+    --warning: var(--color-amber-700);
+    --success: var(--color-green-600);
+    --border: oklch(0.92 0.004 286.32);
+    --input: oklch(0.92 0.004 286.32);
+    --ring: oklch(0.705 0.015 286.067);
+    --chart-1: oklch(0.871 0.006 286.286);
+    --chart-2: oklch(0.552 0.016 285.938);
+    --chart-3: oklch(0.442 0.017 285.786);
+    --chart-4: oklch(0.37 0.013 285.805);
+    --chart-5: oklch(0.274 0.006 286.033);
+    --radius: 0.625rem;
+    --sidebar: oklch(0.985 0 0);
+    --sidebar-foreground: oklch(0.141 0.005 285.823);
+    --sidebar-primary: oklch(0.627 0.194 149.214);
+    --sidebar-primary-foreground: oklch(0.982 0.018 155.826);
+    --sidebar-accent: oklch(0.967 0.001 286.375);
+    --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
+    --sidebar-border: oklch(0.92 0.004 286.32);
+    --sidebar-ring: oklch(0.705 0.015 286.067);
+}
+
+.sdk-scope:is(.dark *),
+.sdk-scope.dark {
+    --background: oklch(0.17 0.006 285.885);
+    --foreground: oklch(0.985 0 0);
+    --card: oklch(0.21 0.006 285.885);
+    --card-foreground: oklch(0.985 0 0);
+    --popover: oklch(0.21 0.006 285.885);
+    --popover-foreground: oklch(0.985 0 0);
+    --primary: oklch(0.448 0.119 151.328);
+    --primary-foreground: oklch(0.982 0.018 155.826);
+    --secondary: oklch(0.274 0.006 286.033);
+    --secondary-foreground: oklch(0.985 0 0);
+    --muted: oklch(0.274 0.006 286.033);
+    --muted-foreground: oklch(0.705 0.015 286.067);
+    --accent: oklch(0.274 0.006 286.033);
+    --accent-foreground: oklch(0.985 0 0);
+    --destructive: oklch(0.704 0.191 22.216);
+    --warning: var(--color-amber-400);
+    --success: var(--color-green-400);
+    --border: oklch(1 0 0 / 10%);
+    --input: oklch(1 0 0 / 15%);
+    --ring: oklch(0.552 0.016 285.938);
+    --chart-1: oklch(0.871 0.006 286.286);
+    --chart-2: oklch(0.552 0.016 285.938);
+    --chart-3: oklch(0.442 0.017 285.786);
+    --chart-4: oklch(0.37 0.013 285.805);
+    --chart-5: oklch(0.274 0.006 286.033);
+    --sidebar: oklch(0.21 0.006 285.885);
+    --sidebar-foreground: oklch(0.985 0 0);
+    --sidebar-primary: oklch(0.723 0.219 149.579);
+    --sidebar-primary-foreground: oklch(0.982 0.018 155.826);
+    --sidebar-accent: oklch(0.274 0.006 286.033);
+    --sidebar-accent-foreground: oklch(0.985 0 0);
+    --sidebar-border: oklch(1 0 0 / 10%);
+    --sidebar-ring: oklch(0.552 0.016 285.938);
+}
+
+@theme inline {
+    --font-sans: inherit;
+    --font-heading: inherit;
+    --color-sidebar-ring: var(--sidebar-ring);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar: var(--sidebar);
+    --color-chart-5: var(--chart-5);
+    --color-chart-4: var(--chart-4);
+    --color-chart-3: var(--chart-3);
+    --color-chart-2: var(--chart-2);
+    --color-chart-1: var(--chart-1);
+    --color-ring: var(--ring);
+    --color-input: var(--input);
+    --color-border: var(--border);
+    --color-destructive: var(--destructive);
+    --color-warning: var(--warning);
+    --color-success: var(--success);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-accent: var(--accent);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-muted: var(--muted);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-secondary: var(--secondary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-primary: var(--primary);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-popover: var(--popover);
+    --color-card-foreground: var(--card-foreground);
+    --color-card: var(--card);
+    --color-foreground: var(--foreground);
+    --color-background: var(--background);
+    --radius-sm: calc(var(--radius) * 0.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 1.4);
+    --radius-2xl: calc(var(--radius) * 1.8);
+    --radius-3xl: calc(var(--radius) * 2.2);
+    --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+@layer base {
+    .sdk-scope,
+    .sdk-scope *,
+    .sdk-scope ::after,
+    .sdk-scope ::before,
+    .sdk-scope ::backdrop,
+    .sdk-scope ::file-selector-button {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      border: 0 solid;
+    }
+
+    .sdk-scope {
+      line-height: 1.5;
+      -webkit-text-size-adjust: 100%;
+      tab-size: 4;
+      font-family: --theme(
+        --default-font-family,
+        -apple-system,
+        BlinkMacSystemFont,
+        'Segoe UI',
+        Roboto,
+        'Helvetica Neue',
+        'Noto Sans',
+        Arial,
+        sans-serif,
+        'Apple Color Emoji',
+        'Segoe UI Emoji',
+        'Segoe UI Symbol',
+        'Noto Color Emoji'
+      );
+      font-feature-settings: --theme(--default-font-feature-settings, normal);
+      font-variation-settings: --theme(--default-font-variation-settings, normal);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .sdk-scope hr {
+      height: 0;
+      color: inherit;
+      border-top-width: 1px;
+    }
+
+    .sdk-scope abbr:where([title]) {
+      -webkit-text-decoration: underline dotted;
+      text-decoration: underline dotted;
+    }
+
+    .sdk-scope h1,
+    .sdk-scope h2,
+    .sdk-scope h3,
+    .sdk-scope h4,
+    .sdk-scope h5,
+    .sdk-scope h6 {
+      font-size: inherit;
+      font-weight: inherit;
+    }
+
+    .sdk-scope a {
+      color: inherit;
+      -webkit-text-decoration: inherit;
+      text-decoration: inherit;
+    }
+
+    .sdk-scope b,
+    .sdk-scope strong {
+      font-weight: bolder;
+    }
+
+    .sdk-scope code,
+    .sdk-scope kbd,
+    .sdk-scope samp,
+    .sdk-scope pre {
+      font-family: --theme(
+        --default-mono-font-family,
+        ui-monospace,
+        SFMono-Regular,
+        Menlo,
+        Monaco,
+        Consolas,
+        'Liberation Mono',
+        'Courier New',
+        monospace
+      );
+      font-feature-settings: --theme(--default-mono-font-feature-settings, normal);
+      font-variation-settings: --theme(--default-mono-font-variation-settings, normal);
+      font-size: 1em;
+    }
+
+    .sdk-scope small {
+      font-size: 80%;
+    }
+
+    .sdk-scope sub,
+    .sdk-scope sup {
+      font-size: 75%;
+      line-height: 0;
+      position: relative;
+      vertical-align: baseline;
+    }
+
+    .sdk-scope sub {
+      bottom: -0.25em;
+    }
+
+    .sdk-scope sup {
+      top: -0.5em;
+    }
+
+    .sdk-scope table {
+      text-indent: 0;
+      border-color: inherit;
+      border-collapse: collapse;
+    }
+
+    .sdk-scope :-moz-focusring:where(:not(iframe)) {
+      outline: auto;
+    }
+
+    .sdk-scope progress {
+      vertical-align: baseline;
+    }
+
+    .sdk-scope summary {
+      display: list-item;
+    }
+
+    .sdk-scope ol,
+    .sdk-scope ul,
+    .sdk-scope menu {
+      list-style: none;
+    }
+
+    .sdk-scope img,
+    .sdk-scope svg,
+    .sdk-scope video,
+    .sdk-scope canvas,
+    .sdk-scope audio,
+    .sdk-scope iframe,
+    .sdk-scope embed,
+    .sdk-scope object {
+      display: block;
+      vertical-align: middle;
+    }
+
+    .sdk-scope img,
+    .sdk-scope video {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .sdk-scope button,
+    .sdk-scope input,
+    .sdk-scope select,
+    .sdk-scope optgroup,
+    .sdk-scope textarea,
+    .sdk-scope ::file-selector-button {
+      font: inherit;
+      font-feature-settings: inherit;
+      font-variation-settings: inherit;
+      letter-spacing: inherit;
+      color: inherit;
+      border-radius: 0;
+      background-color: transparent;
+      opacity: 1;
+    }
+
+    .sdk-scope :where(select:is([multiple], [size])) optgroup {
+      font-weight: bolder;
+    }
+
+    .sdk-scope :where(select:is([multiple], [size])) optgroup option {
+      padding-inline-start: 20px;
+    }
+
+    .sdk-scope ::file-selector-button {
+      margin-inline-end: 4px;
+    }
+
+    .sdk-scope ::placeholder {
+      opacity: 1;
+    }
+
+    @supports (not (-webkit-appearance: -apple-pay-button))  or
+      (contain-intrinsic-size: 1px)  {
+      .sdk-scope ::placeholder {
+        color: color-mix(in oklab, currentcolor 50%, transparent);
+      }
+    }
+
+    .sdk-scope textarea {
+      resize: vertical;
+    }
+
+    .sdk-scope ::-webkit-search-decoration {
+      -webkit-appearance: none;
+    }
+
+    .sdk-scope ::-webkit-date-and-time-value {
+      min-height: 1lh;
+      text-align: inherit;
+    }
+
+    .sdk-scope ::-webkit-datetime-edit {
+      display: inline-flex;
+    }
+
+    .sdk-scope ::-webkit-datetime-edit-fields-wrapper {
+      padding: 0;
+    }
+
+    .sdk-scope ::-webkit-datetime-edit,
+    .sdk-scope ::-webkit-datetime-edit-year-field,
+    .sdk-scope ::-webkit-datetime-edit-month-field,
+    .sdk-scope ::-webkit-datetime-edit-day-field,
+    .sdk-scope ::-webkit-datetime-edit-hour-field,
+    .sdk-scope ::-webkit-datetime-edit-minute-field,
+    .sdk-scope ::-webkit-datetime-edit-second-field,
+    .sdk-scope ::-webkit-datetime-edit-millisecond-field,
+    .sdk-scope ::-webkit-datetime-edit-meridiem-field {
+      padding-block: 0;
+    }
+
+    .sdk-scope ::-webkit-calendar-picker-indicator {
+      line-height: 1;
+    }
+
+    .sdk-scope :-moz-ui-invalid {
+      box-shadow: none;
+    }
+
+    .sdk-scope button,
+    .sdk-scope input:where([type='button'], [type='reset'], [type='submit']),
+    .sdk-scope ::file-selector-button {
+      appearance: button;
+    }
+
+    .sdk-scope ::-webkit-inner-spin-button,
+    .sdk-scope ::-webkit-outer-spin-button {
+      height: auto;
+    }
+
+    .sdk-scope [hidden]:where(:not([hidden='until-found'])) {
+      display: none !important;
+    }
+
+    .sdk-scope {
+        font-family: inherit;
+        @apply text-foreground;
+    }
+
+    .sdk-scope,
+    .sdk-scope * {
+        @apply border-border outline-ring/50;
+    }
+
+    .sdk-scope button:not(:disabled),
+    .sdk-scope [role='button']:not(:disabled) {
+        cursor: pointer;
+    }
+}
+
+.sdk-order-container {
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+    }
+
+    .sdk-iframe-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    iframe {
+        max-width: 640px;
+        border: none;
+        background: transparent;
+        border-radius: calc(var(--radius) * 2);
+    }
+}

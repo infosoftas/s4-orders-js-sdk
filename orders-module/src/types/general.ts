@@ -47,13 +47,22 @@ export type OrderDenialFallbackOfferType = {
 
 export type PaymentIconType = {
     src: string;
-    alt: string;
+    alt?: string;
+    className?: string;
 };
 
 export type PaymentMethodOptionType = {
     label: string;
     value: PaymentMethodEnum;
+    description?: string;
     icons?: PaymentIconType[];
+};
+
+export type SubmitConfirmationType = {
+    title: string;
+    description?: string;
+    confirmText: string;
+    cancelText: string;
 };
 
 export type ConfigType = {
@@ -99,9 +108,13 @@ export type ConfigType = {
         glnLabel?: string;
         orderDefaultValues?: OrderFormInputsType;
         paymentMethodLabel?: string;
+        contactDetailsLabel?: string;
+        paymentMethodElementId?: string;
+        contactDetailsElementId?: string;
         errorReqMsg?: string;
         errorInvalidEmailMsg?: string;
         errorInvalidPhoneMsg?: string;
+        errorTermsMsg?: string;
         paymentMethodNotAllowedMsg?: string;
         invoiceLookupNotFoundText?: string;
         errorValidationTitleMsg?: string;
@@ -114,6 +127,7 @@ export type ConfigType = {
             organizationId: string
         ) => Promise<OrderDenialFallbackOfferType | undefined>;
         termsAndConditionsText?: string | ReactNode;
+        submitConfirmation?: SubmitConfirmationType;
     };
 };
 

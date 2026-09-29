@@ -1,58 +1,53 @@
-import { FC } from 'react';
+import { FC, useId } from 'react';
 import { useFormContext } from 'react-hook-form';
 
-import { uuidv4 } from '../../utils/helper';
+import { Field, FieldError, FieldLabel } from '../ui/field';
+import { Input } from '../ui/input';
 
 type Props = {
     name: string;
     required: boolean;
     readOnly: boolean;
     label?: string;
-    errorReqMsg?: string;
-    errorInvalidPhoneMsg?: string;
-    errors?: {
-        [key: string]: {
-            message?: string;
-        };
-    };
 };
 
-const PhoneFiled: FC<Props> = ({
+const PhoneField: FC<Props> = ({
     name = 'phoneNumber',
     required = false,
     readOnly = false,
     label = 'Phone number',
-    errorReqMsg = 'This field is required!',
-    errorInvalidPhoneMsg = 'Invalid phone address!',
-    errors,
 }) => {
-    const { register } = useFormContext();
-    const id = uuidv4();
+    const { register, getFieldState, formState } = useFormContext();
+    const { error } = getFieldState(name, formState);
+    const id = useId();
+
     return (
-        <div className="field-wrapper" data-testid={`sdk-${name}-field-id`}>
-            <input
+        <Field data-invalid={!!error} data-testid={`sdk-${name}-field-id`}>
+            <FieldLabel htmlFor={id}>
+                <span>
+                    {label}
+                    {required && (
+                        <span aria-hidden="true" className="text-destructive">
+                            {' '}
+                            *
+                        </span>
+                    )}
+                </span>
+            </FieldLabel>
+            <Input
                 id={id}
-                autoComplete="tel"
-                className={`input-control ${readOnly ? 'read-only' : ''}`}
-                placeholder=" "
-                readOnly={readOnly}
                 type="tel"
-                {...register(name, {
-                    required: required ? errorReqMsg : false,
-                    pattern: {
-                        value: /^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\./0-9]{6,14}$/g,
-                        message: errorInvalidPhoneMsg,
-                    },
-                })}
+                autoComplete="tel"
+                readOnly={readOnly}
+                className="read-only:cursor-not-allowed read-only:bg-input/50"
+                aria-invalid={!!error}
+                aria-required={required}
+                required={required}
+                {...register(name)}
             />
-            <label className="label-control" htmlFor={id}>
-                {label} {required && <span className="text-error">*</span>}
-            </label>
-            {errors && errors[name] && (
-                <div className="text-error caption">{errors[name].message}</div>
-            )}
-        </div>
+            <FieldError errors={[error]} />
+        </Field>
     );
 };
 
-export default PhoneFiled;
+export default PhoneField;

@@ -10,9 +10,10 @@ import useMessageEvent from './hooks/useMessageEvent';
 import OrderForm from './components/OrderForm/OrderForm';
 import OIOForm from './components/OIOForm/OIOForm';
 import EHFForm from './components/EHFForm/EHFForm';
-import Loader from './components/Loader/Loader';
 import MainIframe from './components/MainIframe/MainIframe';
 import Alert from './components/Alert/Alert';
+import { Skeleton } from './components/ui/skeleton';
+import { Card, CardContent } from './components/ui/card';
 import { ConfigType, ErrorsMsg } from './types/general';
 import {
     CompleteOrderParamsType,
@@ -23,8 +24,6 @@ import { orderComplete, orderDelete } from './api/OrdersApi';
 import { prepareErrorMessage, prepareErrorsArrayMessage } from './utils/helper';
 
 import ErrorBoundary from './ErrorBoundary';
-
-import './App.scss';
 
 const App: FC<ConfigType> = ({
     submitStartCallback,
@@ -57,12 +56,14 @@ const App: FC<ConfigType> = ({
         verifyButtonText: 'Verify',
         organizationNumberLabel: 'Organization Number',
         paymentMethodLabel: '',
+        contactDetailsLabel: '',
         glnLabel: 'GLN',
         cvrLabel: 'CVR',
         orderDefaultValues: undefined,
         errorReqMsg: '',
         errorInvalidEmailMsg: '',
         errorInvalidPhoneMsg: '',
+        errorTermsMsg: '',
         errorValidationTitleMsg: 'One or more validation errors occurred.',
         errorValidationDenialOrderBlockingMsg:
             'The order/subscription will not be created because the subscriber has a denial order blocking all.',
@@ -78,6 +79,8 @@ const App: FC<ConfigType> = ({
         invoiceLookupNotFoundText:
             'There was no recipient found for the given information',
         termsAndConditionsText: '',
+        orderDenialCloseButtonText: 'Close',
+        orderDenialContinueButtonText: 'Continue',
     },
 }) => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -354,20 +357,47 @@ const App: FC<ConfigType> = ({
         return null;
     }
 
+    if (loading) {
+        return (
+            <div
+                className="sdk-order-container sdk-scope"
+                data-testid="sdk-order-loading-skeleton"
+                aria-busy="true"
+            >
+                <Card>
+                    <CardContent className="flex flex-col gap-4">
+                        <div className="flex flex-col gap-1.5">
+                            <Skeleton className="h-3 w-16" />
+                            <Skeleton className="h-9 w-full rounded-3xl" />
+                        </div>
+                        <div className="flex flex-col gap-1.5">
+                            <Skeleton className="h-3 w-16" />
+                            <Skeleton className="h-9 w-full rounded-3xl" />
+                        </div>
+                        <div className="flex flex-col gap-1.5">
+                            <Skeleton className="h-3 w-16" />
+                            <Skeleton className="h-9 w-full rounded-3xl" />
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <Skeleton className="size-4 shrink-0 rounded-[5px]" />
+                            <Skeleton className="h-4 w-2/3" />
+                        </div>
+                        <Skeleton className="h-9 w-full rounded-4xl" />
+                    </CardContent>
+                </Card>
+            </div>
+        );
+    }
+
     return (
         <ErrorBoundary>
             <div
-                className={`sdk-order-container ${
+                className={`sdk-order-container sdk-scope ${
                     iframeSrc ? 'show-iframe' : ''
                 }`}
                 data-testid="sdk-order-module-id"
             >
                 {moduleTitle && <h1 className="text-center">{moduleTitle}</h1>}
-                {loading && (
-                    <div className="d-flex justify-center">
-                        <Loader size="lg" dark={true} />
-                    </div>
-                )}
                 {!iframeSrc && showOrderForm && (
                     <>
                         {formType === FormTypeEnum.OIO && (
@@ -404,6 +434,7 @@ const App: FC<ConfigType> = ({
                                 invoiceLookupNotFoundText={
                                     settings?.invoiceLookupNotFoundText
                                 }
+                                errorReqMsg={settings?.errorReqMsg}
                                 userActionCallback={userActionCallback}
                                 setContactCallback={setContactCallback}
                                 errorValidationTitleMsg={
@@ -464,6 +495,7 @@ const App: FC<ConfigType> = ({
                                 invoiceLookupNotFoundText={
                                     settings?.invoiceLookupNotFoundText
                                 }
+                                errorReqMsg={settings?.errorReqMsg}
                                 userActionCallback={userActionCallback}
                                 setContactCallback={setContactCallback}
                                 errorValidationTitleMsg={
@@ -517,10 +549,20 @@ const App: FC<ConfigType> = ({
                                     paymentMethodLabel={
                                         settings?.paymentMethodLabel
                                     }
+                                    contactDetailsLabel={
+                                        settings?.contactDetailsLabel
+                                    }
+                                    paymentMethodElementId={
+                                        settings?.paymentMethodElementId
+                                    }
+                                    contactDetailsElementId={
+                                        settings?.contactDetailsElementId
+                                    }
                                     paymentMethodNotAllowedMsg={
                                         settings?.paymentMethodNotAllowedMsg
                                     }
                                     errorReqMsg={settings?.errorReqMsg}
+                                    errorTermsMsg={settings?.errorTermsMsg}
                                     errorInvalidEmailMsg={
                                         settings?.errorInvalidEmailMsg
                                     }
@@ -563,6 +605,9 @@ const App: FC<ConfigType> = ({
                                     }
                                     termsAndConditionsText={
                                         settings?.termsAndConditionsText
+                                    }
+                                    submitConfirmation={
+                                        settings?.submitConfirmation
                                     }
                                     requireTermsAcceptance={
                                         requireTermsAcceptance

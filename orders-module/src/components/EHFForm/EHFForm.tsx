@@ -1,10 +1,13 @@
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import { FormProvider, useForm, SubmitHandler } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import z from 'zod';
 
 import Alert from '../Alert/Alert';
 import Button from '../Button/Button';
 import OrderDenialModal from '../OrderDenialModal/OrderDenialModal';
 import InputField from '../FormFields/InputField';
+import { FieldGroup } from '../ui/field';
 import { PaymentMethodEnum, UserActionEnum } from '../../enums/general';
 import {
     OrderFormFieldType,
@@ -52,18 +55,27 @@ type Props = {
         paymentMethods?: PaymentMethodEnum[];
     };
     invoiceLookupNotFoundText?: string;
+    errorReqMsg?: string;
     errorValidationTitleMsg?: string;
     errorValidationDenialOrderBlockingMsg?: string;
     errorValidationBlockingOffersMsg?: string;
     orderDenialOfferBaseText?: string;
     orderDenialOfferWithFallbackText?: string;
     orderDenialAmountText?: string;
-    fetchDenialFallbackOffer?: (organizationId: string) => Promise<OrderDenialFallbackOfferType | undefined>;
+    fetchDenialFallbackOffer?: (
+        organizationId: string
+    ) => Promise<OrderDenialFallbackOfferType | undefined>;
 };
 
-type EHFFormInputsType = {
-    organizationNumber: string;
+const buildFormSchema = (errorReqMsg?: string) => {
+    const message = errorReqMsg || 'This field is required!';
+
+    return z.object({
+        organizationNumber: z.string().min(1, message).regex(/\S/, message),
+    });
 };
+
+type EHFFormInputsType = { organizationNumber: string };
 
 const initialData = {
     organizationNumber: '',
@@ -95,6 +107,7 @@ const EHFForm: FC<Props> = ({
     paymentMethodsOptions,
     invoiceAddressSelection,
     invoiceLookupNotFoundText,
+    errorReqMsg,
     errorValidationTitleMsg,
     errorValidationDenialOrderBlockingMsg,
     errorValidationBlockingOffersMsg,
@@ -103,17 +116,20 @@ const EHFForm: FC<Props> = ({
     orderDenialAmountText,
     fetchDenialFallbackOffer,
 }) => {
+    const formSchema = useMemo(
+        () => buildFormSchema(errorReqMsg),
+        [errorReqMsg]
+    );
+
     const methods = useForm<EHFFormInputsType>({
+        resolver: zodResolver(formSchema),
         defaultValues: {
             ...initialData,
             organizationNumber,
         },
     });
 
-    const {
-        handleSubmit,
-        formState: { errors },
-    } = methods;
+    const { handleSubmit } = methods;
 
     const invoiceOrderFields =
         invoiceAddressSelection?.fields || orderInvoiceContactFields;
@@ -178,17 +194,19 @@ const EHFForm: FC<Props> = ({
         <FormProvider {...methods}>
             <form
                 className={`${className}`}
+                noValidate
                 onSubmit={handleSubmit(onSubmit)}
                 data-testid="ehf-form-id"
             >
-                <InputField
-                    name="organizationNumber"
-                    label={organizationNumberLabel}
-                    required
-                    readOnly={false}
-                    errors={errors}
-                />
-                <div className="d-flex justify-center flex-wrap gap-2">
+                <FieldGroup className="mb-5">
+                    <InputField
+                        name="organizationNumber"
+                        label={organizationNumberLabel}
+                        required
+                        readOnly={false}
+                    />
+                </FieldGroup>
+                <div className="flex justify-center flex-wrap gap-2">
                     <Button
                         type="button"
                         btnType="default"

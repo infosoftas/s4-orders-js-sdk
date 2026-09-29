@@ -20,7 +20,7 @@
         "inlineSources": true,
         "sourceRoot": "/",
         "paths": {
-            "*": ["./src/*"],
+            "@/*": ["./src/*"],
             "API": ["./src/api"],
             "API/*": ["./src/api/*"],
             "Component/*": ["./src/components/*"],
@@ -29,8 +29,7 @@
             "Models/*": ["./src/models/*"],
             "Types/*": ["./src/types/*"],
             "Enums/*": ["./src/enums/*"],
-            "Constants/*": ["./src/constants/*"],
-            "Assets/*": ["./src/assets/*"]
+            "Constants/*": ["./src/constants/*"]
         }
     },
     "include": ["src"],

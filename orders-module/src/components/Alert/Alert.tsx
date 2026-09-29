@@ -1,6 +1,6 @@
 import { FC } from 'react';
 
-import './alert.scss';
+import { Alert as UIAlert, AlertDescription } from '../ui/alert';
 
 type Props = {
     msg?: string;
@@ -8,14 +8,15 @@ type Props = {
     className?: string;
 };
 
-const Alert: FC<Props> = ({ msg, type = 'danger', className = '' }) => {
+const Alert: FC<Props> = ({ msg, type = 'danger', className }) => {
     return msg ? (
-        <div
-            className={`sdk-alert ${type} ${className}`}
+        <UIAlert
+            variant={type === 'danger' ? 'destructive' : 'default'}
+            className={className}
             data-testid="sdk-alert-id"
         >
-            {msg}
-        </div>
+            <AlertDescription>{msg}</AlertDescription>
+        </UIAlert>
     ) : null;
 };
 

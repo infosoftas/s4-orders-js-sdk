@@ -94,7 +94,12 @@ type ConfigType = {
      * Controls what the user sees in the payment method selector.
      * @example [{ label: 'Credit Card', value: 'SwedbankPay' }, { label: 'Invoice', value: 'Invoice' }]
      */
-    availablePaymentMethods?: { label: string; value: PaymentMethodEnum }[];
+    availablePaymentMethods?: {
+        label: string;
+        value: PaymentMethodEnum;
+        description?: string;
+        icons?: { src: string; alt?: string; className?: string }[];
+    }[];
     /**
      * Whitelist of payment methods the subscriber is permitted to use.
      * If a method is in availablePaymentMethods but not here, it will be shown but blocked.
@@ -126,9 +131,17 @@ type ConfigType = {
         glnLabel?: string;
         orderDefaultValues?: OrderFormInputsType;
         paymentMethodLabel?: string;
+        contactDetailsLabel?: string;
+        /**
+         * Ids of existing elements on the host page. When set, the matching
+         * order form section is rendered into that element instead of inline.
+         */
+        paymentMethodElementId?: string;
+        contactDetailsElementId?: string;
         errorReqMsg?: string;
         errorInvalidEmailMsg?: string;
         errorInvalidPhoneMsg?: string;
+        errorTermsMsg?: string;
         errorValidationTitleMsg?: string;
         errorValidationDenialOrderBlockingMsg?: string;
         errorValidationBlockingOffersMsg?: string;
@@ -139,6 +152,16 @@ type ConfigType = {
         orderDenialAmountText?: string;
         fetchDenialFallbackOffer?: (organizationId: string) => Promise<OrderDenialFallbackOfferType | undefined>;
         termsAndConditionsText?: string | ReactNode;
+        /**
+         * When set, submitting the order opens a confirmation dialog first.
+         * The order is only sent once the user confirms.
+         */
+        submitConfirmation?: {
+            title: string;
+            description?: string;
+            confirmText: string;
+            cancelText: string;
+        };
     };
 }
 ```
@@ -441,4 +464,8 @@ export default OrderPlace;
 | requireTermsAcceptance | false | when true, the user must accept terms and conditions before submitting |
 | language | 'en-US' | language |
 | merchantAgreementUrl | '' | vipps and MobilePay property |
+| settings.paymentMethodElementId / settings.contactDetailsElementId | undefined | ids of host page elements to render the payment method / contact detail sections into, instead of inline |
+| settings.submitConfirmation | undefined | `{ title, description?, confirmText, cancelText }` — shows a confirmation dialog before the order is submitted |
+| settings.contactDetailsLabel | undefined | heading for the contact details section |
+| settings.errorTermsMsg | undefined | validation message shown when terms are not accepted |
 | settings | {successText: 'Order completed successfully!', failureText: 'Something went wrong!', submitButtonText: 'Start', backButtonText: 'Back', verifyButtonText: 'Verify', organizationNumberLabel: 'Organization Number', cvrLabel: 'CVR', glnLabel: 'GLN', paymentMethodLabel: 'Select Payment Method', orderDefaultValues: 'Default order form values', errorReqMsg: '', errorInvalidEmailMsg: '', errorInvalidPhoneMsg: '', errorValidationTitleMsg: 'One or more validation errors occurred.', errorValidationDenialOrderBlockingMsg: '...', errorValidationBlockingOffersMsg: '...', paymentMethodNotAllowedMsg: 'This payment method not allowed!', invoiceLookupNotFoundText: 'There was no recipient found for the given information', termsAndConditionsText: '' } | label and text properties |
