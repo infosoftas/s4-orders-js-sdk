@@ -6,7 +6,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
-:root {
+.sdk-scope {
     --background: oklch(0.975 0.002 286.32);
     --foreground: oklch(0.141 0.005 285.823);
     --card: oklch(1 0 0);
@@ -43,7 +43,8 @@
     --sidebar-ring: oklch(0.705 0.015 286.067);
 }
 
-.dark {
+.sdk-scope:is(.dark *),
+.sdk-scope.dark {
     --background: oklch(0.17 0.006 285.885);
     --foreground: oklch(0.985 0 0);
     --card: oklch(0.21 0.006 285.885);
