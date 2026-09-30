@@ -7,7 +7,7 @@ module.exports = (env, argv) => {
     return {
         mode: argv.mode,
         target: 'web',
-        entry: './src/index.tsx',
+        entry: './src/bundle.ts',
         devtool: isDevelopment ? 'inline-source-map' : false,
         experiments: {
             outputModule: true,
