@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { SubmitHandler } from 'react-hook-form';
+import type { SubmitHandler } from 'react-hook-form';
 
 import { createSubscriber } from '../api/SubscribeApi';
 import { orderStart } from '../api/OrdersApi';
@@ -10,8 +10,8 @@ import {
     UserActionEnum,
 } from '../enums/general';
 import { WRONG_MSG, PAYMENT_METHOD_DEFAULT } from '../constants/index';
-import { OrderFormInputsType, OrderInfoType } from '../types/order';
-import {
+import type { OrderFormInputsType, OrderInfoType } from '../types/order';
+import type {
     ErrorsMsg,
     OrderFormFieldType,
     OrderDenialFallbackOfferType,
@@ -26,7 +26,7 @@ import {
 import {
     prepareErrorMessage,
     prepareErrorsArrayMessage,
-    ErrorMessages,
+    type ErrorMessages,
 } from '../utils/helper';
 
 type Props = {

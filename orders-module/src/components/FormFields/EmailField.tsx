@@ -1,4 +1,4 @@
-import { FC, useId } from 'react';
+import { type FC, useId } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import { Field, FieldError, FieldLabel } from '../ui/field';

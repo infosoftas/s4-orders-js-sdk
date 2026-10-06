@@ -1,4 +1,4 @@
-import { FC, MouseEvent } from 'react';
+import type { FC, MouseEvent } from 'react';
 
 import { Button as UIButton } from '../ui/button';
 import { Spinner } from '../ui/spinner';

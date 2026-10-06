@@ -1,7 +1,7 @@
-import { FC } from 'react';
+import type { FC } from 'react';
 import { cn } from 'cn';
 
-import { PaymentMethodOptionType } from '../../types/general';
+import type { PaymentMethodOptionType } from '../../types/general';
 import { FieldDescription, FieldTitle } from '../ui/field';
 
 type Props = {

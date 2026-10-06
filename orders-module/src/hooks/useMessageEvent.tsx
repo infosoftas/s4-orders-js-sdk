@@ -1,7 +1,7 @@
 import { useEffect, useCallback } from 'react';
 
 import { MessageEventTypeEnum, PaymentMethodEnum } from '../enums/general';
-import { CompleteOrderParamsType, OrderInfoType } from '../types/order';
+import type { CompleteOrderParamsType, OrderInfoType } from '../types/order';
 import useQueryParams from './useQueryParams';
 
 const MOLLIE_ORDER_TTL_MS = 20 * 60 * 1000;

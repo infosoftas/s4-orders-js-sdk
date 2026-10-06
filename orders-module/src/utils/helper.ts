@@ -1,5 +1,5 @@
 import { WRONG_MSG } from '../constants/index';
-import { ErrorsMsg } from '../types/general';
+import type { ErrorsMsg } from '../types/general';
 
 export const prepareErrorMessage = (
     error: Error,

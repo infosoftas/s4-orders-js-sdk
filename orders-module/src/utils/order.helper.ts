@@ -1,6 +1,6 @@
 import { MessageEventTypeEnum, PaymentMethodEnum } from '../enums/general';
-import { AgreementsType, OrderFormInputsType } from '../types/order';
-import { OrderFormFieldType } from '../types/general';
+import type { AgreementsType, OrderFormInputsType } from '../types/order';
+import type { OrderFormFieldType } from '../types/general';
 import { FIELD_TYPES } from '../components/FormFields/FormFields.helper';
 
 type AgreementModelType = {

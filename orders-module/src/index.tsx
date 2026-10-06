@@ -1,7 +1,7 @@
-import { createRoot, Root } from 'react-dom/client';
+import { createRoot, type Root } from 'react-dom/client';
 import { createElement } from 'react';
 
-import { ConfigType } from './types/general';
+import type { ConfigType } from './types/general';
 import { createSubscriber } from './api/SubscribeApi';
 import App from './App';
 

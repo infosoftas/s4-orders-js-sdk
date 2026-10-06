@@ -1,5 +1,5 @@
-import { FC, useMemo } from 'react';
-import { FormProvider, useForm, SubmitHandler } from 'react-hook-form';
+import { type FC, useMemo } from 'react';
+import { FormProvider, useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
 
@@ -9,13 +9,13 @@ import OrderDenialModal from '../OrderDenialModal/OrderDenialModal';
 import InputField from '../FormFields/InputField';
 import { FieldGroup } from '../ui/field';
 import { PaymentMethodEnum, UserActionEnum } from '../../enums/general';
-import {
+import type {
     OrderFormFieldType,
     PaymentMethodSettingsType,
     ContactRequestType,
     OrderDenialFallbackOfferType,
 } from '../../types/general';
-import { OrderFormInputsType, OrderInfoType } from '../../types/order';
+import type { OrderFormInputsType, OrderInfoType } from '../../types/order';
 import { orderInvoiceContactFields } from '../../utils/order.helper';
 import useOrderForm from '../../hooks/useOrderForm';
 import { DEFAULT_ORDER_FORM_FIELDS } from '../FormFields/FormFields.helper';

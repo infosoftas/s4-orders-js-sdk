@@ -1,4 +1,4 @@
-import { z, ZodTypeAny } from 'zod';
+import { z, type ZodTypeAny } from 'zod';
 
 import { PaymentMethodEnum } from '../../enums/general';
 import {
@@ -9,8 +9,8 @@ import formFieldsMapper from '../FormFields/FormFieldsMapper';
 import { DEFAULT_ORDER_FORM_FIELDS } from '../FormFields/FormFields.helper';
 import { buildFieldSchema } from '../FormFields/fieldValidators';
 import { orderInvoiceContactFields } from '../../utils/order.helper';
-import { OrderFormInputsType } from '../../types/order';
-import {
+import type { OrderFormInputsType } from '../../types/order';
+import type {
     PaymentMethodSettingsType,
     PaymentMethodOptionType,
     OrderFormFieldType,

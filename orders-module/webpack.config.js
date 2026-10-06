@@ -52,7 +52,7 @@ module.exports = (env, argv) => {
         module: {
             rules: [
                 {
-                    test: /\.(js|jsx)$/,
+                    test: /\.(js|jsx|ts|tsx)$/,
                     exclude: /node_modules/,
                     use: {
                         loader: 'babel-loader',
@@ -64,11 +64,6 @@ module.exports = (env, argv) => {
                             ],
                         },
                     },
-                },
-                {
-                    test: /\.(ts|tsx)$/,
-                    exclude: /node_modules/,
-                    use: ['ts-loader'],
                 },
                 {
                     test: /\.css$/,

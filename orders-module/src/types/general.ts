@@ -1,7 +1,7 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import { PaymentMethodEnum, UserActionEnum } from '../enums/general';
-import { OrderFormInputsType } from './order';
+import type { OrderFormInputsType } from './order';
 
 declare global {
     interface Window {

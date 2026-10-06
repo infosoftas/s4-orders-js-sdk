@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import type { FC } from 'react';
 
 import { Alert as UIAlert, AlertDescription } from '../ui/alert';
 
