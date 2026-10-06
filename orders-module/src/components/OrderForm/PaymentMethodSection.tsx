@@ -1,9 +1,9 @@
-import { FC, useId } from 'react';
-import { Control, Controller } from 'react-hook-form';
+import { type FC, useId } from 'react';
+import { type Control, Controller } from 'react-hook-form';
 
 import { PaymentMethodEnum } from '../../enums/general';
-import { PaymentMethodOptionType } from '../../types/general';
-import { OrderFormInputsType } from '../../types/order';
+import type { PaymentMethodOptionType } from '../../types/general';
+import type { OrderFormInputsType } from '../../types/order';
 import { Field, FieldError, FieldLabel, FieldLegend, FieldSet } from '../ui/field';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import PaymentMethodContent from './PaymentMethodContent';

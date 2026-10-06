@@ -1,6 +1,6 @@
-import { FC } from 'react';
+import type { FC } from 'react';
 
-import { OrderDenialFallbackOfferType } from '../../types/general';
+import type { OrderDenialFallbackOfferType } from '../../types/general';
 import {
     AlertDialog,
     AlertDialogAction,

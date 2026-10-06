@@ -1,5 +1,5 @@
 import { HttpStatusCode } from '../enums/api';
-import { ApiResponseType } from '../types/api';
+import type { ApiResponseType } from '../types/api';
 import { BASE_API } from '../constants/index';
 
 export type Method =

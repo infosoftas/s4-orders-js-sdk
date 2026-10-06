@@ -1,6 +1,6 @@
-import { FC } from 'react';
+import type { FC } from 'react';
 
-import { SubmitConfirmationType } from '../../types/general';
+import type { SubmitConfirmationType } from '../../types/general';
 import {
     AlertDialog,
     AlertDialogAction,

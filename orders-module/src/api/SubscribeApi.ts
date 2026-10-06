@@ -1,5 +1,5 @@
 import fetcher, { getSdkApiKey } from '../utils/fetcher';
-import { CreateSubscriberRequestType } from '../types/api';
+import type { CreateSubscriberRequestType } from '../types/api';
 
 type CreateSubscriberResponseType = {
     id: string;

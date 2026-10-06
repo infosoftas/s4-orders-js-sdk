@@ -1,4 +1,4 @@
-import { OrderFormFieldType } from '../../types/general';
+import type { OrderFormFieldType } from '../../types/general';
 
 export const FIELD_TYPES = {
     PHONE: 'phoneNumber',

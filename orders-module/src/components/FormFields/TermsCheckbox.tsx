@@ -1,4 +1,4 @@
-import { FC, ReactNode, useId } from 'react';
+import { type FC, type ReactNode, useId } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import { Checkbox } from '../ui/checkbox';

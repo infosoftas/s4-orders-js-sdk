@@ -1,4 +1,4 @@
-import { z, ZodTypeAny } from 'zod';
+import { z, type ZodTypeAny } from 'zod';
 
 import EmailField from './EmailField';
 import PhoneField from './PhoneField';

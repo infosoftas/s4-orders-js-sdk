@@ -1,8 +1,8 @@
-import { FC } from 'react';
+import type { FC } from 'react';
 
 import formFieldsMapper from '../FormFields/FormFieldsMapper';
 import ToggleField from '../FormFields/ToggleFiled';
-import { OrderFormFieldType } from '../../types/general';
+import type { OrderFormFieldType } from '../../types/general';
 import { FieldGroup, FieldLegend, FieldSet } from '../ui/field';
 
 type FieldListProps = {

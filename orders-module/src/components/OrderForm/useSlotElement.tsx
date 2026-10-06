@@ -1,6 +1,6 @@
 import {
-    KeyboardEventHandler,
-    ReactNode,
+    type KeyboardEventHandler,
+    type ReactNode,
     useLayoutEffect,
     useState,
 } from 'react';

@@ -1,5 +1,5 @@
-import { CreateSubscriberRequestType } from '../types/api';
-import { AgreementsType } from '../types/order';
+import type { CreateSubscriberRequestType } from '../types/api';
+import type { AgreementsType } from '../types/order';
 import fetcher, { getSdkApiKey } from '../utils/fetcher';
 
 type RequestOrderStartType = {

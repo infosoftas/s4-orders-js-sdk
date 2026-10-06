@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { type FC, useEffect, useState } from 'react';
 
 import {
     FormTypeEnum,
@@ -14,8 +14,8 @@ import MainIframe from './components/MainIframe/MainIframe';
 import Alert from './components/Alert/Alert';
 import { Skeleton } from './components/ui/skeleton';
 import { Card, CardContent } from './components/ui/card';
-import { ConfigType, ErrorsMsg } from './types/general';
-import {
+import type { ConfigType, ErrorsMsg } from './types/general';
+import type {
     CompleteOrderParamsType,
     OrderInfoType,
     OrderFormInputsType,

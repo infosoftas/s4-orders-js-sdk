@@ -1,7 +1,7 @@
 import {
-    FC,
-    KeyboardEvent,
-    ReactNode,
+    type FC,
+    type KeyboardEvent,
+    type ReactNode,
     useEffect,
     useRef,
     useState,
@@ -9,8 +9,8 @@ import {
 import {
     FormProvider,
     useForm,
-    Resolver,
-    SubmitHandler,
+    type Resolver,
+    type SubmitHandler,
 } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -20,8 +20,8 @@ import Alert from '../Alert/Alert';
 import Button from '../Button/Button';
 import OrderDenialModal from '../OrderDenialModal/OrderDenialModal';
 import TermsCheckbox from '../FormFields/TermsCheckbox';
-import { OrderFormInputsType, OrderInfoType } from '../../types/order';
-import {
+import type { OrderFormInputsType, OrderInfoType } from '../../types/order';
+import type {
     PaymentMethodSettingsType,
     PaymentMethodOptionType,
     OrderFormFieldType,
@@ -34,7 +34,7 @@ import { useSlotElement, renderInSlot } from './useSlotElement';
 import {
     deriveOrderFormState,
     buildOrderFormSchema,
-    OrderFormConfig,
+    type OrderFormConfig,
 } from './orderFormState';
 import PaymentMethodSection from './PaymentMethodSection';
 import ContactDetailsSection from './ContactDetailsSection';
