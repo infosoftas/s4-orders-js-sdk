@@ -2,7 +2,7 @@
     "name": "@infosoftas/s4-orders-js-sdk",
     "version": "0.1.20",
     "scripts": {
-        "build": "webpack --mode production",
+        "build": "tsc --noEmit && webpack --mode production",
         "release": "release-it"
     },
     "eslintConfig": {
@@ -40,7 +40,6 @@
         "release-it": "^21.1.0",
         "style-loader": "^4.0.0",
         "tailwindcss": "^4.1.14",
-        "ts-loader": "^9.6.2",
         "typescript": "^7.0.2",
         "webpack": "^5.111.1",
         "webpack-cli": "^7.2.3"
