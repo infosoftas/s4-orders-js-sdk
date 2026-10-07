@@ -214,6 +214,7 @@ const OrderForm: FC<Props> = ({
     useEffect(() => {
         userActionCallback?.(UserActionEnum.SELECT_PAYMENT_METHOD, {
             paymentMethod: methods.getValues('paymentMethod'),
+            initial: true,
         });
     }, []);
 
