@@ -77,6 +77,11 @@ type ConfigType = {
     domElementId: string;
     moduleTitle?: string;
     submitStartCallback?: (subscriberId: string) => void;
+    /**
+     * Called on user actions. When the order form mounts it also reports the
+     * preselected method as `selectPaymentMethod` with `{ paymentMethod, initial: true }`;
+     * user selections come without `initial`. Skip `initial` events when tracking analytics.
+     */
     userActionCallback?: (action: UserActionEnum, args: object | null | undefined) => void;
     setContactCallback?: (contactInfo: ContactRequestType) => void;
     cancelVippsCallback?: () => void;
