@@ -22,6 +22,33 @@ It correctly bundles React in production mode and optimizes the build for the be
 The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
 
+## Order completion behavior
+
+When a payment return completes an order, the SDK treats a successful HTTP response from the
+completion request as acceptance of that request. A successful response may contain an `InProgress`
+order or no response body; the SDK does not wait for a `Completed` status or subscription data
+before showing its success UI.
+
+On success, the SDK retains its existing `window.postMessage` event:
+
+```ts
+{
+    type: 'orderFlowComplete',
+    isCompleted: true,
+    orderInfo: { /* existing order information */ },
+}
+```
+
+`isCompleted` indicates that the SDK completion flow received a successful response. It does not
+guarantee that subscription provisioning has finished or that entitlements/access are ready.
+`orderInfo` keeps its existing value (which may be `null`). Consumers must use their authoritative
+provisioning or readiness signal before granting access.
+
+For rollout with the Simple Orders API, gateway zero-wait completion support must be available
+before switching the API; consumer verification follows that switch. This SDK's deterministic tests
+cover the accepted-response and existing failure paths, but do not establish live API compatibility.
+Live end-to-end verification is deferred until the Simple Orders API change is merged and deployed.
+
 ## Usage
 
 The package needs to be configured with configuration object:
