@@ -25,7 +25,7 @@ export type OrderFormInputsType = {
 };
 
 export type PaymentMethodOptionsType = {
-    [key in PaymentMethodEnum]: {
+    [key in PaymentMethodEnum]?: {
         generateSubscriberContact?: boolean;
         accountId?: string;
         orderFormFields?: OrderFormFieldType[];
