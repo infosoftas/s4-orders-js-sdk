@@ -2,9 +2,6 @@
 
 This application contains example of code for the Orders SDK usable to add orders for Tenants within INFO-Subscription.
 
-The sign-in sample uses Invoice payments, selected by default, so no external
-payment-provider redirect or MobilePay configuration is required.
-
 ## Requirements
 
 Node 18 or higher.
