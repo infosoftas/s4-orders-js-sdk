@@ -1,4 +1,4 @@
-import { type FC, useEffect, useState } from 'react';
+import { type FC, useEffect, useRef, useState } from 'react';
 
 import {
     FormTypeEnum,
@@ -22,10 +22,26 @@ import type {
 } from './types/order';
 import { orderComplete, orderDelete } from './api/OrdersApi';
 import { prepareErrorMessage, prepareErrorsArrayMessage } from './utils/helper';
+import { waitForOrderCompletion } from './utils/waitForOrderCompletion';
 
 import ErrorBoundary from './ErrorBoundary';
 
+const notify = <T,>(callback: ((event: T) => void) | undefined, event: T) => {
+    try {
+        Promise.resolve(callback?.(event)).catch((error) =>
+            console.error(error)
+        );
+    } catch (error) {
+        console.error(error);
+    }
+};
+
 const App: FC<ConfigType> = ({
+    completionMode = 'sdk',
+    orderAcceptedCallback,
+    orderCompletedCallback,
+    orderCompletionDelayedCallback,
+    orderCompletionFailedCallback,
     submitStartCallback,
     userActionCallback,
     setContactCallback,
@@ -95,10 +111,20 @@ const App: FC<ConfigType> = ({
     const [failedMsg, setFailedMsg] = useState<string>('');
     const [errorsMsg, setErrorsMsg] = useState<string[]>([]);
     const [orderInfo, setOrderInfo] = useState<OrderInfoType | null>(null);
+    const [completionState, setCompletionState] = useState<
+        'processing' | 'received' | 'delayed' | null
+    >(null);
+    const activeCompletion = useRef<{
+        orderId: string;
+        controller: AbortController;
+    } | null>(null);
+    const acceptedOrders = useRef(new Set<string>());
     const [formType, setFormType] = useState(FormTypeEnum.ORDER);
     const [orderFormValues, setOrderFormValues] = useState(
         settings?.orderDefaultValues
     );
+
+    useEffect(() => () => activeCompletion.current?.controller.abort(), []);
 
     useEffect(() => {
         if (apiKey) {
@@ -116,7 +142,25 @@ const App: FC<ConfigType> = ({
     const messageCallback = async (
         data: CompleteOrderParamsType
     ): Promise<void> => {
+        const submittedOrderId = data.orderId || orderId;
+        if (
+            !submittedOrderId ||
+            acceptedOrders.current.has(submittedOrderId) ||
+            (activeCompletion.current?.orderId === submittedOrderId &&
+                !activeCompletion.current.controller.signal.aborted)
+        ) {
+            return;
+        }
+        activeCompletion.current?.controller.abort();
+        const controller = new AbortController();
+        activeCompletion.current = { orderId: submittedOrderId, controller };
+        const completionEvent = {
+            orderId: submittedOrderId,
+            orderInfo: data.orderInfo || orderInfo,
+        };
         setLoading(true);
+        setCompletionState(null);
+        setIsConfirmed(false);
         setIframeSrc(null);
         setShowOrderForm(false);
         setIsFailed(false);
@@ -126,27 +170,70 @@ const App: FC<ConfigType> = ({
             // There is no way to detect the difference between "cancelled" and "accepted" payment for Vipps via UI
             // Completing an order for cancelled payment is fine. The backend handles it correctly.
             await orderComplete(
-                orderId || data.orderId || '',
+                submittedOrderId,
                 userId && identityProviderId
                     ? {
                           userId,
                           identityProviderId,
                       }
-                    : undefined
+                    : undefined,
+                controller.signal
             );
-            setIsConfirmed(true);
+            if (controller.signal.aborted) {
+                return;
+            }
+            acceptedOrders.current.add(submittedOrderId);
             setLoading(false);
+            setCompletionState(
+                completionMode === 'external' ? 'received' : 'processing'
+            );
+            notify(orderAcceptedCallback, completionEvent);
+            if (controller.signal.aborted || completionMode === 'external') {
+                return;
+            }
+            const result = await waitForOrderCompletion(
+                submittedOrderId,
+                controller.signal
+            );
+            if (controller.signal.aborted || result.status === 'Aborted') {
+                return;
+            }
+            if (result.status === 'Pending') {
+                setCompletionState('delayed');
+                notify(orderCompletionDelayedCallback, {
+                    ...completionEvent,
+                    reason: result.reason,
+                });
+                return;
+            }
+            setCompletionState(null);
+            if (result.status === 'Cancelled' || result.status === 'Rejected') {
+                setFailedMsg(
+                    settings?.failureText || 'The order could not be completed.'
+                );
+                setIsFailed(true);
+                notify(orderCompletionFailedCallback, {
+                    ...completionEvent,
+                    status: result.status,
+                });
+                return;
+            }
+            setIsConfirmed(true);
             if (window === top) {
                 top.postMessage(
                     {
                         type: MessageEventTypeEnum.ORDER_FLOW_COMPLETE,
                         isCompleted: true,
-                        orderInfo: orderInfo,
+                        ...completionEvent,
                     },
                     top?.location?.origin || '*'
                 );
             }
+            notify(orderCompletedCallback, completionEvent);
         } catch (error) {
+            if (controller.signal.aborted) {
+                return;
+            }
             console.log(error);
             if (
                 (error as { status: number }).status === 409 &&
@@ -154,7 +241,7 @@ const App: FC<ConfigType> = ({
                     data.paymentMethod === PaymentMethodEnum.MobilePay)
             ) {
                 cancelVippsCallback?.();
-                handleOrderDelete(orderId || data.orderId);
+                handleOrderDelete(submittedOrderId);
                 return;
             }
 
@@ -177,6 +264,10 @@ const App: FC<ConfigType> = ({
             userActionCallback?.(UserActionEnum.SELECT_FORM, {
                 form: FormTypeEnum.ORDER,
             });
+        } finally {
+            if (activeCompletion.current?.controller === controller) {
+                activeCompletion.current = null;
+            }
         }
     };
 
@@ -220,8 +311,11 @@ const App: FC<ConfigType> = ({
         canceledOrderId?: string
     ) => {
         if (type === MessageEventTypeEnum.CANCEL) {
+            const orderIdToCancel =
+                canceledOrderId || activeCompletion.current?.orderId || orderId;
+            activeCompletion.current?.controller.abort();
+            setCompletionState(null);
             try {
-                const orderIdToCancel = canceledOrderId || orderId;
                 if (orderIdToCancel) {
                     await handleOrderDelete(orderIdToCancel);
                 }
@@ -246,6 +340,8 @@ const App: FC<ConfigType> = ({
     );
 
     const handleForm = (url: string | null, data?: OrderInfoType | null) => {
+        activeCompletion.current?.controller.abort();
+        setCompletionState(null);
         setIsConfirmed(false);
         setIsFailed(false);
         setOrderId(data?.orderId || null);
@@ -617,6 +713,20 @@ const App: FC<ConfigType> = ({
                     </>
                 )}
                 {showIframe && <MainIframe iframeSrc={iframeSrc} />}
+                {completionState && (
+                    <Card role="status" aria-live="polite">
+                        <CardContent>
+                            {completionState === 'processing'
+                                ? settings?.orderProcessingText ||
+                                  'Processing your order...'
+                                : completionState === 'received'
+                                  ? settings?.orderReceivedText ||
+                                    'Your order was received.'
+                                  : settings?.orderDelayedText ||
+                                    'Your order was received, but things are taking longer than expected.'}
+                        </CardContent>
+                    </Card>
+                )}
                 {isConfirmed && (
                     <Alert
                         className="mt-2"

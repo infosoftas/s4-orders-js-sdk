@@ -22,6 +22,77 @@ It correctly bundles React in production mode and optimizes the build for the be
 The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
 
+### `npm test`
+
+Runs completion-flow regression tests.
+
+## Order completion
+
+The Simple Orders API completion POST acknowledges receipt; it does not wait
+for order processing. By default, the SDK then reads `GET /order/{id}` using
+the configured `apiUrl` and API key. Deploy that endpoint before upgrading.
+
+The SDK reads immediately, then waits 500 ms between completed reads, with at
+most one request in flight. Polling stops after 10 seconds, including time
+spent waiting for a response. Only status `Completed` displays `successText`,
+invokes `orderCompletedCallback`, and emits the existing `orderFlowComplete`
+message. That message retains `isCompleted` and `orderInfo`, and adds the
+exact submitted `orderId`. `orderInfo` can be `null` after a payment redirect.
+Completed order processing does not guarantee downstream subscription or
+entitlement visibility.
+
+While polling, the SDK shows `settings.orderProcessingText`. If the deadline
+expires, it shows `settings.orderDelayedText`, defaulting to:
+
+> Your order was received, but things are taking longer than expected.
+
+It invokes `orderCompletionDelayedCallback` with reason `timeout`. This is
+not an order failure: the SDK does not emit success, redirect, reopen the
+order form, or resubmit the order. The host can use the callback to provide
+its own follow-up experience.
+
+Network errors, temporary 404s and server errors are retried within the
+deadline. Rate limiting honors `Retry-After`; if that header is missing,
+invalid or not exposed by CORS, no further reads occur before the deadline.
+Other HTTP errors, malformed
+responses and unknown statuses stop verification and show the same received
+message with callback reason `statusUnavailable`; they do not prove rejection.
+`Cancelled` and `Rejected` instead show `failureText` and invoke
+`orderCompletionFailedCallback` with the returned status, without reopening
+submission. Removing the SDK or switching orders aborts outstanding reads.
+Duplicate payment-return messages do not repeat an accepted completion POST.
+
+### Callbacks and external confirmation
+
+All completion callbacks receive `{ orderId, orderInfo }`, where `orderId`
+is always the ID submitted in the successful POST and `orderInfo` is nullable.
+`orderAcceptedCallback` runs after that POST succeeds, before polling.
+Delayed callbacks additionally receive `reason`; failed callbacks receive
+`status`. Callback errors do not change the order outcome.
+
+Set `completionMode: 'external'` to opt out of SDK polling:
+
+```ts
+orderComponent.init({
+    // ...existing configuration
+    completionMode: 'external',
+    orderAcceptedCallback: ({ orderId, orderInfo }) => {
+        // The host now owns verification, success UI and any redirect.
+    },
+});
+```
+
+External mode shows `settings.orderReceivedText` (default: "Your order was
+received.") and does not display success or emit `orderFlowComplete`.
+Use an acceptance callback to hand off confirmation to the host. There is
+no automatic success fallback when polling is disabled.
+
+**Migration:** `orderFlowComplete` now means confirmed order completion, not
+POST acceptance. Consumers must not treat raw payment-provider return messages
+such as `completeOrder` as success. Trigger success UI, conversion tracking and
+redirects only from confirmed completion. No consumer-side poller is needed
+when using the default mode.
+
 ## Usage
 
 The package needs to be configured with configuration object:
@@ -73,7 +144,25 @@ enum UserActionEnum {
     RETURN_TO_MAIN = 'returnToMain',
 }
 
+type OrderCompletionEventType = {
+    orderId: string;
+    orderInfo: {
+        orderId: string;
+        subscriberId: string;
+        paymentMethod: string;
+    } | null;
+};
+
 type ConfigType = {
+    completionMode?: 'sdk' | 'external'; // Default: 'sdk'
+    orderAcceptedCallback?: (event: OrderCompletionEventType) => void;
+    orderCompletedCallback?: (event: OrderCompletionEventType) => void;
+    orderCompletionDelayedCallback?: (
+        event: OrderCompletionEventType & { reason: 'timeout' | 'statusUnavailable' }
+    ) => void;
+    orderCompletionFailedCallback?: (
+        event: OrderCompletionEventType & { status: 'Cancelled' | 'Rejected' }
+    ) => void;
     domElementId: string;
     moduleTitle?: string;
     submitStartCallback?: (subscriberId: string) => void;
@@ -122,6 +211,9 @@ type ConfigType = {
     };
     settings?: {
         successText?: string;
+        orderProcessingText?: string;
+        orderReceivedText?: string;
+        orderDelayedText?: string;
         failureText?: string;
         submitButtonText?: string;
         backButtonText?: string;

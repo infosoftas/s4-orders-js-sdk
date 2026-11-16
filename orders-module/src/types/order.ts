@@ -62,6 +62,27 @@ export type OrderInfoType = {
     orderId: string;
 };
 
+export type OrderStatusResponseType = {
+    id: string;
+    status: string;
+    orderCreated?: string | null;
+    orderCompleted?: string | null;
+    orderCancelled?: string | null;
+};
+
+export type OrderCompletionEventType = {
+    orderId: string;
+    orderInfo: OrderInfoType | null;
+};
+
+export type OrderCompletionDelayedEventType = OrderCompletionEventType & {
+    reason: 'timeout' | 'statusUnavailable';
+};
+
+export type OrderCompletionFailedEventType = OrderCompletionEventType & {
+    status: 'Cancelled' | 'Rejected';
+};
+
 export type CompleteOrderParamsType = {
     orderId: string;
     agreementId: string;

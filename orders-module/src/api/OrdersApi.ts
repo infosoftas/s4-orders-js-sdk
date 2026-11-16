@@ -1,5 +1,5 @@
 import type { CreateSubscriberRequestType } from '../types/api';
-import type { AgreementsType } from '../types/order';
+import type { AgreementsType, OrderStatusResponseType } from '../types/order';
 import fetcher, { getSdkApiKey } from '../utils/fetcher';
 
 type RequestOrderStartType = {
@@ -37,7 +37,8 @@ export const orderStart = (
 
 export const orderComplete = (
     id: string,
-    body?: OrderCompleteRequestType
+    body?: OrderCompleteRequestType,
+    signal?: AbortSignal
 ): Promise<OrderResponseType> =>
     fetcher<OrderResponseType, OrderCompleteRequestType | null>({
         method: 'POST',
@@ -46,7 +47,21 @@ export const orderComplete = (
             'S4-ORDERS-API-KEY': getSdkApiKey(),
         },
         body: body || null,
+        signal,
     }) as Promise<OrderResponseType>;
+
+export const getOrderStatus = (
+    id: string,
+    signal: AbortSignal
+): Promise<OrderStatusResponseType> =>
+    fetcher<OrderStatusResponseType>({
+        url: `/order/${encodeURIComponent(id)}`,
+        headers: {
+            'S4-ORDERS-API-KEY': getSdkApiKey(),
+        },
+        signal,
+        cache: 'no-store',
+    }) as Promise<OrderStatusResponseType>;
 
 export const orderDelete = (id: string): Promise<OrderResponseType> =>
     fetcher<OrderResponseType, null>({
