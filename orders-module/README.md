@@ -44,10 +44,33 @@ guarantee that subscription provisioning has finished or that entitlements/acces
 `orderInfo` keeps its existing value (which may be `null`). Consumers must use their authoritative
 provisioning or readiness signal before granting access.
 
-For rollout with the Simple Orders API, gateway zero-wait completion support must be available
-before switching the API; consumer verification follows that switch. This SDK's deterministic tests
-cover the accepted-response and existing failure paths, but do not establish live API compatibility.
-Live end-to-end verification is deferred until the Simple Orders API change is merged and deployed.
+### Checking final order status
+
+Consumers that need to wait for order processing should poll the Simple Orders API
+`GET /order/{id}` after receiving `orderFlowComplete`. Use the order ID from `orderInfo.orderId`;
+retain the order ID from order start if `orderInfo` is unavailable. Send the configured
+`S4-ORDERS-API-KEY` header.
+
+The endpoint returns a minimal status representation:
+
+```json
+{
+  "id": "8e842af9-0f38-47da-9c2c-bc808b5c4521",
+  "status": "InProgress",
+  "orderCreated": "2026-11-16T08:00:00Z",
+  "orderCompleted": null,
+  "orderCancelled": null
+}
+```
+
+Poll sequentially (one request at a time), for example every 500 ms for up to 10 seconds.
+Continue on `InProgress`; treat `Completed` as order processing complete, and stop with a
+non-success outcome for `Cancelled` or `Rejected`. If the polling deadline expires, report that
+the order is still processing rather than resubmitting completion or reporting success.
+
+`Completed` does not guarantee that the subscription is already visible or that entitlements
+and access have propagated. Check the relevant subscription or access system separately when
+that readiness is required.
 
 ## Usage
 
