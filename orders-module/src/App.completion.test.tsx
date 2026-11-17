@@ -558,6 +558,73 @@ describe('SDK-managed order completion', () => {
         }
     );
 
+    it.each(['Created', 'InProgress'])(
+        'keeps polling while the order status is %s',
+        async (status) => {
+            fetchMock
+                .mockResolvedValueOnce(response(null))
+                .mockResolvedValueOnce(
+                    response({ id: 'returned-order', status })
+                )
+                .mockResolvedValueOnce(
+                    response({ id: 'returned-order', status: 'Completed' })
+                );
+            renderApp();
+            act(paymentReturn);
+            await advance();
+            expect(fetchMock).toHaveBeenCalledTimes(2);
+            await advance(500);
+            expect(fetchMock).toHaveBeenCalledTimes(3);
+            expect(screen.getByText('Order completed')).toBeTruthy();
+            expect(completionMessages()).toHaveLength(1);
+        }
+    );
+
+    it.each(['Pending', 'Processing', 'Draft', 'Failed', 'created', ''])(
+        'stops polling for non-pollable status "%s"',
+        async (status) => {
+            fetchMock
+                .mockResolvedValueOnce(response(null))
+                .mockResolvedValueOnce(
+                    response({ id: 'returned-order', status })
+                )
+                .mockResolvedValueOnce(
+                    response({ id: 'returned-order', status: 'Completed' })
+                );
+            const orderCompletionDelayedCallback = vi.fn();
+            renderApp({ orderCompletionDelayedCallback });
+            act(paymentReturn);
+            await advance(10000);
+            expect(
+                orderCompletionDelayedCallback
+            ).toHaveBeenCalledExactlyOnceWith({
+                orderId: 'returned-order',
+                orderInfo: null,
+                reason: 'statusUnavailable',
+            });
+            expect(fetchMock).toHaveBeenCalledTimes(2);
+            expect(completionMessages()).toHaveLength(0);
+        }
+    );
+
+    it('clears the loading skeleton when a pending POST is aborted by cancel', async () => {
+        fetchMock.mockImplementationOnce(() => new Promise(() => undefined));
+        fetchMock.mockResolvedValue(response(null));
+        renderApp();
+        act(paymentReturn);
+        await advance();
+        expect(screen.getByTestId('sdk-order-loading-skeleton')).toBeTruthy();
+        act(() =>
+            window.dispatchEvent(
+                new MessageEvent('message', {
+                    data: { type: MessageEventTypeEnum.CANCEL },
+                })
+            )
+        );
+        await advance();
+        expect(screen.queryByTestId('sdk-order-loading-skeleton')).toBeNull();
+    });
+
     it('isolates host callback failures from accepted order state and polling', async () => {
         vi.spyOn(console, 'error').mockImplementation(() => undefined);
         fetchMock

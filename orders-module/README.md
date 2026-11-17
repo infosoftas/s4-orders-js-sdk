@@ -51,12 +51,14 @@ not an order failure: the SDK does not emit success, redirect, reopen the
 order form, or resubmit the order. The host can use the callback to provide
 its own follow-up experience.
 
+Polling continues only while the order status is `Created` or `InProgress`.
 Network errors, temporary 404s and server errors are retried within the
 deadline. Rate limiting honors `Retry-After`; if that header is missing,
 invalid or not exposed by CORS, no further reads occur before the deadline.
-Other HTTP errors, malformed
-responses and unknown statuses stop verification and show the same received
-message with callback reason `statusUnavailable`; they do not prove rejection.
+Other HTTP errors (including `401`, which means the token has expired and the
+user must sign in again), malformed responses and any other status stop
+verification and show the same received message with callback reason
+`statusUnavailable`; they do not prove rejection.
 `Cancelled` and `Rejected` instead show `failureText` and invoke
 `orderCompletionFailedCallback` with the returned status, without reopening
 submission. Removing the SDK or switching orders aborts outstanding reads.

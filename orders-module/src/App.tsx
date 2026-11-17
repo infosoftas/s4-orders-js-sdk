@@ -266,6 +266,10 @@ const App: FC<ConfigType> = ({
             });
         } finally {
             if (activeCompletion.current?.controller === controller) {
+                // Aborted without a successor completion: never leave the skeleton showing.
+                if (controller.signal.aborted) {
+                    setLoading(false);
+                }
                 activeCompletion.current = null;
             }
         }

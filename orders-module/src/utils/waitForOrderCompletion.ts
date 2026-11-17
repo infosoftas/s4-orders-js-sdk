@@ -80,6 +80,7 @@ export const waitForOrderCompletion = async (
                     case 'Cancelled':
                     case 'Rejected':
                         return { status: order.status };
+                    case 'Created':
                     case 'InProgress':
                         break;
                     default:
