@@ -10,6 +10,9 @@ const retryDelay = (retryAfter?: string | null): number => {
         return 10000;
     }
     const seconds = Number(retryAfter);
+    if (Number.isFinite(seconds) && !/^\d+$/.test(retryAfter)) {
+        return 10000;
+    }
     const delay = Number.isFinite(seconds)
         ? seconds * 1000
         : Date.parse(retryAfter) - Date.now();
