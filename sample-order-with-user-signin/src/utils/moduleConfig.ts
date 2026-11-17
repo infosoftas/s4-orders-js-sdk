@@ -1,12 +1,14 @@
 import {
-    DEFAULT_PAYMENT_METHODS,
     LANGUAGE_KEY,
     ORDER_PLACE_ID,
     ORDER_SUCCESS_MSG,
     WRONG_MSG,
 } from 'Constants/index';
-import { AllowLanguageCodeEnum, OrderModuleFiledNameEnum } from 'Enums/general';
-import { OptionType } from 'Types/general';
+import {
+    AllowLanguageCodeEnum,
+    OrderModuleFiledNameEnum,
+    PaymentMethodEnum,
+} from 'Enums/general';
 import { ConfigType } from 'Types/orderModule';
 
 type Props = {
@@ -25,16 +27,6 @@ type Props = {
     postalCode?: string;
     streetAddress?: string;
     paymentMethodOptions?: string[] | null;
-};
-
-const preparePaymentMethods = (): OptionType[] => {
-    return [
-        ...DEFAULT_PAYMENT_METHODS,
-        { label: 'Invoice', translateKey: 'Invoice', value: 'Invoice' },
-        { label: 'Email', translateKey: 'Email', value: 'Email' },
-        { label: 'EHF', translateKey: 'EHF', value: 'EHF' },
-        { label: 'OIO', translateKey: 'OIO', value: 'OIO' },
-    ];
 };
 
 const prepareLanguage = () => {
@@ -206,7 +198,7 @@ export const prepareConfig = ({
     const additionalContactFields = prepareContactAdditionalFields();
     const additionalBusinessFields = prepareAdditionalBusinessFields();
 
-    const config = {
+    const config: ConfigType = {
         moduleTitle: '',
         domElementId: ORDER_PLACE_ID,
         redirectUrl: window.location.href,
@@ -220,54 +212,11 @@ export const prepareConfig = ({
         identityProviderId,
         organizationId,
         language: prepareLanguage(),
-        availablePaymentMethods: preparePaymentMethods(),
+        availablePaymentMethods: [
+            { label: 'Invoice', value: PaymentMethodEnum.Invoice },
+        ],
         paymentMethodsOptions: {
-            Vipps: {
-                generateSubscriberContact: true,
-                orderFormFields: [],
-            },
-            SwedbankPay: {
-                orderFormFields: [
-                    {
-                        name: OrderModuleFiledNameEnum.name,
-                        label: 'Name',
-                        required: false,
-                    },
-                    {
-                        name: OrderModuleFiledNameEnum.phoneNumber,
-                        label: 'Phone',
-                        readOnly: false,
-                        required: false,
-                    },
-                    {
-                        name: OrderModuleFiledNameEnum.email,
-                        label: 'Email',
-                        required: true,
-                        readOnly: !!userEmail,
-                    },
-                    ...additionalContactFields,
-                    ...additionalBusinessFields,
-                ],
-            },
             Invoice: {
-                orderFormFields: [
-                    ...additionalContactFields,
-                    ...additionalBusinessFields,
-                ],
-            },
-            Email: {
-                orderFormFields: [
-                    ...additionalContactFields,
-                    ...additionalBusinessFields,
-                ],
-            },
-            EHF: {
-                orderFormFields: [
-                    ...additionalContactFields,
-                    ...additionalBusinessFields,
-                ],
-            },
-            OIO: {
                 orderFormFields: [
                     ...additionalContactFields,
                     ...additionalBusinessFields,
@@ -299,10 +248,10 @@ export const prepareConfig = ({
                 country,
                 zip: postalCode,
                 address: streetAddress,
-                paymentMethod: undefined,
+                paymentMethod: PaymentMethodEnum.Invoice,
             },
         },
     };
 
-    return config as ConfigType;
+    return config;
 };

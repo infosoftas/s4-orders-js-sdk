@@ -1,7 +1,12 @@
 import type { ReactNode } from 'react';
 
 import { PaymentMethodEnum, UserActionEnum } from '../enums/general';
-import type { OrderFormInputsType } from './order';
+import type {
+    OrderCompletionEventType,
+    OrderCompletionDelayedEventType,
+    OrderCompletionFailedEventType,
+    OrderFormInputsType,
+} from './order';
 
 declare global {
     interface Window {
@@ -66,6 +71,16 @@ export type SubmitConfirmationType = {
 };
 
 export type ConfigType = {
+    /** SDK polling is the default. External mode delegates confirmation to the host. */
+    completionMode?: 'sdk' | 'external';
+    orderAcceptedCallback?: (event: OrderCompletionEventType) => void;
+    orderCompletedCallback?: (event: OrderCompletionEventType) => void;
+    orderCompletionDelayedCallback?: (
+        event: OrderCompletionDelayedEventType
+    ) => void;
+    orderCompletionFailedCallback?: (
+        event: OrderCompletionFailedEventType
+    ) => void;
     submitStartCallback?: (subscriberId: string) => void;
     userActionCallback?: (
         action: UserActionEnum,
@@ -97,6 +112,9 @@ export type ConfigType = {
     };
     settings?: {
         successText?: string;
+        orderProcessingText?: string;
+        orderReceivedText?: string;
+        orderDelayedText?: string;
         failureText?: string;
         submitButtonText?: string;
         backButtonText?: string;

@@ -17,6 +17,8 @@ type Fetcher<T> = {
     method?: Method;
     headers?: HeadersInit;
     body?: T;
+    signal?: AbortSignal;
+    cache?: RequestCache;
 };
 
 export const getSdkApiKey = (): string => {
@@ -56,7 +58,8 @@ function createHeader<T>(options: Fetcher<T>): Fetcher<T> {
 async function fetcher<ResponseType, BodyType = void>(
     options: Fetcher<BodyType>
 ): Promise<ApiResponseType<ResponseType> | ResponseType> {
-    const { url, method, headers, body, params } = createHeader(options);
+    const { url, method, headers, body, params, signal, cache } =
+        createHeader(options);
 
     const apiUrl = getSdkApiUrl();
     const endpoint = new URL(`${apiUrl || BASE_API}${url}`);
@@ -76,16 +79,26 @@ async function fetcher<ResponseType, BodyType = void>(
             return fetch(endpoint.toString(), {
                 method,
                 headers,
+                signal,
+                cache,
                 body: body instanceof FormData ? body : JSON.stringify(body),
             })
                 .then(async (response) => {
                     if (response.status === HttpStatusCode.UNAUTHORIZED) {
                         localStorage.removeItem('authTokenKey');
-                        reject({ message: 'Not Authorized user!' });
+                        reject({
+                            status: response.status,
+                            message: 'Not Authorized user!',
+                        });
                     } else if (response.status === HttpStatusCode.FORBIDDEN) {
-                        reject({ message: 'Something Wrong with permission!' });
+                        reject({
+                            status: response.status,
+                            message: 'Something Wrong with permission!',
+                        });
                     } else if (response.status === HttpStatusCode.LIMIT) {
                         reject({
+                            status: response.status,
+                            retryAfter: response.headers.get('Retry-After'),
                             message: 'System busy please try again shortly!',
                         });
                     } else {
@@ -95,16 +108,21 @@ async function fetcher<ResponseType, BodyType = void>(
                                 .then((data) => resolve(data))
                                 .catch(() => resolve(null as ResponseType));
                         } else {
-                            const data = await response?.json();
+                            const data =
+                                (await response.json().catch(() => null)) || {};
                             const message =
                                 data.details || data.message || data.title;
-                            reject({ ...data, message });
+                            reject({
+                                ...data,
+                                status: response.status,
+                                message,
+                            });
                         }
                     }
                 })
                 .catch((error) => {
                     console.log(error, 'error');
-                    reject(error?.response);
+                    reject(error?.response || error);
                 });
         }
     );
