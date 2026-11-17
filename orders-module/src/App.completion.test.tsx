@@ -462,6 +462,39 @@ describe('SDK-managed order completion', () => {
         expect(completionMessages()).toHaveLength(0);
     });
 
+    it.each(['-1', '1.5', '0x1'])(
+        'does not retry a rate-limited read for invalid Retry-After %s',
+        async (retryAfter) => {
+            fetchMock
+                .mockResolvedValueOnce(response(null))
+                .mockResolvedValueOnce(
+                    response(null, 429, { 'Retry-After': retryAfter })
+                )
+                .mockResolvedValueOnce(
+                    response({ id: 'returned-order', status: 'Completed' })
+                );
+            const orderCompletionDelayedCallback = vi.fn();
+            renderApp({ orderCompletionDelayedCallback });
+            act(paymentReturn);
+            await advance(9999);
+            expect(fetchMock).toHaveBeenCalledTimes(2);
+            expect(orderCompletionDelayedCallback).not.toHaveBeenCalled();
+            await advance(1);
+            expect(
+                screen.getByText('Order received, taking longer than expected')
+            ).toBeTruthy();
+            expect(
+                orderCompletionDelayedCallback
+            ).toHaveBeenCalledExactlyOnceWith({
+                orderId: 'returned-order',
+                orderInfo: null,
+                reason: 'timeout',
+            });
+            expect(fetchMock).toHaveBeenCalledTimes(2);
+            expect(completionMessages()).toHaveLength(0);
+        }
+    );
+
     it.each([
         [401, 'Not JSON'],
         [403, 'Not JSON'],
