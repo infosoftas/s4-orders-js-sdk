@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { PaymentMethodEnum, PaymentReturnActionEnum } from '../enums/general';
 import type { CompleteOrderParamsType, OrderInfoType } from '../types/order';
@@ -25,15 +25,48 @@ const takeStoredMollieOrderId = (): string | null => {
     }
 };
 
+// Temporary, remove in the next release: checkouts started on the previous
+// version open SwedbankPay in an iframe, so the provider returns inside that
+// frame. A framed SDK renders nothing and no longer notifies the parent, so
+// hand the return to the top-level page, which then handles it once.
+const breakOutOfLegacyPaymentFrame = (): boolean => {
+    if (!window.top || window.top === window) {
+        return false;
+    }
+    try {
+        if (window.top.location.origin !== window.location.origin) {
+            return false;
+        }
+        window.top.location.replace(window.location.href);
+        return true;
+    } catch {
+        return false;
+    }
+};
+
 const usePaymentReturn = (
     onPaymentComplete: (data: CompleteOrderParamsType) => Promise<void>,
     onPaymentCancel: (orderId?: string) => void,
     orderInfo: OrderInfoType | null
 ) => {
     const queryParams = useQueryParams();
+    const isBreakingOut = useRef(false);
+    const hasPaymentReturn =
+        queryParams.get('action') === PaymentReturnActionEnum.COMPLETE ||
+        queryParams.get('action') === PaymentReturnActionEnum.CANCEL ||
+        (!!queryParams.get('orderId') && !!queryParams.get('agreementId'));
+
+    useEffect(() => {
+        if (hasPaymentReturn) {
+            isBreakingOut.current = breakOutOfLegacyPaymentFrame();
+        }
+    }, [hasPaymentReturn]);
 
     // Vipps / MobilePay
     useEffect(() => {
+        if (isBreakingOut.current) {
+            return;
+        }
         if (queryParams.get('orderId') && queryParams.get('agreementId')) {
             onPaymentComplete({
                 orderId: queryParams.get('orderId') || '',
@@ -46,6 +79,9 @@ const usePaymentReturn = (
 
     // SwedbankPay completion, and cancellation for every redirect provider
     useEffect(() => {
+        if (isBreakingOut.current) {
+            return;
+        }
         if (
             queryParams.get('S4OrderId') &&
             queryParams.get('TransactionId') &&
@@ -71,6 +107,9 @@ const usePaymentReturn = (
 
     // Mollie: a completion return with no TransactionId (that one is SwedbankPay's).
     useEffect(() => {
+        if (isBreakingOut.current) {
+            return;
+        }
         if (
             queryParams.get('action') !== PaymentReturnActionEnum.COMPLETE ||
             queryParams.get('TransactionId')

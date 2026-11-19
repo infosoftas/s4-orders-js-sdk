@@ -261,3 +261,81 @@ describe('full-page payment returns', () => {
         expect(screen.getByText('Order completed')).toBeTruthy();
     });
 });
+
+describe('payment returns inside a legacy checkout iframe', () => {
+    const swedbankComplete =
+        '?action=complete&S4OrderId=returned-order&TransactionId=tx-1';
+
+    const insideFrame = (location: object) => {
+        const parent = { location } as unknown as Window;
+        vi.spyOn(window, 'top', 'get').mockReturnValue(parent);
+    };
+
+    beforeEach(() => {
+        vi.useFakeTimers();
+        fetchMock.mockReset();
+        fetchMock.mockResolvedValue(response(null));
+        vi.stubGlobal('fetch', fetchMock);
+        returnTo('');
+        sessionStorage.clear();
+        vi.spyOn(window, 'postMessage').mockImplementation(() => undefined);
+        vi.spyOn(console, 'log').mockImplementation(() => undefined);
+    });
+
+    afterEach(() => {
+        cleanup();
+        vi.useRealTimers();
+        vi.restoreAllMocks();
+        vi.unstubAllGlobals();
+    });
+
+    it.each([
+        ['a SwedbankPay completion', swedbankComplete],
+        ['a cancellation', '?action=cancel&S4OrderId=returned-order'],
+        ['a Vipps return', '?orderId=vipps-order&agreementId=agreement-1'],
+    ])(
+        'moves %s to the top-level page without handling it in the frame',
+        async (_label, search) => {
+            const replace = vi.fn();
+            insideFrame({ origin: window.location.origin, replace });
+            sessionStorage.setItem(
+                'mollieOrderId',
+                JSON.stringify({ id: 'mollie-order', ts: Date.now() })
+            );
+            returnTo(search);
+            renderApp();
+            await advance(1000);
+
+            expect(replace).toHaveBeenCalledExactlyOnceWith(
+                window.location.href
+            );
+            expect(fetchMock).not.toHaveBeenCalled();
+            expect(sessionStorage.getItem('mollieOrderId')).not.toBeNull();
+        }
+    );
+
+    it('handles the return in the frame when the parent page is on another origin', async () => {
+        insideFrame({
+            get origin(): string {
+                throw new DOMException('Blocked', 'SecurityError');
+            },
+        });
+        returnTo(swedbankComplete);
+        renderApp({ completionMode: 'external' });
+        await advance();
+
+        expect(requests()).toEqual([
+            'POST https://orders.example.test/order/returned-order/complete',
+        ]);
+    });
+
+    it('does nothing in a frame without a payment return', async () => {
+        const replace = vi.fn();
+        insideFrame({ origin: window.location.origin, replace });
+        renderApp();
+        await advance(1000);
+
+        expect(replace).not.toHaveBeenCalled();
+        expect(fetchMock).not.toHaveBeenCalled();
+    });
+});
