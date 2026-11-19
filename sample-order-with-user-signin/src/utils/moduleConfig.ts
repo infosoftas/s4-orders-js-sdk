@@ -203,7 +203,6 @@ export const prepareConfig = ({
         domElementId: ORDER_PLACE_ID,
         redirectUrl: window.location.href,
         merchantAgreementUrl: selfServiceUrl,
-        showIframe: true,
         apiKey,
         apiUrl,
         userId,

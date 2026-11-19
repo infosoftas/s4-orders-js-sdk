@@ -43,7 +43,6 @@ export type ConfigType = {
     identityProviderId: string;
     organizationId: string;
     redirectUrl?: string;
-    showIframe?: boolean;
     availablePaymentMethods?: { label: string; value: PaymentMethodEnum }[];
     paymentMethodsOptions?: PaymentMethodOptionsType;
     language?: string;

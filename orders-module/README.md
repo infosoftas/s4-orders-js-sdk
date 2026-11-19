@@ -62,7 +62,17 @@ verification and show the same received message with callback reason
 `Cancelled` and `Rejected` instead show `failureText` and invoke
 `orderCompletionFailedCallback` with the returned status, without reopening
 submission. Removing the SDK or switching orders aborts outstanding reads.
-Duplicate payment-return messages do not repeat an accepted completion POST.
+An accepted completion POST is not repeated for the same order.
+
+### Payment returns
+
+All online payment methods (Vipps, MobilePay, SwedbankPay and Mollie) use
+full-page redirects to the provider. The provider returns to `redirectUrl`
+(default: the current page), and the SDK reads the return from the URL
+parameters (`action=complete`/`action=cancel` with `S4OrderId`, or Vipps'
+`orderId` and `agreementId`). The SDK never completes or cancels an order
+because of a browser `message` event. It only posts its own notifications
+(`orderFlowComplete`, `orderFlowCancel`, `orderUpdateInfo`) to the host page.
 
 ### Callbacks and external confirmation
 
@@ -90,8 +100,8 @@ Use an acceptance callback to hand off confirmation to the host. There is
 no automatic success fallback when polling is disabled.
 
 **Migration:** `orderFlowComplete` now means confirmed order completion, not
-POST acceptance. Consumers must not treat raw payment-provider return messages
-such as `completeOrder` as success. Trigger success UI, conversion tracking and
+POST acceptance. Consumers must not treat payment-provider returns as success.
+Trigger success UI, conversion tracking and
 redirects only from confirmed completion. No consumer-side poller is needed
 when using the default mode.
 
@@ -179,7 +189,6 @@ type ConfigType = {
     identityProviderId: string;
     organizationId: string;
     redirectUrl?: string;
-    showIframe?: boolean;
     /**
      * The full list of payment methods displayed in the UI, each with a display label and value.
      * Controls what the user sees in the payment method selector.
@@ -316,7 +325,6 @@ export const prepareConfig = ({
         domElementId: ORDER_PLACE_ID,
         redirectUrl: window.location.href,
         merchantAgreementUrl: selfServiceUrl,
-        showIframe: true,
         apiKey,
         apiUrl,
         userId,
@@ -549,7 +557,6 @@ export default OrderPlace;
 | identityProviderId    |                                       ''                                       |       identity provider id |
 | organizationId        |                                       ''                                       |            organization id |
 | redirectUrl           |                              window.location.href                              |               redirect url |
-| showIframe            |                                     false                                      | show credit card in iframe |
 | userActionCallback    |                                   undefined                                    | function for tracking user actions |
 | cancelVippsCallback   |                                   undefined                                    | callback invoked when a Vipps/MobilePay payment is cancelled |
 | paymentMethodsOptions | orderFormFields: [{name: 'phoneNumber', required: false, readOnly: false, label: ''}] |        default form fields |

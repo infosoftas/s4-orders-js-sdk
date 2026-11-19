@@ -6,11 +6,10 @@ import {
     PaymentMethodEnum,
     UserActionEnum,
 } from './enums/general';
-import useMessageEvent from './hooks/useMessageEvent';
+import usePaymentReturn from './hooks/usePaymentReturn';
 import OrderForm from './components/OrderForm/OrderForm';
 import OIOForm from './components/OIOForm/OIOForm';
 import EHFForm from './components/EHFForm/EHFForm';
-import MainIframe from './components/MainIframe/MainIframe';
 import Alert from './components/Alert/Alert';
 import { Skeleton } from './components/ui/skeleton';
 import { Card, CardContent } from './components/ui/card';
@@ -55,7 +54,6 @@ const App: FC<ConfigType> = ({
     identityProviderId,
     organizationId,
     redirectUrl,
-    showIframe,
     paymentMethodsOptions,
     invoiceAddressSelection,
     availablePaymentMethods = [],
@@ -101,7 +99,6 @@ const App: FC<ConfigType> = ({
 }) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [showOrderForm, setShowOrderForm] = useState<boolean>(true);
-    const [iframeSrc, setIframeSrc] = useState<string | null>(null);
     const [orderId, setOrderId] = useState<string | null>(null);
     const [subscriberSdkId, setSubscriberSdkId] = useState<string | undefined>(
         subscriberId || undefined
@@ -161,7 +158,6 @@ const App: FC<ConfigType> = ({
         setLoading(true);
         setCompletionState(null);
         setIsConfirmed(false);
-        setIframeSrc(null);
         setShowOrderForm(false);
         setIsFailed(false);
         setFailedMsg('');
@@ -310,38 +306,27 @@ const App: FC<ConfigType> = ({
         setShowOrderForm(true);
     };
 
-    const handleMessageEvent = async (
-        type: MessageEventTypeEnum,
-        canceledOrderId?: string
-    ) => {
-        if (type === MessageEventTypeEnum.CANCEL) {
-            const orderIdToCancel =
-                canceledOrderId || activeCompletion.current?.orderId || orderId;
-            activeCompletion.current?.controller.abort();
-            setCompletionState(null);
-            try {
-                if (orderIdToCancel) {
-                    await handleOrderDelete(orderIdToCancel);
-                }
-            } catch (error) {
-                console.log(error);
+    const handlePaymentCancel = async (canceledOrderId?: string) => {
+        const orderIdToCancel =
+            canceledOrderId || activeCompletion.current?.orderId || orderId;
+        activeCompletion.current?.controller.abort();
+        setCompletionState(null);
+        try {
+            if (orderIdToCancel) {
+                await handleOrderDelete(orderIdToCancel);
             }
-
-            setLoading(false);
-            setOrderId(null);
-            setOrderInfo(null);
-            setIframeSrc(null);
-            setIsConfirmed(false);
-            setShowOrderForm(true);
+        } catch (error) {
+            console.log(error);
         }
+
+        setLoading(false);
+        setOrderId(null);
+        setOrderInfo(null);
+        setIsConfirmed(false);
+        setShowOrderForm(true);
     };
 
-    useMessageEvent(
-        messageCallback,
-        handleMessageEvent,
-        !!showIframe,
-        orderInfo
-    );
+    usePaymentReturn(messageCallback, handlePaymentCancel, orderInfo);
 
     const handleForm = (url: string | null, data?: OrderInfoType | null) => {
         activeCompletion.current?.controller.abort();
@@ -384,14 +369,6 @@ const App: FC<ConfigType> = ({
             });
         } else if (url) {
             if (
-                showIframe &&
-                data?.paymentMethod === PaymentMethodEnum.SwedbankPay
-            ) {
-                setIframeSrc(url);
-                return;
-            }
-
-            if (
                 data?.paymentMethod === PaymentMethodEnum.Mollie &&
                 data?.orderId
             ) {
@@ -418,8 +395,6 @@ const App: FC<ConfigType> = ({
             setShowOrderForm(true);
             setFormType(FormTypeEnum.ORDER);
         }
-
-        setIframeSrc(null);
     };
 
     const handleInvoiceBack = () => {
@@ -492,13 +467,11 @@ const App: FC<ConfigType> = ({
     return (
         <ErrorBoundary>
             <div
-                className={`sdk-order-container sdk-scope ${
-                    iframeSrc ? 'show-iframe' : ''
-                }`}
+                className="sdk-order-container sdk-scope"
                 data-testid="sdk-order-module-id"
             >
                 {moduleTitle && <h1 className="text-center">{moduleTitle}</h1>}
-                {!iframeSrc && showOrderForm && (
+                {showOrderForm && (
                     <>
                         {formType === FormTypeEnum.OIO && (
                             <OIOForm
@@ -524,7 +497,6 @@ const App: FC<ConfigType> = ({
                                 identityProviderId={identityProviderId}
                                 organizationId={organizationId}
                                 redirectUrl={redirectUrl}
-                                showIframe={showIframe}
                                 paymentMethodsOptions={paymentMethodsOptions}
                                 language={language}
                                 merchantAgreementUrl={merchantAgreementUrl}
@@ -585,7 +557,6 @@ const App: FC<ConfigType> = ({
                                 identityProviderId={identityProviderId}
                                 organizationId={organizationId}
                                 redirectUrl={redirectUrl}
-                                showIframe={showIframe}
                                 paymentMethodsOptions={paymentMethodsOptions}
                                 language={language}
                                 merchantAgreementUrl={merchantAgreementUrl}
@@ -671,7 +642,6 @@ const App: FC<ConfigType> = ({
                                     }
                                     defaultValues={orderFormValues}
                                     redirectUrl={redirectUrl}
-                                    showIframe={showIframe}
                                     paymentMethodsOptions={
                                         paymentMethodsOptions
                                     }
@@ -716,7 +686,6 @@ const App: FC<ConfigType> = ({
                             )}
                     </>
                 )}
-                {showIframe && <MainIframe iframeSrc={iframeSrc} />}
                 {completionState && (
                     <Card role="status" aria-live="polite">
                         <CardContent>

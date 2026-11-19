@@ -56,7 +56,6 @@ export enum OrderActionEnum {
     OrderFlowComplete = 'orderFlowComplete',
     OrderFlowCancel = 'orderFlowCancel',
     OrderUpdateInfo = 'orderUpdateInfo',
-    VippsComplete = 'completeOrder',
     Complete = 'complete',
     Cancel = 'cancel',
 }

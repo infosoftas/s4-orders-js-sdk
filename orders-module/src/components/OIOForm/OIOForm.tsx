@@ -44,7 +44,6 @@ type Props = {
     identityProviderId?: string;
     organizationId: string;
     redirectUrl?: string;
-    showIframe?: boolean;
     language: string;
     merchantAgreementUrl: string;
     orderValues?: OrderFormInputsType;
@@ -120,7 +119,6 @@ const OIOForm: FC<Props> = ({
     identityProviderId,
     organizationId,
     redirectUrl,
-    showIframe,
     language,
     merchantAgreementUrl,
     orderValues,
@@ -182,7 +180,6 @@ const OIOForm: FC<Props> = ({
         identityProviderId,
         orderFields,
         redirectUrl,
-        showIframe,
         language,
         merchantAgreementUrl,
         paymentMethodsOptions,

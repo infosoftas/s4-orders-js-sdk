@@ -43,7 +43,6 @@ type Props = {
     identityProviderId?: string;
     organizationId: string;
     redirectUrl?: string;
-    showIframe?: boolean;
     language: string;
     merchantAgreementUrl: string;
     orderValues?: OrderFormInputsType;
@@ -100,7 +99,6 @@ const EHFForm: FC<Props> = ({
     identityProviderId,
     organizationId,
     redirectUrl,
-    showIframe,
     language,
     merchantAgreementUrl,
     orderValues,
@@ -159,7 +157,6 @@ const EHFForm: FC<Props> = ({
         identityProviderId,
         orderFields,
         redirectUrl,
-        showIframe,
         language,
         merchantAgreementUrl,
         paymentMethodsOptions,
