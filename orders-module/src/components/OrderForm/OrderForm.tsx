@@ -55,7 +55,6 @@ type Props = {
     identityProviderId?: string;
     organizationId: string;
     redirectUrl?: string;
-    showIframe?: boolean;
     language: string;
     merchantAgreementUrl: string;
     paymentMethodsOptions?: PaymentMethodSettingsType;
@@ -119,7 +118,6 @@ const OrderForm: FC<Props> = ({
     identityProviderId,
     organizationId,
     redirectUrl,
-    showIframe,
     paymentMethodsOptions,
     defaultValues,
     language,
@@ -239,7 +237,6 @@ const OrderForm: FC<Props> = ({
         identityProviderId,
         orderFields: derived.orderFields,
         redirectUrl,
-        showIframe,
         language,
         merchantAgreementUrl,
         paymentMethodsOptions,

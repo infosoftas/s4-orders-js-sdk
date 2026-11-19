@@ -43,7 +43,6 @@ type Props = {
     identityProviderId?: string;
     organizationId: string;
     redirectUrl?: string;
-    showIframe?: boolean;
     language: string;
     merchantAgreementUrl: string;
     paymentMethodsOptions?: PaymentMethodSettingsType;
@@ -115,7 +114,6 @@ const useOrderForm = ({
     identityProviderId,
     orderFields,
     redirectUrl,
-    showIframe,
     language,
     merchantAgreementUrl,
     paymentMethodsOptions,
@@ -259,7 +257,6 @@ const useOrderForm = ({
                 const agreements = prepareAgreementModel({
                     paymentMethod,
                     redirectUrl,
-                    showIframe,
                     phoneNumber: orderFields.find(
                         (i) => i.name === 'phoneNumber'
                     )

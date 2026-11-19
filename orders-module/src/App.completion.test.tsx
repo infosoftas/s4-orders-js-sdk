@@ -14,21 +14,24 @@ import { MessageEventTypeEnum } from './enums/general';
 import type { ConfigType } from './types/general';
 import type { OrderInfoType } from './types/order';
 
+const submission = vi.hoisted(() => ({
+    url: null as string | null,
+    data: {
+        orderId: 'invoice-order',
+        paymentMethod: 'Invoice',
+        subscriberId: 'subscriber-7',
+    } as OrderInfoType,
+}));
+
+const invoiceSubmission = submission.data;
+
 vi.mock('./components/OrderForm/OrderForm', () => ({
     default: ({
         callback,
     }: {
         callback: (url: string | null, data: OrderInfoType) => void;
     }) => (
-        <button
-            onClick={() =>
-                callback(null, {
-                    orderId: 'invoice-order',
-                    paymentMethod: 'Invoice',
-                    subscriberId: 'subscriber-7',
-                })
-            }
-        >
+        <button onClick={() => callback(submission.url, submission.data)}>
             Submit invoice
         </button>
     ),
@@ -62,16 +65,16 @@ const renderApp = (props: Partial<ConfigType> = {}) =>
         />
     );
 
+// A SwedbankPay full-page return. Must be set before the SDK mounts, because
+// returns are read from the URL on load.
 const paymentReturn = () =>
-    window.dispatchEvent(
-        new MessageEvent('message', {
-            data: {
-                type: MessageEventTypeEnum.COMPLETE,
-                orderId: 'returned-order',
-                agreementId: 'agreement-3',
-            },
-        })
+    window.history.replaceState(
+        {},
+        '',
+        '/?action=complete&S4OrderId=returned-order&TransactionId=agreement-3'
     );
+
+const methods = () => fetchMock.mock.calls.map(([, init]) => init?.method);
 
 const advance = async (ms = 0) => {
     await act(async () => {
@@ -96,6 +99,8 @@ describe('SDK-managed order completion', () => {
         window.history.replaceState({}, '', '/');
         sessionStorage.clear();
         localStorage.clear();
+        submission.url = null;
+        submission.data = invoiceSubmission;
         vi.spyOn(window, 'postMessage').mockImplementation(() => undefined);
         vi.spyOn(console, 'log').mockImplementation(() => undefined);
     });
@@ -119,12 +124,12 @@ describe('SDK-managed order completion', () => {
                 response({ id: 'returned-order', status: 'Completed' })
             );
         const orderAcceptedCallback = vi.fn();
+        paymentReturn();
         renderApp({
             orderAcceptedCallback,
             userId: 'user-9',
             identityProviderId: 'identity-2',
         });
-        act(paymentReturn);
         await advance();
 
         expect(screen.queryByText('Order completed')).toBeNull();
@@ -170,8 +175,8 @@ describe('SDK-managed order completion', () => {
             })
         );
         const orderCompletionDelayedCallback = vi.fn();
+        paymentReturn();
         renderApp({ orderCompletionDelayedCallback });
-        act(paymentReturn);
         await advance(9999);
         expect(
             screen.queryByText('Order received, taking longer than expected')
@@ -191,8 +196,6 @@ describe('SDK-managed order completion', () => {
         expect(completionMessages()).toHaveLength(0);
         const calls = fetchMock.mock.calls.length;
         await advance(20000);
-        act(paymentReturn);
-        await advance();
         expect(fetchMock).toHaveBeenCalledTimes(calls);
     });
 
@@ -205,8 +208,8 @@ describe('SDK-managed order completion', () => {
                 })
         );
         const orderCompletionDelayedCallback = vi.fn();
+        paymentReturn();
         renderApp({ orderCompletionDelayedCallback });
-        act(paymentReturn);
         await advance();
         await advance(10000);
         expect(
@@ -225,8 +228,8 @@ describe('SDK-managed order completion', () => {
     it('lets external mode receive acceptance without polling or announcing success', async () => {
         fetchMock.mockResolvedValueOnce(response(null));
         const orderAcceptedCallback = vi.fn();
+        paymentReturn();
         renderApp({ completionMode: 'external', orderAcceptedCallback });
-        act(paymentReturn);
         await advance(20000);
         expect(orderAcceptedCallback).toHaveBeenCalledExactlyOnceWith({
             orderId: 'returned-order',
@@ -247,8 +250,8 @@ describe('SDK-managed order completion', () => {
                     response({ id: 'returned-order', status })
                 );
             const orderCompletionFailedCallback = vi.fn();
+            paymentReturn();
             renderApp({ orderCompletionFailedCallback });
-            act(paymentReturn);
             await advance(10000);
             expect(screen.getByText('Order failed')).toBeTruthy();
             expect(
@@ -266,7 +269,7 @@ describe('SDK-managed order completion', () => {
         }
     );
 
-    it('does not overlap reads or repeat POST for duplicate payment returns', async () => {
+    it('does not overlap status reads while one is pending', async () => {
         let finish!: (value: Response) => void;
         fetchMock
             .mockResolvedValueOnce(response(null))
@@ -279,11 +282,8 @@ describe('SDK-managed order completion', () => {
             .mockResolvedValueOnce(
                 response({ id: 'returned-order', status: 'Completed' })
             );
+        paymentReturn();
         renderApp();
-        act(() => {
-            paymentReturn();
-            paymentReturn();
-        });
         await advance(1500);
         expect(fetchMock).toHaveBeenCalledTimes(2);
         await act(async () => {
@@ -293,9 +293,8 @@ describe('SDK-managed order completion', () => {
         expect(fetchMock).toHaveBeenCalledTimes(2);
         await advance(1);
         expect(screen.getByText('Order completed')).toBeTruthy();
-        act(paymentReturn);
-        await advance();
         expect(fetchMock).toHaveBeenCalledTimes(3);
+        expect(methods()).toEqual(['POST', 'GET', 'GET']);
         expect(completionMessages()).toHaveLength(1);
     });
 
@@ -308,8 +307,8 @@ describe('SDK-managed order completion', () => {
                 })
         );
         const orderCompletionDelayedCallback = vi.fn();
+        paymentReturn();
         const view = renderApp({ orderCompletionDelayedCallback });
-        act(paymentReturn);
         await advance();
         view.unmount();
         expect(fetchMock.mock.calls[1][1]?.signal?.aborted).toBe(true);
@@ -321,7 +320,7 @@ describe('SDK-managed order completion', () => {
         expect(completionMessages()).toHaveLength(0);
     });
 
-    it('uses invoice submission ID and order information without requiring payment messages', async () => {
+    it('uses invoice submission ID and order information without a payment return', async () => {
         fetchMock
             .mockResolvedValueOnce(response(null))
             .mockResolvedValueOnce(
@@ -355,8 +354,8 @@ describe('SDK-managed order completion', () => {
             )
         );
         const orderAcceptedCallback = vi.fn();
+        paymentReturn();
         renderApp({ orderAcceptedCallback });
-        act(paymentReturn);
         await advance();
         expect(screen.getByText('Invalid order')).toBeTruthy();
         expect(screen.getByText('Email is invalid')).toBeTruthy();
@@ -398,8 +397,8 @@ describe('SDK-managed order completion', () => {
             .mockResolvedValueOnce(
                 response({ id: 'returned-order', status: 'Completed' })
             );
+        paymentReturn();
         renderApp();
-        act(paymentReturn);
         await advance(1499);
         expect(completionMessages()).toHaveLength(0);
         await advance(1);
@@ -420,8 +419,8 @@ describe('SDK-managed order completion', () => {
             .mockResolvedValueOnce(
                 response({ id: 'returned-order', status: 'Completed' })
             );
+        paymentReturn();
         renderApp();
-        act(paymentReturn);
         await advance(1999);
         expect(fetchMock).toHaveBeenCalledTimes(2);
         expect(completionMessages()).toHaveLength(0);
@@ -436,8 +435,8 @@ describe('SDK-managed order completion', () => {
                 response(null, 429, { 'Retry-After': '60' })
             );
         const orderCompletionDelayedCallback = vi.fn();
+        paymentReturn();
         renderApp({ orderCompletionDelayedCallback });
-        act(paymentReturn);
         await advance(10000);
         expect(
             screen.getByText('Order received, taking longer than expected')
@@ -451,8 +450,8 @@ describe('SDK-managed order completion', () => {
         fetchMock
             .mockResolvedValueOnce(response(null))
             .mockResolvedValueOnce(response(null, 429));
+        paymentReturn();
         renderApp();
-        act(paymentReturn);
         await advance(9999);
         expect(fetchMock).toHaveBeenCalledTimes(2);
         await advance(1);
@@ -474,8 +473,8 @@ describe('SDK-managed order completion', () => {
                     response({ id: 'returned-order', status: 'Completed' })
                 );
             const orderCompletionDelayedCallback = vi.fn();
+            paymentReturn();
             renderApp({ orderCompletionDelayedCallback });
-            act(paymentReturn);
             await advance(9999);
             expect(fetchMock).toHaveBeenCalledTimes(2);
             expect(orderCompletionDelayedCallback).not.toHaveBeenCalled();
@@ -508,11 +507,11 @@ describe('SDK-managed order completion', () => {
                 .mockResolvedValueOnce(new Response(body, { status }));
             const orderCompletionDelayedCallback = vi.fn();
             const orderCompletionFailedCallback = vi.fn();
+            paymentReturn();
             renderApp({
                 orderCompletionDelayedCallback,
                 orderCompletionFailedCallback,
             });
-            act(paymentReturn);
             await advance(10000);
             expect(
                 orderCompletionDelayedCallback
@@ -542,8 +541,8 @@ describe('SDK-managed order completion', () => {
                 .mockResolvedValueOnce(response(null))
                 .mockResolvedValueOnce(response(body));
             const orderCompletionDelayedCallback = vi.fn();
+            paymentReturn();
             renderApp({ orderCompletionDelayedCallback });
-            act(paymentReturn);
             await advance(10000);
             expect(
                 screen.getByText('Order received, taking longer than expected')
@@ -569,8 +568,8 @@ describe('SDK-managed order completion', () => {
                 .mockResolvedValueOnce(
                     response({ id: 'returned-order', status: 'Completed' })
                 );
+            paymentReturn();
             renderApp();
-            act(paymentReturn);
             await advance();
             expect(fetchMock).toHaveBeenCalledTimes(2);
             await advance(500);
@@ -592,8 +591,8 @@ describe('SDK-managed order completion', () => {
                     response({ id: 'returned-order', status: 'Completed' })
                 );
             const orderCompletionDelayedCallback = vi.fn();
+            paymentReturn();
             renderApp({ orderCompletionDelayedCallback });
-            act(paymentReturn);
             await advance(10000);
             expect(
                 orderCompletionDelayedCallback
@@ -607,24 +606,6 @@ describe('SDK-managed order completion', () => {
         }
     );
 
-    it('clears the loading skeleton when a pending POST is aborted by cancel', async () => {
-        fetchMock.mockImplementationOnce(() => new Promise(() => undefined));
-        fetchMock.mockResolvedValue(response(null));
-        renderApp();
-        act(paymentReturn);
-        await advance();
-        expect(screen.getByTestId('sdk-order-loading-skeleton')).toBeTruthy();
-        act(() =>
-            window.dispatchEvent(
-                new MessageEvent('message', {
-                    data: { type: MessageEventTypeEnum.CANCEL },
-                })
-            )
-        );
-        await advance();
-        expect(screen.queryByTestId('sdk-order-loading-skeleton')).toBeNull();
-    });
-
     it('isolates host callback failures from accepted order state and polling', async () => {
         vi.spyOn(console, 'error').mockImplementation(() => undefined);
         fetchMock
@@ -632,6 +613,7 @@ describe('SDK-managed order completion', () => {
             .mockResolvedValueOnce(
                 response({ id: 'returned-order', status: 'Completed' })
             );
+        paymentReturn();
         renderApp({
             orderAcceptedCallback: () => {
                 throw new Error('Host callback error');
@@ -640,7 +622,6 @@ describe('SDK-managed order completion', () => {
                 throw new Error('Async callback error');
             },
         });
-        act(paymentReturn);
         await advance();
         expect(screen.getByText('Order completed')).toBeTruthy();
         expect(
@@ -652,9 +633,9 @@ describe('SDK-managed order completion', () => {
     it('does not start status reads after acceptance callback unmounts SDK', async () => {
         fetchMock.mockResolvedValueOnce(response(null));
         let unmount!: () => void;
+        paymentReturn();
         const view = renderApp({ orderAcceptedCallback: () => unmount() });
         unmount = view.unmount;
-        act(paymentReturn);
         await advance(10000);
         expect(fetchMock).toHaveBeenCalledTimes(1);
         expect(completionMessages()).toHaveLength(0);
@@ -669,8 +650,8 @@ describe('SDK-managed order completion', () => {
                 })
         );
         const orderAcceptedCallback = vi.fn();
+        paymentReturn();
         const view = renderApp({ orderAcceptedCallback });
-        act(paymentReturn);
         view.unmount();
         await act(async () => {
             finish(response(null));
@@ -681,54 +662,12 @@ describe('SDK-managed order completion', () => {
         expect(completionMessages()).toHaveLength(0);
     });
 
-    it('ignores an old status response after cancelling and starting another order', async () => {
-        let finish!: (value: Response) => void;
-        fetchMock
-            .mockResolvedValueOnce(response(null))
-            .mockImplementationOnce(
-                () =>
-                    new Promise((resolve) => {
-                        finish = resolve;
-                    })
-            )
-            .mockResolvedValueOnce(response(null))
-            .mockResolvedValueOnce(response(null))
-            .mockResolvedValueOnce(
-                response({ id: 'invoice-order', status: 'Completed' })
-            );
-        renderApp();
-        act(paymentReturn);
-        await advance();
-        act(() =>
-            window.dispatchEvent(
-                new MessageEvent('message', {
-                    data: { type: MessageEventTypeEnum.CANCEL },
-                })
-            )
-        );
-        await advance();
-        expect(fetchMock.mock.calls[1][1]?.signal?.aborted).toBe(true);
-        expect(fetchMock.mock.calls[2][0]).toBe(
-            'https://orders.example.test/order/returned-order'
-        );
-        expect(fetchMock.mock.calls[2][1]?.method).toBe('DELETE');
-        fireEvent.click(screen.getByRole('button', { name: 'Submit invoice' }));
-        await advance();
-        await act(async () => {
-            finish(response({ id: 'returned-order', status: 'Completed' }));
-        });
-        expect(completionMessages()).toEqual([
-            expect.objectContaining({ orderId: 'invoice-order' }),
-        ]);
-        expect(screen.getByText('Order completed')).toBeTruthy();
-    });
-
     it('shows a useful delayed message even when settings contain no custom polling text', async () => {
         fetchMock.mockImplementation(async () =>
             response({ id: 'returned-order', status: 'InProgress' })
         );
+        paymentReturn();
         renderApp({ settings: {} });
-        act(paymentReturn);
         await advance(10000);
         expect(screen.getByRole('status').textContent).toContain(
             'Your order was received, but things are taking longer than expected.'

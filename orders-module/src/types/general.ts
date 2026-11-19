@@ -98,7 +98,6 @@ export type ConfigType = {
     apiKey?: string;
     apiUrl?: string;
     redirectUrl?: string;
-    showIframe?: boolean;
     availablePaymentMethods?: PaymentMethodOptionType[];
     allowedPaymentMethods?: PaymentMethodEnum[];
     paymentMethodsOptions?: PaymentMethodSettingsType;

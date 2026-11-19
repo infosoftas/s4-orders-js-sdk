@@ -1,4 +1,4 @@
-import { MessageEventTypeEnum, PaymentMethodEnum } from '../enums/general';
+import { PaymentMethodEnum, PaymentReturnActionEnum } from '../enums/general';
 import type { AgreementsType, OrderFormInputsType } from '../types/order';
 import type { OrderFormFieldType } from '../types/general';
 import { FIELD_TYPES } from '../components/FormFields/FormFields.helper';
@@ -6,7 +6,6 @@ import { FIELD_TYPES } from '../components/FormFields/FormFields.helper';
 type AgreementModelType = {
     paymentMethod: PaymentMethodEnum;
     redirectUrl?: string;
-    showIframe?: boolean;
     phoneNumber?: string;
     generateSubscriberContact: boolean;
     language: string;
@@ -35,10 +34,30 @@ const mapToPaymentProviderLanguage = (language: string) => {
     return 'en-US';
 };
 
+// Parameters a payment provider adds on return. A return URL built from a page
+// that is itself a return would otherwise carry the previous attempt's values,
+// and the first `action`/`S4OrderId` wins when the next return is read.
+const PAYMENT_RETURN_PARAMS = [
+    'action',
+    's4orderid',
+    'transactionid',
+    'orderid',
+    'agreementid',
+];
+
+const withoutPaymentReturnParams = (href: string) => {
+    const url = new URL(href);
+    for (const key of [...url.searchParams.keys()]) {
+        if (PAYMENT_RETURN_PARAMS.includes(key.toLowerCase())) {
+            url.searchParams.delete(key);
+        }
+    }
+    return url;
+};
+
 export const prepareAgreementModel = ({
     paymentMethod,
     redirectUrl,
-    showIframe,
     phoneNumber,
     generateSubscriberContact,
     language,
@@ -51,28 +70,22 @@ export const prepareAgreementModel = ({
     const existUrl = new URL(window.location.href);
     const journey = existUrl.searchParams.get('journey');
     const hashToken = existUrl.searchParams.get('hashToken');
-    const url = showIframe
-        ? window.location.href.split('?')[0]
-        : redirectUrl || window.location.href;
-    const cancelUrl = new URL(url);
-    cancelUrl.searchParams.append('action', `${MessageEventTypeEnum.CANCEL}`);
-    if (journey) {
-        cancelUrl.searchParams.append('journey', journey);
-    }
-    if (hashToken) {
-        cancelUrl.searchParams.append('hashToken', hashToken);
-    }
-    const confirmUrl = new URL(url);
-    confirmUrl.searchParams.append(
-        'action',
-        `${MessageEventTypeEnum.COMPLETE}`
+    const baseUrl = withoutPaymentReturnParams(
+        redirectUrl || window.location.href
     );
-    if (journey) {
-        confirmUrl.searchParams.append('journey', journey);
-    }
-    if (hashToken) {
-        confirmUrl.searchParams.append('hashToken', hashToken);
-    }
+    const buildReturnUrl = (action: PaymentReturnActionEnum) => {
+        const returnUrl = new URL(baseUrl);
+        returnUrl.searchParams.set('action', action);
+        if (journey) {
+            returnUrl.searchParams.set('journey', journey);
+        }
+        if (hashToken) {
+            returnUrl.searchParams.set('hashToken', hashToken);
+        }
+        return returnUrl;
+    };
+    const cancelUrl = buildReturnUrl(PaymentReturnActionEnum.CANCEL);
+    const confirmUrl = buildReturnUrl(PaymentReturnActionEnum.COMPLETE);
 
     if (paymentMethod === PaymentMethodEnum.SwedbankPay) {
         model.swedbankPay = {
@@ -105,7 +118,7 @@ export const prepareAgreementModel = ({
             merchantAgreementUrl,
             accountId,
             phoneNumber,
-            merchantRedirectUrl: redirectUrl || window.location.href,
+            merchantRedirectUrl: `${baseUrl}`,
         };
 
         return model;
