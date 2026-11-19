@@ -12,6 +12,7 @@
         "noFallthroughCasesInSwitch": true,
         "module": "esnext",
         "resolveJsonModule": true,
+        "moduleResolution": "bundler",
         "isolatedModules": true,
         "verbatimModuleSyntax": true,
         "noEmit": false,
