@@ -23,7 +23,7 @@ import { DEFAULT_ORDER_FORM_FIELDS } from '../FormFields/FormFields.helper';
 type Props = {
     callback: (url: string | null, orderInfo?: OrderInfoType | null) => void;
     onBack: () => void;
-    submitStartCallback?: (id: string) => void;
+    submitStartCallback?: (id: string) => void | Promise<void>;
     userActionCallback?: (
         action: UserActionEnum,
         args: object | null | undefined

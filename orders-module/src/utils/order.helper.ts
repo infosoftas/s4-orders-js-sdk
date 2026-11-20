@@ -73,6 +73,11 @@ export const prepareAgreementModel = ({
     const baseUrl = withoutPaymentReturnParams(
         redirectUrl || window.location.href
     );
+    // The host may set the token after the config was built (e.g. once a new
+    // subscriber exists), so the live value wins over one in `redirectUrl`.
+    if (hashToken) {
+        baseUrl.searchParams.set('hashToken', hashToken);
+    }
     const buildReturnUrl = (action: PaymentReturnActionEnum) => {
         const returnUrl = new URL(baseUrl);
         returnUrl.searchParams.set('action', action);

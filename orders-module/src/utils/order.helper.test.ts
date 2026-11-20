@@ -78,4 +78,17 @@ describe('prepareAgreementModel return URLs', () => {
             ['action', 'complete'],
         ]);
     });
+
+    it('uses the live hashToken over a stale one in the Vipps redirectUrl', () => {
+        window.history.replaceState({}, '', '/checkout?hashToken=live');
+
+        const { vippsMobilePay } = prepare(
+            PaymentMethodEnum.Vipps,
+            'https://shop.example.test/checkout?hashToken=stale'
+        );
+
+        expect(params(vippsMobilePay?.merchantRedirectUrl)).toEqual([
+            ['hashToken', 'live'],
+        ]);
+    });
 });

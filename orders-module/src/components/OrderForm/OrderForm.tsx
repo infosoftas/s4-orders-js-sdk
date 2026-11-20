@@ -43,7 +43,7 @@ import SubmitConfirmationDialog from './SubmitConfirmationDialog';
 type Props = {
     callback: (url: string | null, orderInfo?: OrderInfoType | null) => void;
     updateFormData: (data: OrderFormInputsType) => void;
-    submitStartCallback?: (id: string) => void;
+    submitStartCallback?: (id: string) => void | Promise<void>;
     userActionCallback?: (
         action: UserActionEnum,
         args: object | null | undefined
