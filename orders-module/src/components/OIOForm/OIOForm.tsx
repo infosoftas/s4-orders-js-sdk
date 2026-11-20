@@ -24,7 +24,7 @@ import { Input } from '../ui/input';
 type Props = {
     callback: (url: string | null, orderInfo?: OrderInfoType | null) => void;
     onBack: () => void;
-    submitStartCallback?: (id: string) => void;
+    submitStartCallback?: (id: string) => void | Promise<void>;
     userActionCallback?: (
         action: UserActionEnum,
         args: object | null | undefined

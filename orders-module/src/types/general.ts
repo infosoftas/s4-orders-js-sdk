@@ -81,7 +81,7 @@ export type ConfigType = {
     orderCompletionFailedCallback?: (
         event: OrderCompletionFailedEventType
     ) => void;
-    submitStartCallback?: (subscriberId: string) => void;
+    submitStartCallback?: (subscriberId: string) => void | Promise<void>;
     userActionCallback?: (
         action: UserActionEnum,
         args: object | null | undefined

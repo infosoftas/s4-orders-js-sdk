@@ -31,7 +31,7 @@ import {
 
 type Props = {
     callback: (url: string | null, orderInfo?: OrderInfoType | null) => void;
-    submitStartCallback?: (id: string) => void;
+    submitStartCallback?: (id: string) => void | Promise<void>;
     userActionCallback?: (
         action: UserActionEnum,
         args: object | null | undefined
@@ -244,7 +244,7 @@ const useOrderForm = ({
                 setContactCallback(contactModel);
             }
 
-            submitStartCallback?.(id as string);
+            await submitStartCallback?.(id as string);
 
             if (id) {
                 const paymentMethod =

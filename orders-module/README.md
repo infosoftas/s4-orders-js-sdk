@@ -177,7 +177,7 @@ type ConfigType = {
     ) => void;
     domElementId: string;
     moduleTitle?: string;
-    submitStartCallback?: (subscriberId: string) => void;
+    submitStartCallback?: (subscriberId: string) => void | Promise<void>;
     userActionCallback?: (action: UserActionEnum, args: object | null | undefined) => void;
     setContactCallback?: (contactInfo: ContactRequestType) => void;
     cancelVippsCallback?: () => void;
@@ -486,26 +486,27 @@ import { useSearchParams } from 'react-router-dom';
 import { orderComponent } from '@infosoftas/s4-orders-js-sdk/src/index';
 
 import { prepareConfig } from 'Utils/moduleConfig';
-import { encodeJwt } from 'Utils/helper';
+import { createReturnToken } from 'Mutations/useReturnToken';
 
 const ORDER_PLACE_ID = 'sdk-order';
 
-const OrderPlace: FC = ({journey, userEmail, sub, emails, userId, name, city, country, postalCode, streetAddress}) => {
+const OrderPlace: FC = ({journey, userEmail, idToken, userId, name, city, country, postalCode, streetAddress}) => {
     const moduleMount = useRef(false);
     const [searchParams, setSearchParams] = useSearchParams();
 
+    // The SDK waits for this callback before it builds the payment return URLs,
+    // so an async callback can finish setting `hashToken` first.
+    // Ask your backend to create the token (and verify the user); never build it in the browser.
     const submitStartCallback = useCallback(
-        (subscriberId: string) => {
-            const hashTokenValue = {
-                extension_SubscriberId: subscriberId,
-                emails: emails,
-                sub: sub,
-            };
+        async (subscriberId: string) => {
+            const hashToken = await createReturnToken(idToken, subscriberId);
 
-            searchParams?.set('hashToken', encodeJwt(hashTokenValue) as string);
-            setSearchParams(searchParams);
+            if (hashToken) {
+                searchParams?.set('hashToken', hashToken);
+                setSearchParams(searchParams);
+            }
         },
-        [emails, sub, searchParams, setSearchParams]
+        [idToken, searchParams, setSearchParams]
     );
 
     useEffect(() => {

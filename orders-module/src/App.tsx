@@ -423,9 +423,9 @@ const App: FC<ConfigType> = ({
         });
     };
 
-    const onSubmitStart = (id: string) => {
+    const onSubmitStart = async (id: string) => {
         setSubscriberSdkId(id);
-        submitStartCallback?.(id);
+        await submitStartCallback?.(id);
     };
 
     if (window !== top) {
