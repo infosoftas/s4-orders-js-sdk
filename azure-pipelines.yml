@@ -9,9 +9,11 @@ variables:
   pnpm_config_cache: $(Pipeline.Workspace)/.pnpm-store
 
 steps:
-- task: NodeTool@0
+- task: UseNode@1
   inputs:
-    versionSpec: '20.x'
+    versionSource: 'spec'
+    version: '22.x'
+    checkLatest: true
   displayName: 'Install Node.js'
 
 - task: VersionJSONFile@3
