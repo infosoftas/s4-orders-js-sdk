@@ -19,7 +19,7 @@ import type {
     OrderInfoType,
     OrderFormInputsType,
 } from './types/order';
-import { orderComplete, orderDelete } from './api/OrdersApi';
+import { cancelOrder, orderComplete } from './api/OrdersApi';
 import { prepareErrorMessage, prepareErrorsArrayMessage } from './utils/helper';
 import { waitForOrderCompletion } from './utils/waitForOrderCompletion';
 
@@ -273,7 +273,7 @@ const App: FC<ConfigType> = ({
 
     const handleOrderDelete = async (id: string) => {
         try {
-            await orderDelete(id);
+            await cancelOrder({ orderId: id });
             if (window === top) {
                 top.postMessage(
                     {

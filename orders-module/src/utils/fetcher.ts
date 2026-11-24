@@ -19,6 +19,7 @@ type Fetcher<T> = {
     body?: T;
     signal?: AbortSignal;
     cache?: RequestCache;
+    baseUrl?: string;
 };
 
 export const getSdkApiKey = (): string => {
@@ -58,10 +59,10 @@ function createHeader<T>(options: Fetcher<T>): Fetcher<T> {
 async function fetcher<ResponseType, BodyType = void>(
     options: Fetcher<BodyType>
 ): Promise<ApiResponseType<ResponseType> | ResponseType> {
-    const { url, method, headers, body, params, signal, cache } =
+    const { url, method, headers, body, params, signal, cache, baseUrl } =
         createHeader(options);
 
-    const apiUrl = getSdkApiUrl();
+    const apiUrl = baseUrl || getSdkApiUrl();
     const endpoint = new URL(`${apiUrl || BASE_API}${url}`);
 
     if (params) {

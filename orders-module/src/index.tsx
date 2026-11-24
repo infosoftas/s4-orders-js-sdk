@@ -3,6 +3,7 @@ import { createElement } from 'react';
 
 import type { ConfigType } from './types/general';
 import { createSubscriber } from './api/SubscribeApi';
+import { cancelOrder } from './api/OrdersApi';
 import App from './App';
 
 export const orderComponent = {
@@ -27,4 +28,5 @@ export const orderComponent = {
         (orderComponent.root as Root)?.unmount();
     },
     createSubscriber,
+    cancelOrder,
 };

@@ -74,6 +74,18 @@ parameters (`action=complete`/`action=cancel` with `S4OrderId`, or Vipps'
 because of a browser `message` event. It only posts its own notifications
 (`orderFlowComplete`, `orderFlowCancel`, `orderUpdateInfo`) to the host page.
 
+### Cancelling an order
+
+A payment only goes through when the order is completed. To cancel an order
+and its payment instead, for example a payment return the host cannot verify:
+
+```ts
+await orderComponent.cancelOrder({ apiKey: API_KEY, apiUrl: API_URL, orderId });
+```
+
+It does not need `init`. Do not mount the order form on the same return URL,
+or it will complete the order.
+
 ### Callbacks and external confirmation
 
 All completion callbacks receive `{ orderId, orderInfo }`, where `orderId`
