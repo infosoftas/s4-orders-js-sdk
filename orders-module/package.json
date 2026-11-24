@@ -1,6 +1,6 @@
 {
     "name": "@infosoftas/s4-orders-js-sdk",
-    "version": "0.2.3",
+    "version": "0.2.4",
     "scripts": {
         "build": "tsc --noEmit && webpack --mode production",
         "test": "vitest run",
