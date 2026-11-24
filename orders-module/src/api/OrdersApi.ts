@@ -63,29 +63,23 @@ export const getOrderStatus = (
         cache: 'no-store',
     }) as Promise<OrderStatusResponseType>;
 
-export const orderDelete = (
-    id: string,
-    api?: { apiKey: string; apiUrl: string }
-): Promise<OrderResponseType> =>
-    fetcher<OrderResponseType, null>({
-        method: 'DELETE',
-        url: `/order/${encodeURIComponent(id)}`,
-        baseUrl: api?.apiUrl,
-        headers: {
-            'S4-ORDERS-API-KEY': api?.apiKey || getSdkApiKey(),
-        },
-        body: null,
-    }) as Promise<OrderResponseType>;
-
-// Cancels the order and its payment, without needing `init`.
+// Cancels the order and its payment. Without apiKey/apiUrl the initialised SDK settings are used.
 export const cancelOrder = async ({
+    orderId,
     apiKey,
     apiUrl,
-    orderId,
 }: {
-    apiKey: string;
-    apiUrl: string;
     orderId: string;
+    apiKey?: string;
+    apiUrl?: string;
 }): Promise<void> => {
-    await orderDelete(orderId, { apiKey, apiUrl });
+    await fetcher<OrderResponseType, null>({
+        method: 'DELETE',
+        url: `/order/${encodeURIComponent(orderId)}`,
+        baseUrl: apiUrl,
+        headers: {
+            'S4-ORDERS-API-KEY': apiKey || getSdkApiKey(),
+        },
+        body: null,
+    });
 };
